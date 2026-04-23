@@ -53,7 +53,7 @@ function formatErrorForRemoteLog(error: unknown, fallback = ""): string {
 }
 
 /**
- * Remontée des erreurs du navigateur (FasoStock web) vers `log_app_error`.
+ * Remontée des erreurs du navigateur (Gabostock web) vers `log_app_error`.
  * `client_kind: web` permet de les distinguer des apps Flutter côté super-admin.
  *
  * Désactiver : `NEXT_PUBLIC_CLIENT_ERROR_LOGS=0` (ex. tests locaux bruyants).
@@ -173,7 +173,7 @@ export async function captureWebAppError(
       errType,
       extra: devExtra,
     });
-    console.warn(`[FasoStock] captureWebAppError ${devLine}`);
+    console.warn(`[Gabostock] captureWebAppError ${devLine}`);
   }
 
   try {
@@ -188,11 +188,11 @@ export async function captureWebAppError(
       p_context: baseContext,
     });
     if (rpcErr && isDev) {
-      console.warn("[FasoStock] log_app_error RPC failed", rpcErr.message);
+      console.warn("[Gabostock] log_app_error RPC failed", rpcErr.message);
     }
   } catch (e) {
     if (isDev) {
-      console.warn("[FasoStock] log_app_error threw", e);
+      console.warn("[Gabostock] log_app_error threw", e);
     }
     /* ne jamais casser l’app */
   }

@@ -2,7 +2,7 @@
 
 import { attachReactQueryErrorLogging } from "@/lib/monitoring/react-query-error-logging";
 import {
-  createFasoStockQueryPersister,
+  createGabostockQueryPersister,
   RQ_MAX_AGE_MS,
   RQ_PERSIST_BUSTER,
 } from "@/lib/offline";
@@ -45,7 +45,7 @@ export function QueryProvider({ children }: { children: ReactNode }) {
 
   const persister = useMemo(() => {
     if (!mounted || typeof window === "undefined") return null;
-    return createFasoStockQueryPersister();
+    return createGabostockQueryPersister();
   }, [mounted]);
 
   if (!mounted || !persister) {

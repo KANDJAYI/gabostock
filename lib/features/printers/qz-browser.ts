@@ -105,7 +105,7 @@ function escPosTestTicket(): string {
   const lines = [
     ESC + "@",
     ESC + "a" + "\x01",
-    "FasoStock — test ticket\n",
+    "Gabostock — test ticket\n",
     "------------------------\n",
     "Impression thermique OK\n",
     "\n\n",
@@ -119,7 +119,7 @@ body{font-family:system-ui,-apple-system,sans-serif;padding:16mm;font-size:11pt;
 h1{font-size:16pt;margin:0 0 8px} .muted{color:#555;font-size:10pt}
 </style></head><body>
 <h1>Test facture A4</h1>
-<p class="muted">FasoStock — si ce document sort sur la bonne imprimante, l’association est correcte.</p>
+<p class="muted">Gabostock — si ce document sort sur la bonne imprimante, l’association est correcte.</p>
 <p>${new Date().toLocaleString("fr-FR")}</p>
 </body></html>`;
 

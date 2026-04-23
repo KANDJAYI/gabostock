@@ -12,13 +12,14 @@ export default function SetupPage() {
           </code>{" "}
           à la racine de{" "}
           <code className="rounded bg-fs-surface-container px-1.5 py-0.5 text-xs">
-            appweb
+            gabostock
           </code>{" "}
           avec&nbsp;:
         </p>
         <pre className="mt-4 overflow-x-auto rounded-xl bg-neutral-900 p-4 text-xs text-neutral-100">
           {`NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...`}
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+# ou alias accepté : SUPABASE_ANON_KEY=eyJ... (même valeur « anon » du dashboard)`}
         </pre>
         <p className="mt-4 text-sm text-neutral-600">
           Redémarrez le serveur de dev après modification.

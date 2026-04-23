@@ -17,14 +17,14 @@ import {
   listStockMovements,
   setDefaultStockAlertThreshold,
 } from "@/lib/features/inventory/api";
-import { inventoryRowsToCsv } from "@/lib/features/inventory/csv";
+import { inventoryToProSheet } from "@/lib/features/inventory/csv";
 import type { InventoryRow, StockMovementRow } from "@/lib/features/inventory/types";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
 import type { ProductCategory } from "@/lib/features/products/types";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { queryKeys } from "@/lib/query/query-keys";
-import { toast, toastMutationError } from "@/lib/toast";
-import { downloadCsv } from "@/lib/utils/csv";
+import { messageFromUnknownError, toast, toastMutationError } from "@/lib/toast";
+import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
 import { formatCurrency } from "@/lib/utils/currency";
 import { cn } from "@/lib/utils/cn";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -477,14 +477,24 @@ export function InventoryScreen() {
               type="button"
               onClick={() => {
                 if (filteredForTable.length === 0) return;
-                const csv = inventoryRowsToCsv(filteredForTable);
-                downloadCsv(`stock-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+                const day = new Date().toISOString().slice(0, 10);
+                const sub = `Généré le ${new Date().toLocaleString("fr-FR")}`;
+                void (async () => {
+                  try {
+                    await downloadProXlsx(`stock-${day}`, [
+                      inventoryToProSheet(filteredForTable, { subtitle: sub }),
+                    ]);
+                    toast.success("Excel enregistré");
+                  } catch (e) {
+                    toast.error(messageFromUnknownError(e, "Export Excel impossible."));
+                  }
+                })();
               }}
               disabled={filteredForTable.length === 0}
               className="inline-flex items-center gap-2 rounded-[10px] bg-fs-surface-container px-3.5 py-2.5 text-sm font-semibold text-fs-text shadow-sm ring-1 ring-black/[0.06] disabled:opacity-40"
             >
               <MdDownload className="h-5 w-5" aria-hidden />
-              Enregistrer CSV
+              Exporter Excel
             </button>
           </div>
         </div>
@@ -573,7 +583,7 @@ export function InventoryScreen() {
                 <div className="relative">
                   <MdSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" aria-hidden />
                   <input
-                    className={fsInputClass("pl-10")}
+                    className={fsInputClass("pl-10 pr-3 sm:pl-10 sm:pr-3")}
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="Rechercher produit, SKU..."
@@ -610,7 +620,7 @@ export function InventoryScreen() {
                 <div className="relative min-w-0 flex-1 basis-[min(100%,280px)]">
                   <MdSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" aria-hidden />
                   <input
-                    className={fsInputClass("pl-10")}
+                    className={fsInputClass("pl-10 pr-3 sm:pl-10 sm:pr-3")}
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="Rechercher produit, SKU, code-barres..."

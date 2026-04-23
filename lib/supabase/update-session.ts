@@ -1,6 +1,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { getSupabaseAnonKeyFromEnv } from "@/lib/env";
 import { normalizeSupabaseUrl } from "@/lib/supabase/normalize-url";
 
 /** Rafraîchit la session Supabase (cookies) — invoqué depuis `proxy.ts` à chaque requête matchée. */
@@ -10,7 +11,7 @@ export async function updateSession(request: NextRequest) {
   });
 
   const urlRaw = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const key = getSupabaseAnonKeyFromEnv();
 
   if (!urlRaw || !key) {
     return supabaseResponse;

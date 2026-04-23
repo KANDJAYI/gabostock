@@ -1,4 +1,4 @@
--- FasoStock — RLS: helper functions and policies
+-- Gabostock — RLS: helper functions and policies
 
 -- ========== HELPER FUNCTIONS ==========
 

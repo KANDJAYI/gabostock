@@ -27,6 +27,19 @@ function trimOrNull(v: string): string | null {
   return t.length ? t : null;
 }
 
+/** `input type="color"` n’accepte que `#rrggbb` ; couleur absente / invalide → affichage #000000 sans forcer l’enregistrement. */
+function hexForColorInput(s: string): string {
+  const t = s.trim();
+  if (/^#[0-9A-Fa-f]{6}$/i.test(t)) return t;
+  if (/^#?[0-9A-Fa-f]{3}$/i.test(t)) {
+    const h = t.startsWith("#") ? t.slice(1) : t;
+    if (h.length === 3) {
+      return `#${h[0]}${h[0]}${h[1]}${h[1]}${h[2]}${h[2]}`.toLowerCase();
+    }
+  }
+  return "#000000";
+}
+
 export function CreateStoreModal({
   open,
   companyId,
@@ -206,7 +219,7 @@ export function CreateStoreModal({
             type="button"
             disabled={loading}
             onClick={() => void submit()}
-            className="flex-1 rounded-xl bg-[#F97316] py-3 text-sm font-semibold text-white disabled:opacity-60"
+            className="flex-1 rounded-xl bg-[#f97316] py-3 text-sm font-semibold text-white disabled:opacity-60"
           >
             {loading ? "Création…" : "Créer"}
           </button>
@@ -550,7 +563,7 @@ export function EditStoreModal({
             </label>
           </div>
           <div className="border-t border-black/[0.08] pt-4" role="region" aria-label="Paramètres facture A4">
-            <p className="text-sm font-bold text-[#F97316]">Paramètres facture A4</p>
+            <p className="text-sm font-bold text-[#f97316]">Paramètres facture A4</p>
             <p className="mt-1 text-xs text-neutral-500">
               Logo et identité affichés sur la facture A4.
             </p>
@@ -561,7 +574,7 @@ export function EditStoreModal({
                 onChange={(e) =>
                   setInvoiceTemplate(e.target.value as "classic" | "elof")
                 }
-                className="mt-1 min-h-12 w-full rounded-lg border border-black/[0.12] bg-white px-3 py-3 text-base"
+                className="mt-1 min-h-12 w-full rounded-lg border border-black/[0.12] bg-fs-card px-3 py-3 text-base"
               >
                 <option value="classic">Classique (en-tête actuel)</option>
                 <option value="elof">
@@ -573,10 +586,10 @@ export function EditStoreModal({
               type="button"
               disabled={previewLoading}
               onClick={() => void handlePreviewInvoiceA4()}
-              className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border-2 border-[#F97316] bg-white px-4 py-3 text-sm font-semibold text-[#F97316] disabled:opacity-50"
+              className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border-2 border-[#f97316] bg-fs-card px-4 py-3 text-sm font-semibold text-[#f97316] disabled:opacity-50"
             >
               {previewLoading ? (
-                <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
               ) : (
                 <MdPictureAsPdf className="h-5 w-5 shrink-0" aria-hidden />
               )}
@@ -622,7 +635,7 @@ export function EditStoreModal({
                   type="file"
                   accept="image/*"
                   onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
-                  className="mt-2 w-full min-h-11 text-sm file:mr-2 file:rounded-lg file:border-0 file:bg-orange-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-[#F97316]"
+                  className="mt-2 w-full min-h-11 text-sm file:mr-2 file:rounded-lg file:border-0 file:bg-orange-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-[#f97316]"
                 />
               </div>
             </div>
@@ -682,22 +695,48 @@ export function EditStoreModal({
                 </label>
               </div>
               <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
-                <label className="block text-xs font-medium text-neutral-600">
-                  Couleur primaire
-                  <input
-                    value={primaryColor}
-                    onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-black/[0.12] px-2 py-2 text-sm"
-                  />
-                </label>
-                <label className="block text-xs font-medium text-neutral-600">
-                  Couleur secondaire
-                  <input
-                    value={secondaryColor}
-                    onChange={(e) => setSecondaryColor(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-black/[0.12] px-2 py-2 text-sm"
-                  />
-                </label>
+                <div className="text-xs font-medium text-neutral-600">
+                  <span className="block">Couleur primaire</span>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <input
+                      type="color"
+                      value={hexForColorInput(primaryColor)}
+                      onChange={(e) => setPrimaryColor(e.target.value.toLowerCase())}
+                      className="h-10 w-[min(100%,7.5rem)] min-w-0 max-w-full cursor-pointer rounded-lg border border-black/[0.12] bg-fs-card p-1 [color-scheme:light] dark:[color-scheme:light]"
+                      aria-label="Couleur primaire (facture A4)"
+                    />
+                    {primaryColor.trim() ? (
+                      <button
+                        type="button"
+                        className="text-xs font-medium text-neutral-500 underline decoration-neutral-400 underline-offset-2 hover:text-neutral-800"
+                        onClick={() => setPrimaryColor("")}
+                      >
+                        Effacer
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="text-xs font-medium text-neutral-600">
+                  <span className="block">Couleur secondaire</span>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <input
+                      type="color"
+                      value={hexForColorInput(secondaryColor)}
+                      onChange={(e) => setSecondaryColor(e.target.value.toLowerCase())}
+                      className="h-10 w-[min(100%,7.5rem)] min-w-0 max-w-full cursor-pointer rounded-lg border border-black/[0.12] bg-fs-card p-1 [color-scheme:light] dark:[color-scheme:light]"
+                      aria-label="Couleur secondaire (facture A4)"
+                    />
+                    {secondaryColor.trim() ? (
+                      <button
+                        type="button"
+                        className="text-xs font-medium text-neutral-500 underline decoration-neutral-400 underline-offset-2 hover:text-neutral-800"
+                        onClick={() => setSecondaryColor("")}
+                      >
+                        Effacer
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <label className="block text-xs font-medium text-neutral-600">
@@ -813,7 +852,7 @@ export function EditStoreModal({
             onClick={() => void submit()}
             className={cn(
               "flex-1 rounded-xl py-3 text-sm font-semibold text-white disabled:opacity-60",
-              "bg-[#F97316]",
+              "bg-[#f97316]",
             )}
           >
             {loading ? "Enregistrement…" : "Enregistrer"}

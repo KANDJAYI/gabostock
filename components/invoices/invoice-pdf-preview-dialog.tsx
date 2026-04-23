@@ -35,7 +35,7 @@ export function InvoicePdfPreviewDialog({
         aria-busy="true"
         aria-label="Chargement du PDF"
       >
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
       </div>
     );
   }
@@ -47,13 +47,13 @@ export function InvoicePdfPreviewDialog({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-[800px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="flex max-h-[90vh] w-full max-w-[800px] flex-col overflow-hidden rounded-2xl bg-fs-card shadow-2xl"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 bg-white px-3 py-3 sm:px-4">
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 bg-fs-card px-3 py-3 sm:px-4">
           <h2 id={titleId} className="truncate text-base font-bold text-neutral-900 sm:text-lg">
             {title}
           </h2>
@@ -70,7 +70,7 @@ export function InvoicePdfPreviewDialog({
           <iframe
             title={title}
             src={`${url}#toolbar=1`}
-            className="h-[min(78vh,800px)] w-full rounded-lg border border-neutral-200 bg-white"
+            className="h-[min(78vh,800px)] w-full rounded-lg border border-neutral-200 bg-fs-card"
           />
         </div>
       </div>

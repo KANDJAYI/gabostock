@@ -6,7 +6,7 @@ import { MdClose, MdSearch, MdStore } from "react-icons/md";
 
 /** Aligné `PosQuickColors` (Flutter `pos_quick_constants.dart`). */
 export const POS_Q = {
-  orange: "#F97316",
+  orange: "#f97316",
   orangeLight: "#FDBA74",
   bg: "#FFFFFF",
   bg2: "#F8F9FA",
@@ -75,16 +75,17 @@ export function WarehousePosQuickSearchInput({
   return (
     <div className="relative h-[44px] min-[900px]:h-[55px]">
       <MdSearch
-        className="pointer-events-none absolute left-2 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#F97316] min-[900px]:left-3 min-[900px]:h-6 min-[900px]:w-6"
+        className="pointer-events-none absolute left-2 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#f97316] min-[900px]:left-3 min-[900px]:h-6 min-[900px]:w-6"
         aria-hidden
       />
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "h-full w-full rounded-[10px] border border-[#E5E7EB] bg-white pl-9 pr-2 text-[13px] text-[#1F2937] placeholder:text-[#1F2937]/50",
+          "h-full w-full rounded-[10px] border border-[#E5E7EB] bg-fs-card pl-9 pr-2 text-[13px] text-[#1F2937] placeholder:text-[#1F2937]/50",
+          "sm:pl-10 sm:pr-2",
           "min-[900px]:rounded-[12px] min-[900px]:pl-11 min-[900px]:pr-3 min-[900px]:text-[15px]",
-          "outline-none focus:border-2 focus:border-[#F97316]",
+          "outline-none focus:border-2 focus:border-[#f97316]",
         )}
         placeholder={hintText}
       />
@@ -125,7 +126,7 @@ function WhCategoryChip({ label, selected, onClick }: { label: string; selected:
       onClick={onClick}
       className={cn(
         "shrink-0 rounded-full border-2 px-2.5 py-1.5 text-[12px] font-semibold transition-colors min-[900px]:px-3.5 min-[900px]:py-2.5 min-[900px]:text-sm",
-        selected ? "border-[#F97316] bg-[#F97316] text-white" : "border-[#E5E7EB] bg-[#F8F9FA] text-[#1F2937]",
+        selected ? "border-[#f97316] bg-[#f97316] text-white" : "border-[#E5E7EB] bg-[#F8F9FA] text-[#1F2937]",
       )}
     >
       {label}
@@ -135,7 +136,7 @@ function WhCategoryChip({ label, selected, onClick }: { label: string; selected:
 
 /** Champs sur fond gris — fond blanc, rayon 12 (Flutter `warehousePosFormFieldDecoration`). Mobile-first plus compact. */
 export const whPosFormFieldClass =
-  "w-full rounded-[10px] border border-[#E5E7EB] bg-white px-2 py-1.5 text-[13px] text-[#1F2937] outline-none focus:border-2 focus:border-[#F97316] min-[900px]:rounded-[12px] min-[900px]:px-3 min-[900px]:py-2.5 min-[900px]:text-[15px]";
+  "w-full rounded-[10px] border border-[#E5E7EB] bg-fs-card px-2 py-1.5 text-[13px] text-[#1F2937] outline-none focus:border-2 focus:border-[#f97316] min-[900px]:rounded-[12px] min-[900px]:px-3 min-[900px]:py-2.5 min-[900px]:text-[15px]";
 
 export const whPosLabelClass =
   "block text-[11px] font-medium leading-snug text-[#1F2937] min-[900px]:text-sm";
@@ -161,7 +162,7 @@ export function DispatchStepCard({
     >
       <div className="flex gap-2 min-[900px]:gap-3">
         <div
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#F97316] min-[900px]:h-10 min-[900px]:w-10 min-[900px]:rounded-xl"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#f97316] min-[900px]:h-10 min-[900px]:w-10 min-[900px]:rounded-xl"
           style={{ backgroundColor: "rgba(249, 115, 22, 0.14)" }}
         >
           {icon}
@@ -186,7 +187,7 @@ export function DispatchStepCard({
 export function StepNumberChip({ label }: { label: string }) {
   return (
     <span
-      className="inline-flex rounded-md px-1 py-0.5 text-[11px] font-extrabold text-[#F97316] min-[900px]:rounded-lg min-[900px]:px-2 min-[900px]:text-[13px]"
+      className="inline-flex rounded-md px-1 py-0.5 text-[11px] font-extrabold text-[#f97316] min-[900px]:rounded-lg min-[900px]:px-2 min-[900px]:text-[13px]"
       style={{ backgroundColor: "rgba(249, 115, 22, 0.14)" }}
     >
       {label}

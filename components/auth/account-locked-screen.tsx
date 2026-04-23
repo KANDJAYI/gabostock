@@ -62,7 +62,7 @@ export function AccountLockedScreen({
           </a>
           <a
             href={telUrl}
-            className="fs-touch-target flex items-center justify-center gap-2 rounded-xl border border-black/[0.08] bg-white/80 px-4 py-3 text-sm font-semibold text-fs-accent shadow-sm"
+            className="fs-touch-target flex items-center justify-center gap-2 rounded-xl border border-black/[0.08] bg-fs-card/90 px-4 py-3 text-sm font-semibold text-fs-accent shadow-sm"
           >
             Appeler {SUPPORT_PHONE_DISPLAY}
           </a>

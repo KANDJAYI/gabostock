@@ -6,22 +6,22 @@ import type { OutboxRecord } from "./outbox-types";
  * IndexedDB local — outbox pour opérations hors ligne.
  * N’instancier que côté navigateur (`getLocalDb()`).
  */
-export class FasoStockLocalDB extends Dexie {
+export class GabostockLocalDB extends Dexie {
   outbox!: Table<OutboxRecord, number>;
 
   constructor() {
-    super("fasostock_web");
+    super("gabostock_web");
     this.version(1).stores({
       outbox: "++id, kind, status, createdAt",
     });
   }
 }
 
-let _db: FasoStockLocalDB | null = null;
+let _db: GabostockLocalDB | null = null;
 
-export function getLocalDb(): FasoStockLocalDB | null {
+export function getLocalDb(): GabostockLocalDB | null {
   if (typeof window === "undefined") return null;
-  if (!_db) _db = new FasoStockLocalDB();
+  if (!_db) _db = new GabostockLocalDB();
   return _db;
 }
 

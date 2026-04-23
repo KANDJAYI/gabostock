@@ -138,7 +138,7 @@ export function ResetPasswordForm() {
           <button
             type="submit"
             disabled={loading}
-            className="fs-touch-target w-full rounded-xl bg-gradient-to-b from-fs-accent to-[#d94f1a] py-3.5 text-base font-semibold text-white shadow-[0_4px_14px_-2px_rgba(232,93,44,0.45)] disabled:opacity-60"
+            className="fs-touch-target w-full rounded-xl bg-gradient-to-b from-fs-accent to-[var(--fs-accent-pressed)] py-3.5 text-base font-semibold text-white shadow-[0_4px_14px_-2px_color-mix(in_srgb,var(--fs-accent)_42%,transparent)] disabled:opacity-60"
           >
             {loading ? "Enregistrement…" : "Enregistrer"}
           </button>

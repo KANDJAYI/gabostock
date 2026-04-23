@@ -58,14 +58,14 @@ export function ForgotPasswordForm() {
   if (sent) {
     return (
       <div className="w-full">
-        <div className="rounded-2xl border border-neutral-200/80 bg-white p-5 shadow-[0_8px_32px_rgba(0,0,0,0.06)] sm:p-6">
+        <div className="rounded-2xl border border-neutral-200/80 bg-fs-card p-5 shadow-[0_8px_32px_rgba(0,0,0,0.06)] sm:p-6">
           <div className="flex flex-col items-center text-center">
             <Image
-              src="/logo1.png"
+              src="/logo.png"
               alt=""
-              width={72}
-              height={72}
-              className="h-14 w-14 object-contain sm:h-16 sm:w-16"
+              width={80}
+              height={80}
+              className="h-16 w-16 object-contain sm:h-20 sm:w-20"
               priority
             />
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-[1.65rem]">
@@ -102,7 +102,7 @@ export function ForgotPasswordForm() {
 
   return (
     <div className="w-full">
-      <div className="rounded-2xl border border-neutral-200/80 bg-white p-5 shadow-[0_8px_32px_rgba(0,0,0,0.06)] sm:p-6">
+      <div className="rounded-2xl border border-neutral-200/80 bg-fs-card p-5 shadow-[0_8px_32px_rgba(0,0,0,0.06)] sm:p-6">
         <div className="mb-3 text-center">
           <Link
             href={ROUTES.login}
@@ -114,11 +114,11 @@ export function ForgotPasswordForm() {
 
         <div className="flex flex-col items-center text-center">
           <Image
-            src="/logo1.png"
+            src="/logo.png"
             alt=""
-            width={72}
-            height={72}
-            className="h-14 w-14 object-contain sm:h-16 sm:w-16"
+            width={80}
+            height={80}
+            className="h-16 w-16 object-contain sm:h-20 sm:w-20"
             priority
           />
           <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-[1.65rem]">
@@ -133,7 +133,7 @@ export function ForgotPasswordForm() {
           {!hasEnv ? (
             <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">
               Config Supabase manquante. Ajoutez{" "}
-              <code className="rounded bg-white/80 px-1">.env.local</code> puis
+              <code className="rounded bg-fs-card/90 px-1">.env.local</code> puis
               redémarrez le serveur.
             </div>
           ) : null}

@@ -1,3 +1,4 @@
+import type { ProExportSheet } from "@/lib/utils/excel-pro-export";
 import type { ProductItem } from "./types";
 import { escapeCsv } from "@/lib/utils/csv";
 
@@ -222,4 +223,101 @@ export function productsToCsv(products: ProductItem[]): string {
     ].join(","),
   );
   return [headers.join(","), ...rows].join("\n");
+}
+
+const PRODUCT_HEADER_LABELS = [
+  "Nom",
+  "SKU",
+  "Code-barres",
+  "Unité",
+  "Prix achat",
+  "Prix vente",
+  "Stock min",
+  "Description",
+  "Actif",
+  "Catégorie",
+  "Marque",
+];
+
+const IMPORT_CSV_MODEL_HEADERS = [
+  "nom",
+  "sku",
+  "code_barres",
+  "unite",
+  "prix_achat",
+  "prix_vente",
+  "stock_min",
+  "description",
+  "actif",
+  "categorie",
+  "marque",
+  "stock_entrant",
+];
+
+/** Même contenu que `getProductsCsvModelTemplate`, en feuille Excel stylée. */
+export function productsImportModelToProSheet(meta: { subtitle: string }): ProExportSheet {
+  return {
+    name: "Modele import",
+    reportTitle: "Modèle d’import produits — Gabostock",
+    subtitle: meta.subtitle,
+    headers: IMPORT_CSV_MODEL_HEADERS,
+    rows: [
+      [
+        "Café moulu 250g",
+        "CAF-250",
+        "",
+        "pce",
+        1200,
+        1800,
+        5,
+        "Paquet 250g",
+        1,
+        "Boissons",
+        "Marque A",
+        100,
+      ],
+      [
+        "Riz local 1kg",
+        "RIZ-1K",
+        "5449000000016",
+        "kg",
+        800,
+        1200,
+        10,
+        "",
+        1,
+        "Alimentaire",
+        "Marque B",
+        50,
+      ],
+    ],
+    numberColumnIndexes: [4, 5, 6, 8, 11],
+  };
+}
+
+export function productsToProSheet(
+  products: ProductItem[],
+  meta: { subtitle: string },
+): ProExportSheet {
+  const rows = products.map<((string | number)[])>((p) => [
+    p.name,
+    p.sku ?? "",
+    p.barcode ?? "",
+    p.unit,
+    p.purchase_price ?? 0,
+    p.sale_price ?? 0,
+    p.stock_min ?? 0,
+    p.description ?? "",
+    p.is_active ? 1 : 0,
+    p.category?.name ?? "",
+    p.brand?.name ?? "",
+  ]);
+  return {
+    name: "Produits",
+    reportTitle: "Export catalogue produits — Gabostock",
+    subtitle: meta.subtitle,
+    headers: PRODUCT_HEADER_LABELS,
+    rows,
+    numberColumnIndexes: [4, 5, 6, 8],
+  };
 }

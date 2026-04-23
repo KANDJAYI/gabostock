@@ -46,8 +46,10 @@ import { useAppContext } from "@/lib/features/common/app-context";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { queryKeys } from "@/lib/query/query-keys";
+import { messageFromUnknownError, toast } from "@/lib/toast";
+import { creditSalesRowsToProSheet } from "@/lib/features/credit/credit-pro-export";
 import { formatCurrency } from "@/lib/utils/currency";
-import { downloadCsv, escapeCsv } from "@/lib/utils/csv";
+import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
 import { cn } from "@/lib/utils/cn";
 import { CreditDetailPanel } from "./credit-detail-panel";
 import { CreditQuickPayDialog } from "./credit-quick-pay-dialog";
@@ -288,29 +290,35 @@ export function CreditScreen() {
       String((creditQ.error as Error).message ?? ""),
     );
 
-  function exportSalesCsv() {
-    const head =
-      "reference,client,telephone,date,boutique,total,encaisse,reste,echeance,statut,retard_jours,vendeur";
-    const lines = [head];
+  function exportSalesExcel() {
+    const rows: (string | number)[][] = [];
     for (const s of filteredSales) {
-      lines.push(
-        [
-          escapeCsv(s.sale_number),
-          escapeCsv(s.customer?.name ?? ""),
-          escapeCsv(s.customer?.phone ?? ""),
-          escapeCsv(format(new Date(s.created_at), "yyyy-MM-dd")),
-          escapeCsv(s.store?.name ?? ""),
-          escapeCsv(String(s.total)),
-          escapeCsv(String(paidTotal(s))),
-          escapeCsv(String(remainingTotal(s))),
-          escapeCsv(format(effectiveDueDate(s), "yyyy-MM-dd")),
-          escapeCsv(CREDIT_STATUS_LABELS[creditLineStatus(s)]),
-          escapeCsv(String(daysOverdue(s))),
-          escapeCsv(s.created_by_label ?? ""),
-        ].join(","),
-      );
+      rows.push([
+        s.sale_number,
+        s.customer?.name ?? "",
+        s.customer?.phone ?? "",
+        format(new Date(s.created_at), "yyyy-MM-dd"),
+        s.store?.name ?? "",
+        s.total,
+        paidTotal(s),
+        remainingTotal(s),
+        format(effectiveDueDate(s), "yyyy-MM-dd"),
+        CREDIT_STATUS_LABELS[creditLineStatus(s)],
+        daysOverdue(s),
+        s.created_by_label ?? "",
+      ]);
     }
-    downloadCsv(`credit-ventes-${toIsoDate(new Date())}.csv`, lines.join("\n"));
+    const sub = `Généré le ${new Date().toLocaleString("fr-FR")}`;
+    void (async () => {
+      try {
+        await downloadProXlsx(`credit-ventes-${toIsoDate(new Date())}`, [
+          creditSalesRowsToProSheet(rows, { subtitle: sub }),
+        ]);
+        toast.success("Excel enregistré");
+      } catch (e) {
+        toast.error(messageFromUnknownError(e, "Export Excel impossible."));
+      }
+    })();
   }
 
   if (permLoading || ctx.isLoading) {
@@ -445,11 +453,11 @@ export function CreditScreen() {
             {canExport ? (
               <button
                 type="button"
-                onClick={() => exportSalesCsv()}
+                onClick={() => exportSalesExcel()}
                 className="inline-flex h-8 items-center gap-1 rounded-lg border border-black/10 bg-fs-surface-container px-2.5 text-xs font-semibold dark:border-white/10"
               >
                 <MdDownload className="h-4 w-4 shrink-0" aria-hidden />
-                CSV
+                Excel
               </button>
             ) : null}
           </div>
@@ -511,7 +519,7 @@ export function CreditScreen() {
           label="Échéance cette semaine"
           value={formatCurrency(kpiBase.dueWeek)}
           icon={MdDateRange}
-          colorClass="bg-teal-500/15 text-teal-700"
+          colorClass="bg-orange-500/15 text-orange-700"
         />
       </div>
 
@@ -520,7 +528,7 @@ export function CreditScreen() {
           <div className="relative min-w-0 flex-1">
             <MdSearch className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
             <input
-              className={fsInputClass("w-full pl-10 text-sm")}
+              className={fsInputClass("w-full pl-10 pr-3 text-sm sm:pl-10 sm:pr-3")}
               placeholder="Client, téléphone, référence, montant, vendeur…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}

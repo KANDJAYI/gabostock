@@ -1,4 +1,4 @@
-# FasoStock Web (Next.js)
+# Gabostock Web (Next.js)
 
 Parité avec l’app Flutter : **Supabase**, **IndexedDB (Dexie)** pour l’outbox, **TanStack Query**, **PWA** (service worker en prod), **sync manager** pour rejouer la file hors ligne.
 
@@ -10,9 +10,9 @@ Parité avec l’app Flutter : **Supabase**, **IndexedDB (Dexie)** pour l’outb
 ## Configuration
 
 ```bash
-cd appweb
+cd gabostock
 cp .env.local.example .env.local
-# Renseigner NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY
+# Renseigner `NEXT_PUBLIC_SUPABASE_URL` et la clé anon (`NEXT_PUBLIC_SUPABASE_ANON_KEY`, ou `SUPABASE_ANON_KEY` comme alias — voir `next.config.ts`)
 npm install
 npm run dev
 ```
@@ -52,7 +52,7 @@ Toutes les entrées du menu Flutter principal ont une page squelette : `dashboar
 
 ## Mobile first
 
-- Thème FasoStock dans `app/globals.css` (`--fs-accent`, etc., cf. `cm.md` à la racine du repo).
+- Thème Gabostock dans `app/globals.css` (`--fs-accent`, etc., cf. `cm.md` à la racine du repo).
 - Barre de navigation fixe en bas + `safe-area-inset-bottom`.
 - Bandeau **hors ligne** (`OfflineStrip`) quand `navigator.onLine === false`.
 

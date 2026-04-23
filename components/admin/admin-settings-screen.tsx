@@ -57,7 +57,7 @@ export function AdminSettingsScreen() {
             className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
             value={get("platform_name")}
             onChange={(e) => set("platform_name", e.target.value)}
-            placeholder="FasoStock"
+            placeholder="Gabostock"
           />
         </label>
         <label className="mt-3 block text-sm font-medium text-slate-700">

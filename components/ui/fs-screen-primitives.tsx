@@ -146,9 +146,14 @@ export function FsSectionLabel({
 /** Champ rempli type InputDecoration Flutter (surfaceContainer, rayon 10). */
 export function fsInputClass(extra?: string) {
   return cn(
-    "w-full rounded-[10px] border border-black/[0.06] bg-fs-surface-container px-3 py-2.5 text-xs text-fs-text outline-none placeholder:text-neutral-400 focus:border-fs-accent focus:ring-2 focus:ring-fs-accent/20 sm:px-3 sm:py-3 sm:text-sm",
+    "w-full rounded-[10px] border border-black/[0.06] bg-fs-surface-container px-3 py-2.5 text-xs text-fs-text outline-none placeholder:text-neutral-400 focus:border-fs-accent focus:ring-2 focus:ring-fs-accent/20 sm:py-3 sm:text-sm",
     extra,
   );
+}
+
+/** Icône en `absolute left-3` (loupe, calendrier) : espace réservé à gauche sur tous les breakpoints. */
+export function fsInputWithLeftIconClass(extra?: string) {
+  return fsInputClass(cn("pl-10 pr-3 sm:pl-10 sm:pr-3", extra));
 }
 
 /** État erreur TanStack Query — mobile first, bouton tactile « Réessayer ». */
@@ -197,7 +202,7 @@ export function FsStickyMobileActions({
   );
 }
 
-/** Bouton principal orange POS (Flutter FAB #F97316). */
+/** FAB mobile principal (orange POS). */
 export function FsFab({
   children,
   onClick,
@@ -215,7 +220,7 @@ export function FsFab({
       onClick={onClick}
       aria-label={ariaLabel}
       className={cn(
-        "fixed bottom-[calc(4.75rem+var(--fs-safe-bottom)+0.5rem)] right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#f97316] text-white shadow-lg shadow-black/15 transition-transform active:scale-95 min-[900px]:hidden",
+        "fixed bottom-[calc(4.75rem+var(--fs-safe-bottom)+0.5rem)] right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--fs-pos-orange)] text-white shadow-lg shadow-black/15 transition-transform active:scale-95 min-[900px]:hidden",
         className,
       )}
     >

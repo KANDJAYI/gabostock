@@ -15,12 +15,12 @@ import {
   listCustomers,
   updateCustomer,
 } from "@/lib/features/customers/api";
-import { customersToCsv } from "@/lib/features/customers/csv";
+import { customersToProSheet } from "@/lib/features/customers/csv";
 import type { Customer } from "@/lib/features/customers/types";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { queryKeys } from "@/lib/query/query-keys";
-import { downloadCsv } from "@/lib/utils/csv";
+import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
 import { cn } from "@/lib/utils/cn";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
@@ -39,7 +39,7 @@ import {
   MdPhone,
   MdSearch,
 } from "react-icons/md";
-import { toast, toastMutationError } from "@/lib/toast";
+import { messageFromUnknownError, toast, toastMutationError } from "@/lib/toast";
 
 const PAGE_SIZE = 20;
 
@@ -302,12 +302,20 @@ export function CustomersScreen() {
     setFormOpen(true);
   }
 
-  function exportCsv() {
+  function exportExcel() {
     if (filtered.length === 0) return;
-    const csv = customersToCsv(filtered);
     const date = new Date().toISOString().slice(0, 10);
-    downloadCsv(`clients-${date}.csv`, csv);
-    toast.success("CSV enregistré");
+    const sub = `Généré le ${new Date().toLocaleString("fr-FR")}`;
+    void (async () => {
+      try {
+        await downloadProXlsx(`clients-${date}`, [
+          customersToProSheet(filtered, { subtitle: sub }),
+        ]);
+        toast.success("Excel enregistré");
+      } catch (e) {
+        toast.error(messageFromUnknownError(e, "Export Excel impossible."));
+      }
+    })();
   }
 
   if (permLoading) {
@@ -347,9 +355,9 @@ export function CustomersScreen() {
               {filtered.length > 0 ? (
                 <button
                   type="button"
-                  onClick={exportCsv}
+                  onClick={exportExcel}
                   className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-fs-surface-container text-fs-text shadow-sm ring-1 ring-black/[0.06] active:scale-[0.98]"
-                  aria-label="Enregistrer CSV"
+                  aria-label="Exporter Excel"
                 >
                   <MdDownload className="h-6 w-6" aria-hidden />
                 </button>
@@ -381,9 +389,9 @@ export function CustomersScreen() {
             {filtered.length > 0 ? (
               <button
                 type="button"
-                onClick={exportCsv}
+                onClick={exportExcel}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-fs-surface-container text-fs-text shadow-sm ring-1 ring-black/[0.06] active:scale-[0.98]"
-                aria-label="Enregistrer CSV"
+                aria-label="Exporter Excel"
               >
                 <MdDownload className="h-6 w-6" aria-hidden />
               </button>
@@ -416,7 +424,7 @@ export function CustomersScreen() {
           aria-hidden
         />
         <input
-          className={fsInputClass("rounded-xl pl-11")}
+          className={fsInputClass("rounded-xl pl-11 pr-3 sm:pl-11 sm:pr-3")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Rechercher par nom, téléphone, email..."

@@ -37,7 +37,7 @@ const asyncStorage = {
   },
 };
 
-export function createFasoStockQueryPersister() {
+export function createGabostockQueryPersister() {
   return createAsyncStoragePersister({
     storage: asyncStorage,
     key: RQ_PERSIST_KEY,

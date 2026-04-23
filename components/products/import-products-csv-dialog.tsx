@@ -4,9 +4,11 @@ import { useCallback, useState } from "react";
 import {
   getProductsCsvModelTemplate,
   parseProductsCsv,
+  productsImportModelToProSheet,
 } from "@/lib/features/products/csv";
 import { importProductsFromCsv } from "@/lib/features/products/import-from-csv";
 import { downloadCsv } from "@/lib/utils/csv";
+import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
 import { messageFromUnknownError, toast } from "@/lib/toast";
 import { MdDownload, MdUploadFile } from "react-icons/md";
 
@@ -124,13 +126,37 @@ export function ImportProductsCsvDialog({
         <div className="mt-3 flex flex-col gap-2">
           <button
             type="button"
+            onClick={() => {
+              const sub = `Généré le ${new Date().toLocaleString("fr-FR")}`;
+              void (async () => {
+                try {
+                  await downloadProXlsx("modele-import-produits", [
+                    productsImportModelToProSheet({ subtitle: sub }),
+                  ]);
+                  toast.success("Modèle Excel enregistré.");
+                } catch (e) {
+                  toast.error(
+                    messageFromUnknownError(
+                      e,
+                      "Téléchargement du modèle Excel impossible.",
+                    ),
+                  );
+                }
+              })();
+            }}
+            className="fs-touch-target inline-flex items-center justify-center gap-2 rounded-xl border border-black/[0.12] bg-fs-surface-container px-4 py-3 text-sm font-semibold text-neutral-800"
+          >
+            <MdDownload className="h-5 w-5 shrink-0" aria-hidden />
+            Télécharger le modèle (Excel, mise en forme)
+          </button>
+          <button
+            type="button"
             onClick={() =>
               downloadCsv("modele-import-produits.csv", getProductsCsvModelTemplate())
             }
-            className="fs-touch-target inline-flex items-center justify-center gap-2 rounded-xl border border-black/[0.12] px-4 py-3 text-sm font-semibold text-neutral-800"
+            className="text-center text-xs font-medium text-neutral-600 underline decoration-neutral-400 underline-offset-2"
           >
-            <MdDownload className="h-5 w-5 shrink-0" aria-hidden />
-            Télécharger le modèle CSV (exemple de remplissage)
+            Télécharger le modèle en .csv (import / tableurs)
           </button>
           <button
             type="button"

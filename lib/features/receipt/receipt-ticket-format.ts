@@ -113,7 +113,7 @@ function formatQrDateTimeLine(d: Date): string {
 /** Même contenu que `ReceiptTicketData.buildQrPayload` (Flutter). */
 export function buildReceiptQrPayload(data: ReceiptTicketData): string {
   const lines = [
-    "FASOSTOCK",
+    "GABOSTOCK",
     `Ticket: ${data.saleNumber}`,
     `Total: ${receiptIntAmount(data.total)}`,
     formatQrDateTimeLine(data.date),

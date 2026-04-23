@@ -352,7 +352,7 @@ export function DashboardScreen() {
                   setDashboardStoreId(id);
                   if (id) syncGlobalStoreFromDashboard(id);
                 }}
-                className="w-full min-w-0 rounded-lg border border-black/[0.12] bg-white px-2 py-2 text-sm"
+                className="w-full min-w-0 rounded-lg border border-black/[0.12] bg-fs-card px-2 py-2 text-sm"
               >
                 {stores.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -827,7 +827,7 @@ function Shortcuts({
       label: "Facture (tableau)",
       href: storeId ? storeFactureTabPath(storeId) : ROUTES.stores,
       icon: MdTableChart,
-      color: "#EA580C",
+      color: "#f97316",
     });
   }
   tiles.push(

@@ -4,7 +4,7 @@ ALTER TABLE public.app_error_logs
   ADD COLUMN IF NOT EXISTS client_kind TEXT;
 
 COMMENT ON COLUMN public.app_error_logs.client_kind IS
-  'Origine client : web (FasoStock web), flutter (app Flutter), ou NULL (inconnu / ancien).';
+  'Origine client : web (Gabostock web), flutter (app Flutter), ou NULL (inconnu / ancien).';
 
 CREATE INDEX IF NOT EXISTS idx_app_error_logs_client_kind
   ON public.app_error_logs(client_kind);

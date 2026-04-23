@@ -1,6 +1,17 @@
 import type { NextConfig } from "next";
 
+/** Permet un `.env.local` avec seulement `SUPABASE_ANON_KEY` (sans préfixe NEXT_PUBLIC_). */
+const supabaseAnonForClient =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() ||
+  process.env.SUPABASE_ANON_KEY?.trim() ||
+  "";
+
 const nextConfig: NextConfig = {
+  env: {
+    ...(supabaseAnonForClient
+      ? { NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseAnonForClient }
+      : {}),
+  },
   serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium"],
   /**
    * Sans ceci, le trace Next.js n’embarque pas `node_modules/@sparticuz/chromium/bin/*.br`

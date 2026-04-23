@@ -881,7 +881,7 @@ export function PosScreen({
   if (permLoading) {
     return (
       <div className="box-border flex min-h-0 min-w-0 flex-1 items-center justify-center bg-[#F8F9FA] px-[20px]">
-        <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+        <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
       </div>
     );
   }
@@ -902,7 +902,7 @@ export function PosScreen({
         </p>
         <Link
           href="/stores"
-          className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-[#F97316] px-4 py-3 text-sm font-semibold text-white"
+          className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-[#f97316] px-4 py-3 text-sm font-semibold text-white"
         >
           <MdArrowBack className="h-4 w-4" aria-hidden />
           Retour aux boutiques
@@ -921,7 +921,7 @@ export function PosScreen({
         <button
           type="button"
           onClick={() => router.push(`${ROUTES.sales}?store=${encodeURIComponent(storeId)}`)}
-          className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-[#F97316] px-4 py-3 text-sm font-semibold text-white"
+          className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-[#f97316] px-4 py-3 text-sm font-semibold text-white"
         >
           <MdArrowBack className="h-4 w-4" aria-hidden />
           Retour aux ventes
@@ -934,7 +934,7 @@ export function PosScreen({
     if (invoiceTableCompanyQ.isPending) {
       return (
         <div className="box-border flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center bg-[#F8F9FA] px-[20px] py-10">
-          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
           <p className="mt-4 text-sm text-neutral-600">Chargement…</p>
         </div>
       );
@@ -950,13 +950,13 @@ export function PosScreen({
           </p>
           <Link
             href={ROUTES.settings}
-            className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-[#F97316] px-4 py-3 text-sm font-semibold text-white"
+            className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-[#f97316] px-4 py-3 text-sm font-semibold text-white"
           >
             Ouvrir les paramètres
           </Link>
           <Link
             href={ROUTES.stores}
-            className="mt-3 text-sm font-semibold text-[#F97316] underline-offset-2 hover:underline"
+            className="mt-3 text-sm font-semibold text-[#f97316] underline-offset-2 hover:underline"
           >
             Retour aux boutiques
           </Link>
@@ -973,7 +973,7 @@ export function PosScreen({
   ) {
     return (
       <div className="box-border flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#F8F9FA] px-[20px]">
-        <header className="flex h-14 shrink-0 items-center bg-[#f97316] px-3 text-white sm:h-[52px] sm:px-4">
+        <header className="flex h-14 shrink-0 items-center bg-[var(--fs-pos-orange)] px-3 text-white sm:h-[52px] sm:px-4">
           {mode === "quick" ? (
             <MdStore className="h-5 w-5 shrink-0 sm:h-6 sm:w-6" aria-hidden />
           ) : mode === "a4-table" ? (
@@ -984,7 +984,7 @@ export function PosScreen({
           <span className="ml-2 truncate text-sm font-bold sm:text-base">Ouverture de la vente…</span>
         </header>
         <div className="flex flex-1 flex-col items-center justify-center gap-4 py-16">
-          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
           <p className="text-sm text-neutral-600">Chargement de la vente à modifier</p>
         </div>
       </div>
@@ -1055,7 +1055,7 @@ export function PosScreen({
   return (
     <div className="box-border flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden overflow-x-hidden bg-[#F8F9FA] px-3 overscroll-none sm:px-[18px]">
       {/* Header — hauteur réduite pour densité bureau (zoom visuel à 100 % navigateur) */}
-      <header className="z-30 flex h-14 shrink-0 items-center gap-2 bg-[#f97316] px-3 text-white sm:h-[52px] sm:px-4">
+      <header className="z-30 flex h-14 shrink-0 items-center gap-2 bg-[var(--fs-pos-orange)] px-3 text-white sm:h-[52px] sm:px-4">
         {mode === "quick" ? (
           <MdStore className="h-5 w-5 shrink-0 sm:h-6 sm:w-6" aria-hidden />
         ) : mode === "a4-table" ? (
@@ -1144,7 +1144,7 @@ export function PosScreen({
       </header>
 
       {activeEditSaleId ? (
-        <div className="flex shrink-0 items-center gap-2 border-b border-black/10 bg-[color-mix(in_srgb,var(--fs-accent)_16%,white)] px-3 py-1.5 text-xs font-semibold text-[#1F2937] sm:text-[13px]">
+        <div className="flex shrink-0 items-center gap-2 border-b border-black/10 bg-[color-mix(in_srgb,var(--fs-accent)_16%,white)] px-3 py-1.5 text-xs font-semibold text-fs-text sm:text-[13px]">
           <MdEditNote className="h-5 w-5 shrink-0 text-[var(--fs-accent)]" aria-hidden />
           <span className="min-w-0 flex-1 leading-snug">
             {mode === "quick"
@@ -1164,7 +1164,7 @@ export function PosScreen({
       {posQ.isLoading ? (
         <div className="flex min-h-0 flex-1 items-center justify-center py-16">
           <div className="flex flex-col items-center gap-4">
-            <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+            <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
             <p className="text-sm text-neutral-600">
               {mode === "a4-table"
                 ? "Chargement facture (tableau)..."
@@ -1180,7 +1180,7 @@ export function PosScreen({
           <p className="text-sm text-[#1F2937]">
             {(posQ.error as Error)?.message ?? "Impossible de charger la caisse."}
           </p>
-          <Link href="/stores" className="rounded-[10px] bg-[#F97316] px-4 py-2 text-sm font-semibold text-white">
+          <Link href="/stores" className="rounded-[10px] bg-[#f97316] px-4 py-2 text-sm font-semibold text-white">
             Choisir une boutique
           </Link>
         </div>
@@ -1188,7 +1188,7 @@ export function PosScreen({
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 overflow-y-auto px-6 py-12 text-center">
           <MdStore className="h-16 w-16 text-red-500" aria-hidden />
           <p className="text-sm text-[#1F2937]">Boutique introuvable.</p>
-          <Link href="/stores" className="rounded-[10px] bg-[#F97316] px-4 py-2 text-sm font-semibold text-white">
+          <Link href="/stores" className="rounded-[10px] bg-[#f97316] px-4 py-2 text-sm font-semibold text-white">
             Retour aux boutiques
           </Link>
         </div>
@@ -1208,7 +1208,7 @@ export function PosScreen({
            */}
           <main
             className={cn(
-              "flex min-w-0 flex-col bg-white",
+              "flex min-w-0 flex-col bg-fs-card",
               mode === "a4-table"
                 ? "min-h-0 shrink-0 overflow-hidden"
                 : "min-h-0 min-[900px]:flex-[65] flex-1",
@@ -1233,7 +1233,7 @@ export function PosScreen({
                   <div
                     className={cn(
                       mode === "a4-table"
-                        ? "overflow-hidden rounded-[14px] border border-[#E5E7EB]/80 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+                        ? "overflow-hidden rounded-[14px] border border-[#E5E7EB]/80 bg-fs-card shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
                         : "contents",
                     )}
                   >
@@ -1248,7 +1248,7 @@ export function PosScreen({
                 <div className="relative h-9">
                   <button
                     type="button"
-                    className="absolute left-0.5 top-1/2 z-[1] -translate-y-1/2 rounded-full p-0.5 text-[#F97316] hover:bg-black/5"
+                    className="absolute left-0.5 top-1/2 z-[1] -translate-y-1/2 rounded-full p-0.5 text-[#f97316] hover:bg-black/5"
                     title="Ouvrir le scan caméra"
                     aria-label="Ouvrir le scan caméra"
                     onClick={() => {
@@ -1258,12 +1258,12 @@ export function PosScreen({
                     <MdQrCodeScanner className="h-[22px] w-[22px]" aria-hidden />
                   </button>
                   <MdSearch
-                    className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-[#F97316]"
+                    className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-[#f97316]"
                     aria-hidden
                   />
                   <input
                     className={fsInputClass(
-                      "h-9 w-full rounded-lg border-[#E5E7EB] bg-white py-1 pl-10 pr-8 text-xs leading-snug text-[#1F2937] placeholder:text-[#1F2937]/50 sm:text-[13px]",
+                      "h-9 w-full rounded-lg border-[#E5E7EB] bg-fs-card py-1 pl-12 pr-9 text-xs leading-snug text-[#1F2937] placeholder:text-[#1F2937]/50 sm:pl-12 sm:pr-9 sm:text-[13px]",
                     )}
                     value={search}
                     onChange={(e) => {
@@ -1286,19 +1286,19 @@ export function PosScreen({
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
                   <Link
                     href={`${ROUTES.sales}?store=${encodeURIComponent(storeId)}`}
-                    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#F97316] text-white shadow-sm transition hover:opacity-95"
+                    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#f97316] text-white shadow-sm transition hover:opacity-95"
                     aria-label="Retour aux ventes"
                   >
                     <MdArrowBack className="h-5 w-5" aria-hidden />
                   </Link>
                   <div className="relative min-h-[55px] min-w-0 flex-1">
                     <MdSearch
-                      className="pointer-events-none absolute left-3 top-1/2 z-[1] h-6 w-6 -translate-y-1/2 text-[#F97316]"
+                      className="pointer-events-none absolute left-3 top-1/2 z-[1] h-6 w-6 -translate-y-1/2 text-[#f97316]"
                       aria-hidden
                     />
                     <input
                       className={fsInputClass(
-                        "h-[55px] w-full rounded-xl border-[#E5E7EB] bg-white py-2 pl-11 pr-3 text-sm leading-snug text-[#1F2937] placeholder:text-[#1F2937]/50",
+                        "h-[55px] w-full rounded-xl border-[#E5E7EB] bg-fs-card py-2 pl-12 pr-3 text-sm leading-snug text-[#1F2937] placeholder:text-[#1F2937]/50 sm:pl-12 sm:pr-3",
                       )}
                       value={search}
                       onChange={(e) => {
@@ -1319,7 +1319,7 @@ export function PosScreen({
                   <div className="flex shrink-0 items-center gap-2">
                     <select
                       className={fsInputClass(
-                        "h-12 w-[140px] min-w-0 shrink-0 rounded-xl border-[#E5E7EB] bg-white px-2 py-1.5 text-sm text-[#1F2937] min-[600px]:w-[180px]",
+                        "h-12 w-[140px] min-w-0 shrink-0 rounded-xl border-[#E5E7EB] bg-fs-card px-2 py-1.5 text-sm text-[#1F2937] min-[600px]:w-[180px]",
                       )}
                       value={
                         customerId && customers.some((c) => c.id === customerId)
@@ -1341,7 +1341,7 @@ export function PosScreen({
                       title="Créer un client"
                       aria-label="Créer un client"
                       onClick={() => setCustomerCreateOpen(true)}
-                      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#F97316] text-white shadow-sm transition hover:opacity-95"
+                      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#f97316] text-white shadow-sm transition hover:opacity-95"
                     >
                       <MdPersonAdd className="h-[22px] w-[22px]" aria-hidden />
                     </button>
@@ -1363,12 +1363,12 @@ export function PosScreen({
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch sm:gap-2">
                   <div className="relative min-h-9 min-w-0 flex-1">
                     <MdSearch
-                      className="pointer-events-none absolute left-2 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-[#F97316]"
+                      className="pointer-events-none absolute left-2 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-[#f97316]"
                       aria-hidden
                     />
                     <input
                       className={fsInputClass(
-                        "h-9 w-full rounded-lg border-[#E5E7EB] bg-white py-1 pl-8 pr-2.5 text-xs leading-snug text-[#1F2937] placeholder:text-[#1F2937]/50 sm:text-[13px]",
+                        "h-9 w-full rounded-lg border-[#E5E7EB] bg-fs-card py-1 pl-10 pr-3 text-xs leading-snug text-[#1F2937] placeholder:text-[#1F2937]/50 sm:pl-10 sm:pr-3 sm:text-[13px]",
                       )}
                       value={search}
                       onChange={(e) => {
@@ -1389,7 +1389,7 @@ export function PosScreen({
                   <div className="flex shrink-0 gap-2 sm:gap-2">
                     <select
                       className={fsInputClass(
-                        "h-10 min-w-0 flex-1 rounded-xl border-[#E5E7EB] bg-white px-2 py-1.5 text-xs text-[#1F2937] sm:min-w-[140px] sm:text-sm md:min-w-[180px]",
+                        "h-10 min-w-0 flex-1 rounded-xl border-[#E5E7EB] bg-fs-card px-2 py-1.5 text-xs text-[#1F2937] sm:min-w-[140px] sm:text-sm md:min-w-[180px]",
                       )}
                       value={
                         customerId && customers.some((c) => c.id === customerId)
@@ -1411,7 +1411,7 @@ export function PosScreen({
                       title="Créer un client"
                       aria-label="Créer un client"
                       onClick={() => setCustomerCreateOpen(true)}
-                      className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F97316] text-white shadow-sm transition hover:opacity-95"
+                      className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f97316] text-white shadow-sm transition hover:opacity-95"
                     >
                       <MdPersonAdd className="h-5 w-5" aria-hidden />
                     </button>
@@ -1496,10 +1496,10 @@ export function PosScreen({
                               addToCart(p.id, p.name, p.unit, thumb);
                           }}
                           className={cn(
-                            "flex min-h-0 w-full min-w-0 flex-col items-center justify-center rounded-[14px] border bg-white px-2 py-1.5 text-center transition active:scale-[0.98]",
+                            "flex min-h-0 w-full min-w-0 flex-col items-center justify-center rounded-[14px] border bg-fs-card px-2 py-1.5 text-center transition active:scale-[0.98]",
                             noStock
                               ? "border-[#E5E7EB] opacity-45"
-                              : "border-[1.5px] border-[#F97316]/35 shadow-[0_2px_8px_rgba(249,115,22,0.1)]",
+                              : "border-[1.5px] border-[#f97316]/35 shadow-[0_2px_8px_rgba(249,115,22,0.1)]",
                           )}
                         >
                           <div className="mx-auto flex size-[clamp(3rem,52%,4.5rem)] max-h-[72px] max-w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#F8F9FA]">
@@ -1507,7 +1507,7 @@ export function PosScreen({
                               <img src={thumb} alt="" className="h-full w-full object-cover" />
                             ) : (
                               <MdInventory2
-                                className="h-8 w-8 text-[#F97316]/70"
+                                className="h-8 w-8 text-[#f97316]/70"
                                 aria-hidden
                               />
                             )}
@@ -1519,7 +1519,7 @@ export function PosScreen({
                             {p.name}
                           </p>
                           <p
-                            className="mt-0.5 w-full min-w-0 truncate px-0.5 text-center text-[10px] font-extrabold text-[#F97316]"
+                            className="mt-0.5 w-full min-w-0 truncate px-0.5 text-center text-[10px] font-extrabold text-[#f97316]"
                             title={priceLine}
                           >
                             {priceLine}
@@ -1552,9 +1552,9 @@ export function PosScreen({
                           )
                         }
                         className={cn(
-                          "flex min-h-0 w-full min-w-0 flex-col items-center overflow-hidden rounded-xl bg-white px-2 py-1.5 text-center transition active:scale-[0.98]",
+                          "flex min-h-0 w-full min-w-0 flex-col items-center overflow-hidden rounded-xl bg-fs-card px-2 py-1.5 text-center transition active:scale-[0.98]",
                           "aspect-[0.82] @[400px]:aspect-[0.88] @[600px]:aspect-[0.93]",
-                          "border border-[#F97316]/35 shadow-[0_1px_6px_rgba(249,115,22,0.08)]",
+                          "border border-[#f97316]/35 shadow-[0_1px_6px_rgba(249,115,22,0.08)]",
                         )}
                       >
                         <div className="mx-auto flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#F8F9FA] sm:h-[76px] sm:w-[76px]">
@@ -1562,7 +1562,7 @@ export function PosScreen({
                             <img src={thumb} alt="" className="h-full w-full object-cover" />
                           ) : (
                             <MdInventory2
-                              className="h-9 w-9 text-[#F97316]/70"
+                              className="h-9 w-9 text-[#f97316]/70"
                               aria-hidden
                             />
                           )}
@@ -1575,7 +1575,7 @@ export function PosScreen({
                             {p.name}
                           </p>
                           <p
-                            className="mt-0.5 w-full truncate text-center text-[10px] font-bold text-[#F97316] @[400px]:text-[11px]"
+                            className="mt-0.5 w-full truncate text-center text-[10px] font-bold text-[#f97316] @[400px]:text-[11px]"
                             title={priceLine}
                           >
                             {priceLine}
@@ -1614,7 +1614,7 @@ export function PosScreen({
       {/* Barre mobile — Flutter _buildMobileBottomBar */}
       {!isWide && store && !posQ.isLoading && !posQ.isError && mode !== "a4-table" ? (
         <div
-          className="fixed bottom-0 left-3 right-3 z-20 border-t border-[#E5E7EB] bg-white px-3 py-2.5 shadow-[0_-2px_12px_rgba(0,0,0,0.08)] min-[900px]:hidden sm:left-[18px] sm:right-[18px]"
+          className="fixed bottom-0 left-3 right-3 z-20 border-t border-[#E5E7EB] bg-fs-card px-3 py-2.5 shadow-[0_-2px_12px_rgba(0,0,0,0.08)] min-[900px]:hidden sm:left-[18px] sm:right-[18px]"
           style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
         >
           <div className="flex items-center gap-3">
@@ -1624,7 +1624,7 @@ export function PosScreen({
               className="min-h-12 min-w-0 flex-1 rounded-xl py-2 text-left"
             >
               <div className="flex items-center gap-3">
-                <MdReceiptLong className="h-[26px] w-[26px] shrink-0 text-[#F97316]" aria-hidden />
+                <MdReceiptLong className="h-[26px] w-[26px] shrink-0 text-[#f97316]" aria-hidden />
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-[#1F2937]">Panier</p>
                   <p className="truncate text-xs text-[#1F2937]/70">
@@ -1636,7 +1636,7 @@ export function PosScreen({
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              className="h-12 shrink-0 rounded-lg bg-[#F97316] px-4 text-sm font-semibold text-white"
+              className="h-12 shrink-0 rounded-lg bg-[#f97316] px-4 text-sm font-semibold text-white"
             >
               Voir / Payer
             </button>
@@ -1741,7 +1741,7 @@ export function PosScreen({
             onClick={() => setQuickSettingsOpen(false)}
           />
           <div
-            className="relative z-10 max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-white px-6 pb-6 pt-5 shadow-xl sm:rounded-2xl"
+            className="relative z-10 max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-fs-card px-6 pb-6 pt-5 shadow-xl sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 id="pos-quick-settings-title" className="text-xl font-bold text-[#1F2937]">
@@ -1785,12 +1785,12 @@ export function PosScreen({
                 }}
                 className={cn(
                   "relative h-7 w-12 shrink-0 rounded-full transition-colors",
-                  quickAutoPrint ? "bg-[#F97316]" : "bg-neutral-300",
+                  quickAutoPrint ? "bg-[#f97316]" : "bg-neutral-300",
                 )}
               >
                 <span
                   className={cn(
-                    "absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform",
+                    "absolute top-0.5 h-6 w-6 rounded-full bg-fs-card shadow transition-transform",
                     quickAutoPrint ? "left-5" : "left-0.5",
                   )}
                 />
@@ -1802,7 +1802,7 @@ export function PosScreen({
             <button
               type="button"
               onClick={() => setQuickSettingsOpen(false)}
-              className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-[#F97316] text-sm font-semibold text-white hover:opacity-95"
+              className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-[#f97316] text-sm font-semibold text-white hover:opacity-95"
             >
               Fermer
             </button>
@@ -1842,7 +1842,7 @@ function CategoryChip({
           ? "rounded-[10px] px-3.5 py-2.5 text-sm"
           : "rounded-[8px] px-2 py-0.5 text-[11px] min-[600px]:rounded-[10px] min-[600px]:px-2.5 min-[600px]:text-xs",
         selected
-          ? "border-2 border-[#F97316] bg-[#F97316] text-white"
+          ? "border-2 border-[#f97316] bg-[#f97316] text-white"
           : "border border-[#E5E7EB] bg-[#F3F4F6] text-[#1F2937]",
       )}
     >
@@ -1940,7 +1940,7 @@ function PosCartQtyInput({
       inputMode="numeric"
       autoComplete="off"
       aria-label="Quantité"
-      className="h-7 w-[56px] rounded-lg border border-[#E5E7EB] bg-white px-1 text-center text-sm font-bold text-[#1F2937] outline-none focus:border-[#F97316]"
+      className="h-7 w-[56px] rounded-lg border border-[#E5E7EB] bg-fs-card px-1 text-center text-sm font-bold text-[#1F2937] outline-none focus:border-[#f97316]"
       value={display}
       onChange={(e) => {
         const v = e.target.value;
@@ -2078,7 +2078,7 @@ function PosCartUnitPriceInput({
       inputMode="numeric"
       autoComplete="off"
       aria-label="Prix unitaire"
-      className="h-8 w-full min-w-[72px] max-w-[104px] rounded-lg border border-[#E5E7EB] bg-white px-1.5 text-right text-sm font-bold leading-tight text-[#1F2937] outline-none focus:border-[#F97316]"
+      className="h-8 w-full min-w-[72px] max-w-[104px] rounded-lg border border-[#E5E7EB] bg-fs-card px-1.5 text-right text-sm font-bold leading-tight text-[#1F2937] outline-none focus:border-[#f97316]"
       value={display}
       onChange={(e) => {
         const raw = e.target.value.replace(/\D/g, "");
@@ -2187,7 +2187,7 @@ function PosCartPanel({
       )}
     >
       {/* Récap encadré — Flutter right zone footer */}
-      <div className="mx-0 rounded-xl border border-[#E5E7EB] bg-white p-3 min-[900px]:mx-3 min-[900px]:p-4">
+      <div className="mx-0 rounded-xl border border-[#E5E7EB] bg-fs-card p-3 min-[900px]:mx-3 min-[900px]:p-4">
         <div className="flex justify-between text-xs text-[#1F2937] min-[900px]:text-sm">
           <span>Sous-total</span>
           <span>{formatCurrency(subtotal)}</span>
@@ -2200,7 +2200,7 @@ function PosCartPanel({
         ) : null}
         <div className="mt-1.5 flex items-end justify-between border-t border-[#E5E7EB] pt-1.5 min-[900px]:mt-2 min-[900px]:pt-2">
           <span className="text-sm font-bold text-[#1F2937]">TOTAL</span>
-          <span className="text-lg font-extrabold leading-none text-[#F97316] min-[900px]:text-xl">
+          <span className="text-lg font-extrabold leading-none text-[#f97316] min-[900px]:text-xl">
             {formatCurrency(total)}
           </span>
         </div>
@@ -2222,7 +2222,7 @@ function PosCartPanel({
               className={cn(
                 "rounded-lg py-2 text-xs font-semibold transition-colors",
                 quickPayment === key
-                  ? "bg-[#F97316] text-white"
+                  ? "bg-[#f97316] text-white"
                   : "bg-[#F8F9FA] text-[#1F2937]",
               )}
             >
@@ -2249,7 +2249,7 @@ function PosCartPanel({
                 className={cn(
                   "rounded-full border px-2 py-1.5 text-[10px] font-semibold",
                   sel
-                    ? "border-[#F97316] bg-[color-mix(in_srgb,#F97316_18%,transparent)] text-[#1F2937]"
+                    ? "border-[#f97316] bg-[color-mix(in_srgb,#f97316_18%,transparent)] text-[#1F2937]"
                     : "border-[#E5E7EB] bg-[#F8F9FA] text-[#1F2937]",
                 )}
               >
@@ -2265,7 +2265,7 @@ function PosCartPanel({
           <label className="mb-1 block text-[11px] font-medium text-[#6B7280]">Client</label>
           <select
             className={fsInputClass(
-              "bg-white px-2.5 py-1.5 sm:px-2.5 sm:py-1.5",
+              "bg-fs-card px-2.5 py-1.5 sm:px-2.5 sm:py-1.5",
             )}
             value={customerId}
             onChange={(e) => setCustomerId(e.target.value)}
@@ -2287,7 +2287,7 @@ function PosCartPanel({
           </label>
           <input
             className={fsInputClass(
-              "bg-white px-2.5 py-1.5 sm:px-2.5 sm:py-1.5",
+              "bg-fs-card px-2.5 py-1.5 sm:px-2.5 sm:py-1.5",
             )}
             value={discount}
             onChange={(e) => setDiscount(e.target.value)}
@@ -2302,7 +2302,7 @@ function PosCartPanel({
           <label className="mb-1 block text-xs font-semibold text-[#1F2937]">Montant reçu</label>
           <input
             className={fsInputClass(
-              "bg-white px-2.5 py-1.5 sm:px-2.5 sm:py-1.5",
+              "bg-fs-card px-2.5 py-1.5 sm:px-2.5 sm:py-1.5",
             )}
             value={amountReceived}
             onChange={(e) => {
@@ -2318,7 +2318,7 @@ function PosCartPanel({
               <span
                 className={cn(
                   "font-bold",
-                  amountReceivedValue >= total ? "text-[#F97316]" : "text-red-600",
+                  amountReceivedValue >= total ? "text-[#f97316]" : "text-red-600",
                 )}
               >
                 {amountReceivedValue >= total ? formatCurrency(change) : "—"}
@@ -2335,7 +2335,7 @@ function PosCartPanel({
           </label>
           <input
             className={fsInputClass(
-              "bg-white px-2.5 py-1.5 sm:px-2.5 sm:py-1.5",
+              "bg-fs-card px-2.5 py-1.5 sm:px-2.5 sm:py-1.5",
             )}
             value={amountReceived}
             onChange={(e) => setAmountReceived(e.target.value)}
@@ -2357,7 +2357,7 @@ function PosCartPanel({
           type="button"
           disabled={createMut.isPending || cart.length === 0 || total <= 0}
           onClick={() => void onPay()}
-          className="flex-[2] inline-flex items-center justify-center gap-2 rounded-xl bg-[#F97316] py-2.5 text-sm font-bold text-white disabled:opacity-50"
+          className="flex-[2] inline-flex items-center justify-center gap-2 rounded-xl bg-[#f97316] py-2.5 text-sm font-bold text-white disabled:opacity-50"
         >
           {isSaleEdit ? (
             <>
@@ -2463,7 +2463,7 @@ function PosCartPanel({
                   return (
                     <tr
                       key={c.productId}
-                      className={cn("bg-white", low && "bg-red-50/[0.35]")}
+                      className={cn("bg-fs-card", low && "bg-red-50/[0.35]")}
                     >
                       <td className="border border-[#E5E7EB] px-1.5 py-2 align-top">
                         <p className="line-clamp-3 text-[15px] font-semibold leading-snug text-[#1F2937]">
@@ -2476,7 +2476,7 @@ function PosCartPanel({
                       <td className="truncate border border-[#E5E7EB] px-1.5 py-1.5 align-middle">
                         <select
                           className={fsInputClass(
-                            "w-full max-w-full bg-white py-1 pl-1 pr-1 text-[13px] leading-tight text-[#1F2937]",
+                            "w-full max-w-full bg-fs-card py-1 pl-1 pr-1 text-[13px] leading-tight text-[#1F2937]",
                           )}
                           value={defaultInvoiceUnitForProduct(c.unit)}
                           onChange={(e) => onLineUnitChange(c.productId, e.target.value)}
@@ -2519,7 +2519,7 @@ function PosCartPanel({
                             <button
                               type="button"
                               onClick={() => onUpdateQty(c.productId, 1)}
-                              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#F97316] text-white"
+                              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f97316] text-white"
                               aria-label="Plus"
                             >
                               <MdAdd className="h-[22px] w-[22px]" aria-hidden />
@@ -2535,7 +2535,7 @@ function PosCartPanel({
                         />
                       </td>
                       <td className="border border-[#E5E7EB] px-2.5 py-3.5 align-middle text-right">
-                        <span className="inline-block max-w-full truncate text-base font-bold tabular-nums text-[#F97316]">
+                        <span className="inline-block max-w-full truncate text-base font-bold tabular-nums text-[#f97316]">
                           {formatCurrency(lineTotal)}
                         </span>
                       </td>
@@ -2563,13 +2563,13 @@ function PosCartPanel({
               return (
                 <li
                   key={c.productId}
-                  className="flex gap-2 rounded-[10px] border border-[#E5E7EB] bg-white px-2 py-1.5"
+                  className="flex gap-2 rounded-[10px] border border-[#E5E7EB] bg-fs-card px-2 py-1.5"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#F8F9FA]">
                     {c.imageUrl ? (
                       <img src={c.imageUrl} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <MdInventory2 className="h-5 w-5 text-[#F97316]/70" aria-hidden />
+                      <MdInventory2 className="h-5 w-5 text-[#f97316]/70" aria-hidden />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -2601,7 +2601,7 @@ function PosCartPanel({
                         <button
                           type="button"
                           onClick={() => onUpdateQty(c.productId, 1)}
-                          className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#F97316] text-white"
+                          className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#f97316] text-white"
                           aria-label="Plus"
                         >
                           <MdAdd className="h-4 w-4" aria-hidden />
@@ -2613,7 +2613,7 @@ function PosCartPanel({
                     </div>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-0">
-                    <p className="text-xs font-bold text-[#F97316]">
+                    <p className="text-xs font-bold text-[#f97316]">
                       {formatCurrency(c.lineTotal ?? c.quantity * c.unitPrice)}
                     </p>
                     <button

@@ -90,8 +90,9 @@ type StockFilter = "all" | "low" | "ok";
 
 const ACCENT = {
   emerald: "#059669",
-  orange: "#EA580C",
-  teal: "#0D9488",
+  orange: "#f97316",
+  /** Accent principal (POS / CTA) — aligné sur `--fs-pos-orange`. */
+  primary: "#f97316",
   rose: "#DB2777",
   blue: "#2563EB",
   violet: "#7C3AED",
@@ -140,7 +141,7 @@ function statusColor(s: TransferStatus): string {
     case "draft":
       return "#64748b";
     case "pending":
-      return "#ea580c";
+      return "#f97316";
     case "approved":
       return "#4f46e5";
     case "shipped":
@@ -406,7 +407,7 @@ export function WarehouseScreen() {
     return (
       <FsPage>
         <div className="flex min-h-[40vh] items-center justify-center">
-          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
         </div>
       </FsPage>
     );
@@ -446,7 +447,7 @@ export function WarehouseScreen() {
 
   return (
     <FsPage>
-      {/* Aligné AppBar Flutter : toolbarHeight 52, TabBar dessous (label 15px, indicateur #F97316) */}
+      {/* Aligné AppBar Flutter : toolbarHeight 52, TabBar dessous (label 15px, indicateur #f97316) */}
       <div className="sticky top-0 z-30 -mx-3 border-b border-black/6 bg-fs-surface/98 backdrop-blur-md sm:-mx-5">
         <div className="flex min-h-[52px] items-center justify-between gap-2 px-3 sm:px-0">
           <FsScreenHeader
@@ -482,7 +483,7 @@ export function WarehouseScreen() {
                 "shrink-0 snap-start px-2 py-2 text-left text-[14px] leading-tight transition-colors sm:px-2.5 sm:py-2.5 sm:text-[15px]",
                 "min-h-[42px] min-w-0 max-w-[min(100%,11rem)] sm:min-h-[44px] sm:max-w-none",
                 tab === i
-                  ? "bg-[#F97316] font-bold text-white"
+                  ? "bg-[#f97316] font-bold text-white"
                   : "bg-transparent font-semibold text-[#4A4643] active:bg-neutral-100",
               )}
             >
@@ -505,7 +506,7 @@ export function WarehouseScreen() {
 
       {listLoading ? (
         <div className="mt-3 flex min-h-[40vh] items-center justify-center py-16">
-          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+          <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
         </div>
       ) : streamErr ? (
         <div className="mt-3">
@@ -526,7 +527,7 @@ export function WarehouseScreen() {
                   <button
                     type="button"
                     onClick={() => setEntryOpen(true)}
-                    className="inline-flex min-h-[44px] min-w-[44px] items-center gap-1.5 rounded-[12px] border-0 bg-[#F97316] px-3 py-2.5 text-[13px] font-bold text-white shadow-sm active:opacity-90 sm:min-h-[48px] sm:gap-2 sm:rounded-[14px] sm:px-4 sm:py-3.5 sm:text-sm"
+                    className="inline-flex min-h-[44px] min-w-[44px] items-center gap-1.5 rounded-[12px] border-0 bg-[#f97316] px-3 py-2.5 text-[13px] font-bold text-white shadow-sm active:opacity-90 sm:min-h-[48px] sm:gap-2 sm:rounded-[14px] sm:px-4 sm:py-3.5 sm:text-sm"
                   >
                     <MdAddCircleOutline className="h-[18px] w-[18px] shrink-0 sm:h-5 sm:w-5" />
                     Réception
@@ -534,7 +535,7 @@ export function WarehouseScreen() {
                   <button
                     type="button"
                     onClick={() => setDispatchOpen(true)}
-                    className="inline-flex min-h-[44px] min-w-[44px] items-center gap-1.5 rounded-[12px] border-0 bg-[#F97316] px-3 py-2.5 text-[13px] font-bold text-white shadow-sm active:opacity-90 sm:min-h-[48px] sm:gap-2 sm:rounded-[14px] sm:px-4 sm:py-3.5 sm:text-sm"
+                    className="inline-flex min-h-[44px] min-w-[44px] items-center gap-1.5 rounded-[12px] border-0 bg-[#f97316] px-3 py-2.5 text-[13px] font-bold text-white shadow-sm active:opacity-90 sm:min-h-[48px] sm:gap-2 sm:rounded-[14px] sm:px-4 sm:py-3.5 sm:text-sm"
                   >
                     <MdReceiptLong className="h-[18px] w-[18px] shrink-0 sm:h-5 sm:w-5" />
                     Facture / sortie
@@ -589,7 +590,7 @@ export function WarehouseScreen() {
                       title="Entrées (30 j.)"
                       value={`${dashboard.movementsEntries30d}`}
                       subtitle="lignes"
-                      color={ACCENT.teal}
+                      color={ACCENT.primary}
                       icon={<MdSouthWest className="h-5 w-5" />}
                     />
                     <Kpi
@@ -603,7 +604,7 @@ export function WarehouseScreen() {
 
                   <FsCard padding="p-3.5 sm:p-4">
                     <div className="flex items-center gap-1.5 sm:gap-2">
-                      <MdBarChart className="h-[18px] w-[18px] text-[#F97316] sm:h-5 sm:w-5" aria-hidden />
+                      <MdBarChart className="h-[18px] w-[18px] text-[#f97316] sm:h-5 sm:w-5" aria-hidden />
                       <p className="text-[13px] font-semibold leading-snug text-fs-text sm:text-sm">
                         Entrées / sorties (7 jours)
                       </p>
@@ -639,7 +640,7 @@ export function WarehouseScreen() {
                                     title={`Entrées ${inQ}`}
                                   />
                                   <div
-                                    className="w-[40%] max-w-[10px] rounded-t bg-[#EA580C]"
+                                    className="w-[40%] max-w-[10px] rounded-t bg-[#f97316]"
                                     style={{ height: `${Math.max(hOut, 2)}%` }}
                                     title={`Sorties ${outQ}`}
                                   />
@@ -763,14 +764,14 @@ export function WarehouseScreen() {
             type="button"
             onClick={() => setActionMenuOpen(true)}
             aria-label="Gérer le dépôt"
-            className="fixed bottom-[calc(4.75rem+var(--fs-safe-bottom)+0.5rem)] right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#F97316] text-white shadow-[0_4px_5px_rgba(0,0,0,0.12),0_2px_4px_rgba(0,0,0,0.08)] min-[900px]:hidden"
+            className="fixed bottom-[calc(4.75rem+var(--fs-safe-bottom)+0.5rem)] right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#f97316] text-white shadow-[0_4px_5px_rgba(0,0,0,0.12),0_2px_4px_rgba(0,0,0,0.08)] min-[900px]:hidden"
           >
             <MdAdd className="h-7 w-7" />
           </button>
           <button
             type="button"
             onClick={() => setActionMenuOpen(true)}
-            className="fixed bottom-8 right-8 z-40 hidden items-center gap-2 rounded-2xl bg-[#F97316] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_4px_5px_rgba(0,0,0,0.12),0_2px_4px_rgba(0,0,0,0.08)] min-[900px]:inline-flex"
+            className="fixed bottom-8 right-8 z-40 hidden items-center gap-2 rounded-2xl bg-[#f97316] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_4px_5px_rgba(0,0,0,0.12),0_2px_4px_rgba(0,0,0,0.08)] min-[900px]:inline-flex"
           >
             <MdAdd className="h-5 w-5" />
             Gérer le dépôt
@@ -829,7 +830,7 @@ export function WarehouseScreen() {
                 }}
               />
               <ActionRow
-                color="#EA580C"
+                color="#f97316"
                 icon={<MdPointOfSale className="h-6 w-6" />}
                 title="Ventes en caisse"
                 subtitle="Nouvelles ventes en boutique"
@@ -839,7 +840,7 @@ export function WarehouseScreen() {
                 }}
               />
               <ActionRow
-                color="#0D9488"
+                color="#f97316"
                 icon={<MdReceiptLong className="h-6 w-6" />}
                 title="Facture / bon de sortie dépôt"
                 subtitle="Sortie de produits avec document"
@@ -927,7 +928,7 @@ export function WarehouseScreen() {
             </div>
             {detailTransferQ.isLoading ? (
               <div className="flex min-h-[200px] items-center justify-center p-8">
-                <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+                <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
               </div>
             ) : null}
             {detailTransferQ.isError ? (
@@ -1046,7 +1047,7 @@ export function WarehouseScreen() {
             </div>
             {dispatchDetailQ.isLoading ? (
               <div className="flex min-h-[160px] items-center justify-center">
-                <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+                <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
               </div>
             ) : null}
             {dispatchDetailQ.data ? (
@@ -1219,7 +1220,7 @@ function StockDepotTab({
       <div className="relative">
         <MdSearch className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
         <input
-          className={fsInputClass + " w-full pl-10"}
+          className={fsInputClass("w-full pl-10 sm:pl-10")}
           placeholder="Rechercher par nom ou SKU"
           value={stockQ}
           onChange={(e) => setStockQ(e.target.value)}
@@ -1346,7 +1347,7 @@ function StockDepotTab({
             type="button"
             disabled={stockSafePage <= 0}
             onClick={() => setStockPage((p) => Math.max(0, p - 1))}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F97316] text-white disabled:opacity-40"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f97316] text-white disabled:opacity-40"
           >
             <MdChevronLeft className="h-7 w-7" />
           </button>
@@ -1357,7 +1358,7 @@ function StockDepotTab({
             type="button"
             disabled={stockSafePage >= stockTotalPages - 1}
             onClick={() => setStockPage((p) => Math.min(stockTotalPages - 1, p + 1))}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F97316] text-white disabled:opacity-40"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f97316] text-white disabled:opacity-40"
           >
             <MdChevronRight className="h-7 w-7" />
           </button>
@@ -1380,10 +1381,10 @@ function FilterChip({
 }) {
   const ring =
     variant === "primary"
-      ? "border-[#F97316] bg-[color-mix(in_srgb,#F97316_20%,transparent)] text-[#4A4643]"
+      ? "border-[#f97316] bg-[color-mix(in_srgb,#f97316_20%,transparent)] text-[#4A4643]"
       : variant === "error"
         ? "border-red-400 bg-red-50"
-        : "border-teal-400 bg-teal-50";
+        : "border-orange-400 bg-orange-50";
   return (
     <button
       type="button"
@@ -1485,7 +1486,7 @@ function MouvementsTab({
             type="button"
             disabled={movSafePage <= 0}
             onClick={() => setMovPage((p) => Math.max(0, p - 1))}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F97316] text-white disabled:opacity-40"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f97316] text-white disabled:opacity-40"
           >
             <MdChevronLeft className="h-7 w-7" />
           </button>
@@ -1496,7 +1497,7 @@ function MouvementsTab({
             type="button"
             disabled={movSafePage >= movTotalPages - 1}
             onClick={() => setMovPage((p) => Math.min(movTotalPages - 1, p + 1))}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F97316] text-white disabled:opacity-40"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f97316] text-white disabled:opacity-40"
           >
             <MdChevronRight className="h-7 w-7" />
           </button>
@@ -1530,7 +1531,7 @@ function TransfertTab({
           <button
             type="button"
             onClick={onCreate}
-            className="mt-4 inline-flex min-h-[48px] min-w-[44px] items-center gap-2 rounded-xl bg-[#F97316] px-4 py-3 text-sm font-semibold text-white shadow-sm active:opacity-90"
+            className="mt-4 inline-flex min-h-[48px] min-w-[44px] items-center gap-2 rounded-xl bg-[#f97316] px-4 py-3 text-sm font-semibold text-white shadow-sm active:opacity-90"
           >
             <MdSwapHoriz className="h-5 w-5" />
             Nouveau transfert
@@ -1547,7 +1548,7 @@ function TransfertTab({
       <button
         type="button"
         onClick={onCreate}
-        className="inline-flex min-h-[48px] min-w-[44px] items-center gap-2 rounded-xl bg-[#F97316] px-4 py-3 text-sm font-semibold text-white shadow-sm active:opacity-90"
+        className="inline-flex min-h-[48px] min-w-[44px] items-center gap-2 rounded-xl bg-[#f97316] px-4 py-3 text-sm font-semibold text-white shadow-sm active:opacity-90"
       >
         <MdAdd className="h-5 w-5" />
         Nouveau transfert
@@ -1563,7 +1564,7 @@ function TransfertTab({
             className="flex w-full min-h-[56px] items-stretch gap-2 rounded-xl border border-black/[0.08] bg-fs-card text-left shadow-sm active:bg-neutral-50"
           >
             <div className="flex shrink-0 items-center pl-3">
-              <MdLocalShipping className="h-6 w-6 text-[#F97316]" />
+              <MdLocalShipping className="h-6 w-6 text-[#f97316]" />
             </div>
             <div className="min-w-0 flex-1 py-3 pr-2">
               <p className="text-sm font-semibold leading-snug">Dépôt magasin → {toName}</p>
@@ -1627,7 +1628,7 @@ function HistoriquesTab({
   if (loading && allRows.length === 0) {
     return (
       <div className="flex justify-center py-20">
-        <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+        <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
       </div>
     );
   }
@@ -1668,7 +1669,7 @@ function HistoriquesTab({
             type="button"
             disabled={page <= 0}
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F97316] text-white disabled:opacity-40"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f97316] text-white disabled:opacity-40"
           >
             <MdChevronLeft className="h-7 w-7" />
           </button>
@@ -1679,7 +1680,7 @@ function HistoriquesTab({
             type="button"
             disabled={page >= totalPages - 1}
             onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F97316] text-white disabled:opacity-40"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f97316] text-white disabled:opacity-40"
           >
             <MdChevronRight className="h-7 w-7" />
           </button>

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils/cn";
 import type { NavItem } from "@/lib/config/navigation";
-import { ChevronLeft, Menu, Package, PanelLeftOpen } from "lucide-react";
+import { ChevronLeft, Menu, PanelLeftOpen } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -83,7 +83,7 @@ export function AppSidebar({
             "focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-fs-card",
             effectiveCollapsed ? "justify-center p-1.5" : "gap-3 p-1 pr-2",
           )}
-          title={effectiveCollapsed ? "FasoStock — Tableau de bord" : undefined}
+          title={effectiveCollapsed ? "Gabostock — Tableau de bord" : undefined}
           onClick={() => onNavigate?.()}
         >
           <span
@@ -92,12 +92,12 @@ export function AppSidebar({
               companyLogoUrl && !brandLogoErr
                 ? cn(
                     "rounded-none bg-transparent p-0 ring-0",
-                    effectiveCollapsed ? "h-9 w-9" : "h-8 w-8",
+                    effectiveCollapsed ? "h-10 w-10" : "h-9 w-9",
                   )
                 : cn(
-                    "overflow-hidden rounded-xl bg-[color-mix(in_srgb,var(--fs-accent)_14%,transparent)]",
-                    "ring-1 ring-[color-mix(in_srgb,var(--fs-accent)_22%,transparent)]",
-                    effectiveCollapsed ? "h-9 w-9" : "h-8 w-8",
+                    "overflow-hidden rounded-xl bg-fs-surface-container",
+                    "ring-1 ring-black/[0.06] dark:ring-white/[0.08]",
+                    effectiveCollapsed ? "h-10 w-10" : "h-9 w-9",
                   ),
             )}
             aria-hidden
@@ -110,16 +110,17 @@ export function AppSidebar({
                 onError={() => setBrandLogoErr(true)}
               />
             ) : (
-              <Package
-                className="h-4 w-4 text-[var(--fs-accent)]"
-                strokeWidth={2.25}
+              <img
+                src="/logo.png"
+                alt=""
+                className="h-full w-full object-contain object-center p-0.5"
               />
             )}
           </span>
           {!effectiveCollapsed ? (
             <span className="min-w-0 font-bold tracking-tight">
-              <span className="text-fs-text">Faso</span>
-              <span className="text-[var(--fs-accent)]">Stock</span>
+              <span className="text-fs-text">Gabo</span>
+              <span className="text-[var(--fs-accent)]">stock</span>
             </span>
           ) : null}
         </Link>

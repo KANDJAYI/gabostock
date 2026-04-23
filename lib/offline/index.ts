@@ -1,5 +1,5 @@
 /**
- * Couche **offline-first** appweb :
+ * Couche **offline-first** gabostock :
  * - lecture : cache TanStack Query persisté (IndexedDB via `react-query-persister`)
  * - écriture : outbox Dexie (`lib/db/dexie-db`) + handlers `lib/sync/register-handlers.ts`
  * - sync : `lib/sync/sync-manager.ts` + `components/providers/sync-provider.tsx`
@@ -13,7 +13,7 @@ export {
   SYNC_BROADCAST_CHANNEL,
   MAX_OUTBOX_ATTEMPTS,
 } from "./constants";
-export { createFasoStockQueryPersister } from "./react-query-persister";
+export { createGabostockQueryPersister } from "./react-query-persister";
 export { broadcastOutboxFlushed, subscribeOutboxBroadcast } from "./sync-broadcast";
 export {
   OFFLINE_LOG_SOURCE,

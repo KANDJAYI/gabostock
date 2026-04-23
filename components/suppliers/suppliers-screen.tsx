@@ -17,10 +17,12 @@ import type { Supplier } from "@/lib/features/suppliers/types";
 import { useAppContext } from "@/lib/features/common/app-context";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
+import { suppliersToProSheet } from "@/lib/features/suppliers/csv";
 import { queryKeys } from "@/lib/query/query-keys";
 import { formatUnknownErrorMessage } from "@/lib/utils/format-unknown-error";
+import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
 import { cn } from "@/lib/utils/cn";
-import { toast, toastMutationError } from "@/lib/toast";
+import { messageFromUnknownError, toast, toastMutationError } from "@/lib/toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -36,6 +38,7 @@ import {
   MdPhone,
   MdChevronLeft,
   MdChevronRight,
+  MdDownload,
 } from "react-icons/md";
 
 const PAGE_SIZE = 20;
@@ -284,6 +287,22 @@ export function SuppliersScreen() {
     setFormOpen(true);
   }
 
+  function exportExcel() {
+    if (rows.length === 0) return;
+    const d = new Date().toISOString().slice(0, 10);
+    const sub = `Généré le ${new Date().toLocaleString("fr-FR")}`;
+    void (async () => {
+      try {
+        await downloadProXlsx(`fournisseurs-${d}`, [
+          suppliersToProSheet(rows, { subtitle: sub }),
+        ]);
+        toast.success("Excel enregistré");
+      } catch (e) {
+        toast.error(messageFromUnknownError(e, "Export Excel impossible."));
+      }
+    })();
+  }
+
   if (ctxLoading && !appCtx.data) {
     return (
       <div className="min-w-0 px-5 pt-5 max-[1023px]:pb-6 min-[900px]:px-8 min-[1024px]:pb-10 min-[900px]:pt-7">
@@ -340,6 +359,16 @@ export function SuppliersScreen() {
             Fournisseurs
           </h1>
           <p className="mt-1 text-sm text-neutral-600">{DESCRIPTION}</p>
+          {rows.length > 0 && canView ? (
+            <button
+              type="button"
+              onClick={exportExcel}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-[10px] border border-black/[0.1] bg-fs-surface-container px-4 py-3 text-sm font-semibold text-fs-text shadow-sm ring-1 ring-black/[0.06] active:scale-[0.99]"
+            >
+              <MdDownload className="h-5 w-5" aria-hidden />
+              Exporter Excel
+            </button>
+          ) : null}
           {canManage ? (
             <button
               type="button"
@@ -359,16 +388,28 @@ export function SuppliersScreen() {
             </h1>
             <p className="mt-1 text-sm text-neutral-600">{DESCRIPTION}</p>
           </div>
-          {canManage ? (
-            <button
-              type="button"
-              onClick={openCreate}
-              className="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-fs-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm active:scale-[0.99]"
-            >
-              <MdAdd className="h-5 w-5" aria-hidden />
-              Nouveau fournisseur
-            </button>
-          ) : null}
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+            {rows.length > 0 && canView ? (
+              <button
+                type="button"
+                onClick={exportExcel}
+                className="inline-flex items-center gap-2 rounded-[10px] border border-black/[0.1] bg-fs-surface-container px-4 py-2.5 text-sm font-semibold text-fs-text shadow-sm ring-1 ring-black/[0.06] active:scale-[0.99]"
+              >
+                <MdDownload className="h-5 w-5" aria-hidden />
+                Exporter Excel
+              </button>
+            ) : null}
+            {canManage ? (
+              <button
+                type="button"
+                onClick={openCreate}
+                className="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-fs-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm active:scale-[0.99]"
+              >
+                <MdAdd className="h-5 w-5" aria-hidden />
+                Nouveau fournisseur
+              </button>
+            ) : null}
+          </div>
         </div>
       )}
 

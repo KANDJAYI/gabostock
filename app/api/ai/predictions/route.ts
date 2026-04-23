@@ -4,7 +4,7 @@ import {
 } from "@/lib/features/ai/deepseek-parse";
 import { NextResponse } from "next/server";
 
-const STRUCTURED_SYSTEM_PROMPT = `Tu es un expert IA pour la gestion de stock et ventes (FasoStock). Tu dois répondre UNIQUEMENT avec un objet JSON valide, sans texte avant ou après. Pas de markdown, pas de \`\`\`json.
+const STRUCTURED_SYSTEM_PROMPT = `Tu es un expert IA pour la gestion de stock et ventes (Gabostock). Tu dois répondre UNIQUEMENT avec un objet JSON valide, sans texte avant ou après. Pas de markdown, pas de \`\`\`json.
 Schéma strict de l'objet à renvoyer (tous les champs obligatoires) :
 {
   "forecast_week_ca": number (estimation CA en XOF pour la semaine à venir, 0 si impossible),

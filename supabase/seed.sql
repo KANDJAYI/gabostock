@@ -1,4 +1,4 @@
--- FasoStock — Seed: roles, permissions, demo companies/stores/products
+-- Gabostock — Seed: roles, permissions, demo companies/stores/products
 -- Run after migrations. For full demo, create a user in Supabase Auth and set SEED_USER_ID below.
 
 -- ========== ROLES ==========

@@ -235,14 +235,14 @@ export function PrintersScreen() {
       updatedAt: new Date().toISOString(),
       companyId,
       userId,
-      exportLabel: "FasoStock imprimantes QZ",
+      exportLabel: "Gabostock imprimantes QZ",
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {
       type: "application/json",
     });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `fasostock-imprimantes-${companyId.slice(0, 8)}.json`;
+    a.download = `gabostock-imprimantes-${companyId.slice(0, 8)}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
     toast.success("Fichier exporté");

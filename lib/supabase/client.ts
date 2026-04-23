@@ -1,5 +1,6 @@
 import { createBrowserClient } from "@supabase/ssr";
 
+import { getSupabaseAnonKeyFromEnv } from "@/lib/env";
 import { normalizeSupabaseUrl } from "@/lib/supabase/normalize-url";
 
 /**
@@ -25,7 +26,7 @@ function createFetchWithNetworkRetry(): typeof fetch {
 
 export function createClient() {
   const urlRaw = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const key = getSupabaseAnonKeyFromEnv();
   if (!urlRaw || !key) {
     throw new Error(
       "Variables NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY manquantes.",

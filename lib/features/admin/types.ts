@@ -61,7 +61,7 @@ export type LockedLogin = {
   lockedAt: string | null;
 };
 
-/** Origine client : FasoStock web (Next.js) vs app Flutter (voir `client_kind` en base). */
+/** Origine client : Gabostock web (Next.js) vs app Flutter (voir `client_kind` en base). */
 export type AdminAppClientKind = "web" | "flutter";
 
 export type AdminAppErrorLog = {

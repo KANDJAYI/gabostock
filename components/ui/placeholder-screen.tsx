@@ -10,7 +10,7 @@ export function PlaceholderScreen({
   return (
     <div className="px-4 pt-5 sm:px-6 sm:pt-6">
       <p className="text-xs font-semibold uppercase tracking-wide text-fs-accent">
-        FasoStock Web
+        Gabostock Web
       </p>
       <h1 className="mt-1 text-xl font-bold tracking-tight text-fs-text sm:text-2xl">
         {title}

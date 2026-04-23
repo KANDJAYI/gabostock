@@ -32,7 +32,7 @@ export function AdminAuditScreen() {
           <label className="block text-sm font-medium text-slate-700">
             Entreprise
             <select
-              className="mt-1 block w-full min-w-[240px] rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+              className="mt-1 block w-full min-w-[240px] rounded-xl border border-slate-200 bg-fs-card px-3 py-2 text-sm"
               value={companyId ?? ""}
               onChange={(e) => setCompanyId(e.target.value || null)}
             >

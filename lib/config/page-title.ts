@@ -7,5 +7,5 @@ export function getPageTitle(pathname: string): string {
     (i) => i.href !== "/" && pathname.startsWith(`${i.href}/`),
   );
   const longest = prefix.sort((a, b) => b.href.length - a.href.length)[0];
-  return longest?.label ?? "FasoStock";
+  return longest?.label ?? "Gabostock";
 }

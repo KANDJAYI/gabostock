@@ -3,6 +3,16 @@
 /* `dark:` basé sur la classe `dark` sur `<html>` (Paramètres → Apparence). */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Gabostock (UI admin / graphiques) — `var(--fs-palette-*)` : inchangé si absent */
+:root {
+  --fs-palette-primary: #f97316;
+  --fs-palette-forest: #2f3a32;
+  --fs-palette-sage: #545748;
+  --fs-palette-caramel: #db9f75;
+  --fs-palette-terracotta: #804012;
+  --fs-palette-chocolate: #3e2411;
+}
+
 /* FasoStock — aligné sur `cm.md` / AppTheme Flutter (mobile first) */
 :root {
   --fs-accent: #e85d2c;
@@ -39,6 +49,7 @@ html.dark {
   --color-fs-card: var(--fs-card);
   --color-fs-text: var(--fs-text);
   --color-fs-on-surface-variant: var(--fs-on-surface-variant);
+  --color-fs-pos-orange: var(--fs-pos-orange);
   --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
 }
 

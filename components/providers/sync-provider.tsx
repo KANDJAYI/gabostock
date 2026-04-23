@@ -1,5 +1,6 @@
 "use client";
 
+import { hasSupabaseConfig } from "@/lib/env";
 import { createClient } from "@/lib/supabase/client";
 import { broadcastOutboxFlushed, subscribeOutboxBroadcast } from "@/lib/offline";
 import { useOnlineStatus } from "@/lib/hooks/use-online-status";
@@ -42,10 +43,7 @@ export function SyncProvider({ children }: { children: ReactNode }) {
 
     async function flush() {
       if (cancelled || typeof window === "undefined") return;
-      if (
-        !process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ||
-        !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
-      ) {
+      if (!hasSupabaseConfig()) {
         return;
       }
       try {

@@ -23,7 +23,7 @@ GRANT SELECT, INSERT, UPDATE ON public.platform_settings TO authenticated;
 
 -- Valeurs par défaut optionnelles (clés utilisées par l'app)
 INSERT INTO public.platform_settings (key, value) VALUES
-  ('platform_name', 'FasoStock'),
+  ('platform_name', 'Gabostock'),
   ('contact_email', ''),
   ('contact_phone', ''),
   ('contact_whatsapp', '+226 64 71 20 44'),

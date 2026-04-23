@@ -233,7 +233,7 @@ export function UsersScreen() {
         <div className="relative w-full sm:max-w-sm">
           <MdSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" aria-hidden />
           <input
-            className={fsInputClass("pl-10")}
+            className={fsInputClass("pl-10 pr-3 sm:pl-10 sm:pr-3")}
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Rechercher (nom, rôle)…"

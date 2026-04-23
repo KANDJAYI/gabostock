@@ -1,4 +1,4 @@
--- Type d’activité choisi à l’inscription (slug aligné appweb `lib/config/business-types.ts`).
+-- Type d’activité choisi à l’inscription (slug aligné gabostock `lib/config/business-types.ts`).
 
 ALTER TABLE public.companies
   ADD COLUMN IF NOT EXISTS business_type_slug TEXT NULL;

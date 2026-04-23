@@ -17,6 +17,16 @@ import {
   MdTrendingUp,
 } from "react-icons/md";
 
+/** Aligné sur `app/globals.css` — palette Gabostock (KPI / graphiques admin). */
+const PALETTE = {
+  primary: "#f97316",
+  forest: "#2f3a32",
+  sage: "#545748",
+  caramel: "#db9f75",
+  terracotta: "#804012",
+  chocolate: "#3e2411",
+} as const;
+
 function SimpleLineChart({
   data,
   maxY,
@@ -39,8 +49,8 @@ function SimpleLineChart({
     <svg viewBox={`0 0 ${w} ${h}`} className="h-64 w-full max-w-full" preserveAspectRatio="none">
       <defs>
         <linearGradient id="lineFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#0EA5E9" stopOpacity="0.2" />
-          <stop offset="100%" stopColor="#0EA5E9" stopOpacity="0.02" />
+          <stop offset="0%" stopColor={PALETTE.primary} stopOpacity="0.22" />
+          <stop offset="100%" stopColor={PALETTE.primary} stopOpacity="0.03" />
         </linearGradient>
       </defs>
       {pathD ? (
@@ -49,7 +59,7 @@ function SimpleLineChart({
             d={`${pathD} L ${w - pad} ${h - pad} L ${pad} ${h - pad} Z`}
             fill="url(#lineFill)"
           />
-          <path d={pathD} fill="none" stroke="#0EA5E9" strokeWidth="2.5" />
+          <path d={pathD} fill="none" stroke={PALETTE.primary} strokeWidth="2.5" />
         </>
       ) : null}
     </svg>
@@ -97,7 +107,7 @@ export function AdminDashboardScreen() {
   if (q.isLoading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center p-8">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[color-mix(in_srgb,var(--fs-palette-primary)_35%,transparent)] border-t-[var(--fs-palette-primary)]" />
       </div>
     );
   }
@@ -118,12 +128,12 @@ export function AdminDashboardScreen() {
   const maxSc = Math.max(...topSales.map((x) => x.salesCount), 1);
 
   const kpis = [
-    { icon: MdBusiness, label: "Entreprises", value: String(stats.companiesCount), color: "#EA580C" },
-    { icon: MdStore, label: "Boutiques", value: String(stats.storesCount), color: "#0EA5E9" },
-    { icon: MdPeople, label: "Utilisateurs", value: String(stats.usersCount), color: "#10B981" },
-    { icon: MdCardMembership, label: "Abonnements actifs", value: String(stats.activeSubscriptionsCount), color: "#6366F1" },
-    { icon: MdShoppingCart, label: "Ventes", value: String(stats.salesCount), color: "#8B5CF6" },
-    { icon: MdTrendingUp, label: "CA total", value: formatCurrency(stats.salesTotalAmount), color: "#F59E0B" },
+    { icon: MdBusiness, label: "Entreprises", value: String(stats.companiesCount), color: PALETTE.terracotta },
+    { icon: MdStore, label: "Boutiques", value: String(stats.storesCount), color: PALETTE.primary },
+    { icon: MdPeople, label: "Utilisateurs", value: String(stats.usersCount), color: PALETTE.sage },
+    { icon: MdCardMembership, label: "Abonnements actifs", value: String(stats.activeSubscriptionsCount), color: PALETTE.caramel },
+    { icon: MdShoppingCart, label: "Ventes", value: String(stats.salesCount), color: PALETTE.forest },
+    { icon: MdTrendingUp, label: "CA total", value: formatCurrency(stats.salesTotalAmount), color: PALETTE.chocolate },
   ];
 
   return (
@@ -136,15 +146,12 @@ export function AdminDashboardScreen() {
       <div
         className="rounded-[20px] border border-slate-200/80 p-7 text-slate-100 shadow-md"
         style={{
-          background: "linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)",
+          background: `linear-gradient(135deg, ${PALETTE.chocolate} 0%, ${PALETTE.forest} 48%, ${PALETTE.sage} 100%)`,
         }}
       >
         <div className="flex flex-wrap items-start gap-6">
-          <div
-            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-orange-500/40"
-            style={{ backgroundColor: "#EA580C33" }}
-          >
-            <MdBusiness className="h-9 w-9 text-orange-500" />
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[color-mix(in_srgb,var(--fs-palette-caramel)_45%,transparent)] bg-[color-mix(in_srgb,var(--fs-palette-terracotta)_25%,transparent)]">
+            <MdBusiness className="h-9 w-9 text-[var(--fs-palette-caramel)]" />
           </div>
           <div>
             <h2 className="text-xl font-extrabold tracking-tight text-slate-100">Super Admin</h2>
@@ -192,7 +199,7 @@ export function AdminDashboardScreen() {
                 label={r.companyName}
                 value={Math.round(r.totalAmount)}
                 max={maxCa}
-                color="#EA580C"
+                color={PALETTE.terracotta}
               />
             ))}
           </div>
@@ -206,7 +213,7 @@ export function AdminDashboardScreen() {
                 label={r.companyName}
                 value={r.salesCount}
                 max={maxSc}
-                color="#8B5CF6"
+                color={PALETTE.primary}
               />
             ))}
           </div>
@@ -227,7 +234,7 @@ export function AdminDashboardScreen() {
                 title={`${d.date}: ${formatCurrency(d.total)}`}
               >
                 <div
-                  className="min-h-px w-full rounded-t bg-sky-500/80"
+                  className="min-h-px w-full rounded-t bg-[color-mix(in_srgb,var(--fs-palette-primary)_78%,white)]"
                   style={{ height: `${Math.max(2, hPct)}%` }}
                 />
               </div>

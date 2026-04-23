@@ -222,7 +222,7 @@ export function WarehouseEntryDialog({
   const leftColumn = (
     <div
       className={cn(
-        "flex min-h-0 min-w-0 flex-col bg-white",
+        "flex min-h-0 min-w-0 flex-col bg-fs-card",
         isWide ? "flex-1" : "h-[min(300px,36svh)] min-[900px]:h-[380px]",
       )}
     >
@@ -233,7 +233,7 @@ export function WarehouseEntryDialog({
           hintText="Rechercher un produit (nom ou SKU)…"
           suffix={
             searching ? (
-              <span className="inline-block h-[18px] w-[18px] animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+              <span className="inline-block h-[18px] w-[18px] animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
             ) : null
           }
         />
@@ -260,21 +260,21 @@ export function WarehouseEntryDialog({
                   type="button"
                   onClick={() => selectProduct(p)}
                   className={cn(
-                    "flex flex-col items-center justify-center rounded-[10px] bg-white px-1.5 py-1.5 text-center transition active:scale-[0.98] min-[900px]:rounded-[14px] min-[900px]:px-2.5 min-[900px]:py-2.5",
-                    sel ? "border-[3px] border-[#F97316]" : "border border-[#E5E7EB]",
+                    "flex flex-col items-center justify-center rounded-[10px] bg-fs-card px-1.5 py-1.5 text-center transition active:scale-[0.98] min-[900px]:rounded-[14px] min-[900px]:px-2.5 min-[900px]:py-2.5",
+                    sel ? "border-[3px] border-[#f97316]" : "border border-[#E5E7EB]",
                   )}
                 >
                   <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-md bg-[#F8F9FA] min-[900px]:h-12 min-[900px]:w-12 min-[900px]:rounded-lg">
                     {thumb ? (
                       <img src={thumb} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <MdInventory2 className="h-5 w-5 text-[#F97316]/80 min-[900px]:h-7 min-[900px]:w-7" aria-hidden />
+                      <MdInventory2 className="h-5 w-5 text-[#f97316]/80 min-[900px]:h-7 min-[900px]:w-7" aria-hidden />
                     )}
                   </div>
                   <p className="mt-0.5 line-clamp-2 min-h-8 text-[11px] font-semibold leading-snug text-[#1F2937] min-[900px]:mt-1.5 min-[900px]:min-h-10 min-[900px]:text-[13px]">
                     {p.name}
                   </p>
-                  <p className="mt-0.5 text-[11px] font-bold text-[#F97316] min-[900px]:mt-1 min-[900px]:text-sm">
+                  <p className="mt-0.5 text-[11px] font-bold text-[#f97316] min-[900px]:mt-1 min-[900px]:text-sm">
                     {formatCurrency(Number(p.sale_price ?? 0))}
                   </p>
                 </button>
@@ -351,11 +351,11 @@ export function WarehouseEntryDialog({
           onChange={(e) => setNotes(e.target.value)}
         />
         <div
-          className="mt-2 rounded-lg border border-[#E5E7EB] bg-white p-2.5 min-[900px]:mt-3.5 min-[900px]:rounded-xl min-[900px]:p-3.5"
+          className="mt-2 rounded-lg border border-[#E5E7EB] bg-fs-card p-2.5 min-[900px]:mt-3.5 min-[900px]:rounded-xl min-[900px]:p-3.5"
           style={{ backgroundColor: POS_Q.bg }}
         >
           <div className="flex items-center gap-1 min-[900px]:gap-2">
-            <MdReceiptLong className="h-3 w-3 shrink-0 text-[#F97316] min-[900px]:h-4 min-[900px]:w-4" aria-hidden />
+            <MdReceiptLong className="h-3 w-3 shrink-0 text-[#f97316] min-[900px]:h-4 min-[900px]:w-4" aria-hidden />
             <span className="text-[11px] font-bold text-[#1F2937] min-[900px]:text-sm">Résumé</span>
           </div>
           <p className="mt-1 text-[12px] font-semibold text-[#1F2937] min-[900px]:mt-2 min-[900px]:text-sm">
@@ -365,7 +365,7 @@ export function WarehouseEntryDialog({
             Quantité: {qtyPreviewSafe} {unitPreview} Â· Conditionnement: {packagingPreview} Â· Colis/lots:{" "}
             {packsPreviewNum}
           </p>
-          <p className="mt-0.5 text-[14px] font-extrabold text-[#F97316] min-[900px]:mt-1.5 min-[900px]:text-base">
+          <p className="mt-0.5 text-[14px] font-extrabold text-[#f97316] min-[900px]:mt-1.5 min-[900px]:text-base">
             Coût total estimé : {formatCurrency(estimatedTotal)}
           </p>
         </div>
@@ -383,7 +383,7 @@ export function WarehouseEntryDialog({
           type="button"
           disabled={saving}
           onClick={onClose}
-          className="min-h-[40px] flex-1 rounded-[10px] border border-[#E5E7EB] bg-white py-2 text-[12px] font-semibold text-[#1F2937] disabled:opacity-50 min-[900px]:min-h-[48px] min-[900px]:py-3.5 min-[900px]:text-sm"
+          className="min-h-[40px] flex-1 rounded-[10px] border border-[#E5E7EB] bg-fs-card py-2 text-[12px] font-semibold text-[#1F2937] disabled:opacity-50 min-[900px]:min-h-[48px] min-[900px]:py-3.5 min-[900px]:text-sm"
         >
           Annuler
         </button>
@@ -391,7 +391,7 @@ export function WarehouseEntryDialog({
           type="button"
           disabled={saving || listLoading || listError != null || whActiveCount === 0}
           onClick={submit}
-          className="min-h-[40px] flex-1 rounded-[10px] bg-[#F97316] py-2 text-[13px] font-bold leading-snug text-white disabled:opacity-50 min-[900px]:min-h-[52px] min-[900px]:py-4 min-[900px]:text-base"
+          className="min-h-[40px] flex-1 rounded-[10px] bg-[#f97316] py-2 text-[13px] font-bold leading-snug text-white disabled:opacity-50 min-[900px]:min-h-[52px] min-[900px]:py-4 min-[900px]:text-base"
         >
           {saving ? (
             <span className="inline-block h-[22px] w-[22px] animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -406,18 +406,18 @@ export function WarehouseEntryDialog({
   let body: ReactNode;
   if (listLoading) {
     body = (
-      <div className="flex min-h-[240px] flex-1 items-center justify-center bg-white">
-        <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+      <div className="flex min-h-[240px] flex-1 items-center justify-center bg-fs-card">
+        <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
       </div>
     );
   } else if (listError) {
     body = (
-      <div className="flex min-h-[200px] flex-1 flex-col items-center justify-center gap-3 bg-white px-6 text-center">
+      <div className="flex min-h-[200px] flex-1 flex-col items-center justify-center gap-3 bg-fs-card px-6 text-center">
         <p className="text-sm text-[#1F2937]/80">{errMsg}</p>
         <button
           type="button"
           onClick={() => productsQ.refetch()}
-          className="rounded-[10px] bg-[#F97316] px-4 py-2.5 text-sm font-semibold text-white"
+          className="rounded-[10px] bg-[#f97316] px-4 py-2.5 text-sm font-semibold text-white"
         >
           Réessayer
         </button>
@@ -425,7 +425,7 @@ export function WarehouseEntryDialog({
     );
   } else if (listEmpty) {
     body = (
-      <div className="flex min-h-[200px] flex-1 items-center justify-center bg-white px-6">
+      <div className="flex min-h-[200px] flex-1 items-center justify-center bg-fs-card px-6">
         <p className="text-center text-sm text-[#1F2937]/70">
           Aucun produit pour le moment. Actualisez ou attendez la connexion.
         </p>
@@ -454,7 +454,7 @@ export function WarehouseEntryDialog({
       aria-modal="true"
       aria-labelledby="wh-entry-title"
     >
-      <div className="flex h-[min(96dvh,94svh)] w-full max-w-[560px] flex-col overflow-hidden rounded-none bg-white shadow-2xl min-[900px]:h-[min(94vh,92dvh)] min-[900px]:max-w-[1100px]">
+      <div className="flex h-[min(96dvh,94svh)] w-full max-w-[560px] flex-col overflow-hidden rounded-none bg-fs-card shadow-2xl min-[900px]:h-[min(94vh,92dvh)] min-[900px]:max-w-[1100px]">
         <WarehousePosQuickHeader
           titleId="wh-entry-title"
           title="Réception au dépôt"
@@ -559,7 +559,7 @@ export function WarehouseAdjustmentDialog({
             Variation (unités)
           </label>
           <input
-            className={fsInputClass + " mt-1"}
+            className={fsInputClass("mt-1")}
             placeholder="ex. -5 ou +12"
             value={delta}
             onChange={(e) => setDelta(e.target.value)}
@@ -574,12 +574,12 @@ export function WarehouseAdjustmentDialog({
                 <label className="mt-3 block text-[11px] font-semibold uppercase text-neutral-500">
                   Prix d’achat unitaire (si ajout)
                 </label>
-                <input className={fsInputClass + " mt-1"} value={cost} onChange={(e) => setCost(e.target.value)} />
+                <input className={fsInputClass("mt-1")} value={cost} onChange={(e) => setCost(e.target.value)} />
               </>
             ) : null;
           })()}
           <label className="mt-3 block text-[11px] font-semibold uppercase text-neutral-500">Motif</label>
-          <textarea className={fsInputClass + " mt-1 min-h-[64px]"} value={reason} onChange={(e) => setReason(e.target.value)} />
+          <textarea className={fsInputClass("mt-1 min-h-[64px]")} value={reason} onChange={(e) => setReason(e.target.value)} />
           <button
             type="button"
             disabled={saving}
@@ -650,7 +650,7 @@ export function WarehouseThresholdDialog({
           0 = utiliser le seuil produit ({row.stockMin}). Sinon seuil dédié au dépôt.
         </p>
         <label className="mt-3 block text-[11px] font-semibold uppercase text-neutral-500">Seuil magasin</label>
-        <input className={fsInputClass + " mt-1"} inputMode="numeric" value={v} onChange={(e) => setV(e.target.value)} />
+        <input className={fsInputClass("mt-1")} inputMode="numeric" value={v} onChange={(e) => setV(e.target.value)} />
         <div className="mt-4 flex justify-end gap-2">
           <button type="button" onClick={onClose} className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-700">
             Annuler
@@ -743,7 +743,7 @@ export function WarehouseExitSaleDialog({
           </p>
           {salesQ.isLoading ? (
             <div className="flex justify-center py-12">
-              <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+              <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
             </div>
           ) : salesQ.isError ? (
             <p className="mt-4 text-sm text-red-600">Impossible de charger les ventes.</p>
@@ -753,7 +753,7 @@ export function WarehouseExitSaleDialog({
                 Vente complétée
               </label>
               <select
-                className={fsInputClass + " mt-1"}
+                className={fsInputClass("mt-1")}
                 value={saleId}
                 onChange={(e) => setSaleId(e.target.value)}
               >
@@ -775,7 +775,7 @@ export function WarehouseExitSaleDialog({
             type="button"
             disabled={saving || !saleId || sales.length === 0}
             onClick={submit}
-            className="min-h-[44px] rounded-lg bg-[#F97316] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            className="min-h-[44px] rounded-lg bg-[#f97316] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
           >
             Enregistrer
           </button>
@@ -901,7 +901,7 @@ export function WarehouseCreateTransferFromDepotDialog({
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <label className="text-[11px] font-semibold uppercase text-neutral-500">Boutique destination</label>
-          <select className={fsInputClass + " mt-1"} value={toStoreId} onChange={(e) => setToStoreId(e.target.value)}>
+          <select className={fsInputClass("mt-1")} value={toStoreId} onChange={(e) => setToStoreId(e.target.value)}>
             {stores.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -927,7 +927,7 @@ export function WarehouseCreateTransferFromDepotDialog({
                   <div className="min-w-0 flex-1">
                     <span className="text-[10px] font-semibold uppercase text-neutral-500">Produit</span>
                     <select
-                      className={fsInputClass + " mt-0.5 w-full text-sm"}
+                      className={fsInputClass("mt-0.5 w-full text-sm")}
                       value={row.productId}
                       onChange={(e) => setLine(i, { productId: e.target.value })}
                     >
@@ -946,7 +946,7 @@ export function WarehouseCreateTransferFromDepotDialog({
                 <div className="w-24">
                   <span className="text-[10px] font-semibold uppercase text-neutral-500">Qté</span>
                   <input
-                    className={fsInputClass + " mt-0.5 w-full"}
+                    className={fsInputClass("mt-0.5 w-full")}
                     inputMode="numeric"
                     value={row.quantityRequested === 0 ? "" : String(row.quantityRequested)}
                     onChange={(e) =>
@@ -969,7 +969,7 @@ export function WarehouseCreateTransferFromDepotDialog({
           <button
             type="button"
             onClick={submit}
-            className="fs-touch-target mt-4 w-full rounded-[10px] bg-[#F97316] py-3.5 text-sm font-semibold text-white shadow-sm"
+            className="fs-touch-target mt-4 w-full rounded-[10px] bg-[#f97316] py-3.5 text-sm font-semibold text-white shadow-sm"
           >
             Créer le transfert
           </button>
@@ -993,7 +993,7 @@ export function WarehouseCreateTransferFromDepotDialog({
             <button
               type="button"
               onClick={() => setStockProblems(null)}
-              className="mt-4 w-full rounded-xl bg-[#F97316] py-3 text-sm font-semibold text-white"
+              className="mt-4 w-full rounded-xl bg-[#f97316] py-3 text-sm font-semibold text-white"
             >
               OK
             </button>

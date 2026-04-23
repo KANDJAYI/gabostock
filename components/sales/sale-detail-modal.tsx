@@ -193,7 +193,7 @@ export function SaleDetailModal({
         <div className="flex max-h-[min(560px,90vh)] w-full max-w-[460px] flex-col rounded-t-[22px] bg-[#ECEFF1] shadow-2xl sm:rounded-[22px]">
           <div className="flex min-h-0 flex-1 flex-col p-4">
             {/* En-tête — proche du DecoratedBox Flutter */}
-            <div className="shrink-0 rounded-2xl bg-white/90 p-3 shadow-sm ring-1 ring-black/5">
+            <div className="shrink-0 rounded-2xl bg-fs-card/90 p-3 shadow-sm ring-1 ring-black/5">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-[#c2410c]">
                   <MdReceiptLong className="h-6 w-6" aria-hidden />
@@ -234,7 +234,7 @@ export function SaleDetailModal({
             <div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">
               {q.isLoading ? (
                 <div className="flex justify-center py-12">
-                  <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#F97316] border-t-transparent" />
+                  <div className="h-9 w-9 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
                 </div>
               ) : null}
               {!q.isLoading && !sale ? (
@@ -257,7 +257,7 @@ export function SaleDetailModal({
                   </div>
 
                   {(sale.sale_payments ?? []).length > 0 ? (
-                    <div className="rounded-2xl border border-black/10 bg-white p-3">
+                    <div className="rounded-2xl border border-black/10 bg-fs-card p-3">
                       <p className="text-xs font-semibold text-neutral-500">
                         Mode de paiement
                       </p>
@@ -280,7 +280,7 @@ export function SaleDetailModal({
                         {(sale.sale_items ?? []).map((it) => (
                           <article
                             key={it.id}
-                            className="rounded-2xl border border-black/10 bg-white px-3 py-2.5"
+                            className="rounded-2xl border border-black/10 bg-fs-card px-3 py-2.5"
                           >
                             <div className="flex items-start justify-between gap-2">
                               <div className="min-w-0">
@@ -310,7 +310,7 @@ export function SaleDetailModal({
                         />
                         Paiements
                       </h4>
-                      <div className="space-y-1 rounded-2xl border border-black/10 bg-white px-3 py-2">
+                      <div className="space-y-1 rounded-2xl border border-black/10 bg-fs-card px-3 py-2">
                         {(sale.sale_payments ?? []).map((p) => (
                           <div
                             key={p.id}
@@ -329,7 +329,7 @@ export function SaleDetailModal({
                   ) : null}
 
                   {showCreditEncaissement ? (
-                    <div className="rounded-2xl border border-[#F97316]/35 bg-orange-50/90 p-3 dark:border-orange-500/40 dark:bg-orange-950/40">
+                    <div className="rounded-2xl border border-[#f97316]/35 bg-orange-50/90 p-3 dark:border-orange-500/35 dark:bg-orange-950/35">
                       <p className="text-xs font-bold text-neutral-700 dark:text-neutral-200">
                         Encours à recouvrer
                       </p>
@@ -341,12 +341,12 @@ export function SaleDetailModal({
                       </div>
                       <div className="mt-1 flex justify-between text-sm font-extrabold">
                         <span>Reste dû</span>
-                        <span className="text-[#c2410c]">{formatCurrency(creditReste)}</span>
+                        <span className="text-red-700 dark:text-red-400">{formatCurrency(creditReste)}</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => setCreditPayOpen(true)}
-                        className="mt-3 w-full rounded-xl bg-[#FF7000] py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#F97316] active:opacity-95"
+                        className="mt-3 w-full rounded-xl bg-[#c2410c] py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#f97316] active:opacity-95"
                       >
                         Enregistrer un paiement
                       </button>
@@ -439,7 +439,7 @@ export function SaleDetailModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg px-4 py-2 text-sm font-semibold text-[#F97316] hover:bg-orange-50"
+                className="rounded-lg px-4 py-2 text-sm font-semibold text-[#f97316] hover:bg-orange-50 dark:hover:bg-orange-950/30"
               >
                 Fermer
               </button>
@@ -496,8 +496,8 @@ function ActionButton({
       className={cn(
         "inline-flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-[14px] px-1.5 py-2.5 text-center text-[10px] font-bold leading-tight shadow-sm transition-opacity active:opacity-90 sm:flex-row sm:gap-2 sm:px-2 sm:text-xs",
         primary
-          ? "bg-[#FF7000] text-white hover:bg-[#F97316] disabled:opacity-45"
-          : "border border-black/10 bg-white text-neutral-800 hover:bg-neutral-50 disabled:opacity-50",
+          ? "bg-[#c2410c] text-white hover:bg-[#f97316] disabled:opacity-45"
+          : "border border-black/10 bg-fs-card text-neutral-800 hover:bg-neutral-50 disabled:opacity-50",
         className,
       )}
     >

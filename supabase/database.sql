@@ -1,5 +1,5 @@
 -- ============================================================================
--- FasoStock — Schéma + données de seed (exécution unique sur base vierge)
+-- Gabostock — Schéma + données de seed (exécution unique sur base vierge)
 -- ============================================================================
 -- Contenu :
 --   1) Toutes les migrations (supabase/migrations/*.sql), sauf 00062–00068
@@ -21,7 +21,7 @@
 
 -- >>> MIGRATION FILE: 00001_initial_schema.sql <<<
 
--- FasoStock — Schéma initial
+-- Gabostock — Schéma initial
 -- Extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -552,7 +552,7 @@ CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.stock_transfers FOR EACH R
 
 -- >>> MIGRATION FILE: 00002_rls_and_functions.sql <<<
 
--- FasoStock — RLS: helper functions and policies
+-- Gabostock — RLS: helper functions and policies
 
 -- ========== HELPER FUNCTIONS ==========
 
@@ -892,7 +892,7 @@ CREATE POLICY "companies_update" ON public.companies FOR UPDATE USING (
 
 -- >>> MIGRATION FILE: 00004_rpc_create_company_with_owner.sql <<<
 
--- FasoStock — RPC pour créer entreprise + owner + première boutique
+-- Gabostock — RPC pour créer entreprise + owner + première boutique
 -- Évite les problèmes RLS lors de l'inscription (exécuté avec session utilisateur)
 
 CREATE OR REPLACE FUNCTION public.create_company_with_owner(
@@ -952,7 +952,7 @@ $$;
 
 -- >>> MIGRATION FILE: 00005_store_extra_fields.sql <<<
 
--- FasoStock — Colonnes supplémentaires pour stores (logo, téléphone, email, description)
+-- Gabostock — Colonnes supplémentaires pour stores (logo, téléphone, email, description)
 ALTER TABLE public.stores ADD COLUMN IF NOT EXISTS logo_url TEXT;
 ALTER TABLE public.stores ADD COLUMN IF NOT EXISTS phone TEXT;
 ALTER TABLE public.stores ADD COLUMN IF NOT EXISTS email TEXT;
@@ -961,7 +961,7 @@ ALTER TABLE public.stores ADD COLUMN IF NOT EXISTS description TEXT;
 
 -- >>> MIGRATION FILE: 00006_store_logos_bucket.sql <<<
 
--- FasoStock — Bucket Storage pour logos de boutiques
+-- Gabostock — Bucket Storage pour logos de boutiques
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('store-logos', 'store-logos', true)
 ON CONFLICT (id) DO NOTHING;
@@ -986,7 +986,7 @@ CREATE POLICY "store_logos_authenticated_delete" ON storage.objects
 
 -- >>> MIGRATION FILE: 00007_product_images_bucket.sql <<<
 
--- FasoStock — Bucket Storage pour images produits
+-- Gabostock — Bucket Storage pour images produits
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('product-images', 'product-images', true)
 ON CONFLICT (id) DO NOTHING;
@@ -1406,7 +1406,7 @@ GRANT SELECT, INSERT, UPDATE ON public.platform_settings TO authenticated;
 
 -- Valeurs par défaut optionnelles (clés utilisées par l'app)
 INSERT INTO public.platform_settings (key, value) VALUES
-  ('platform_name', 'FasoStock'),
+  ('platform_name', 'Gabostock'),
   ('contact_email', ''),
   ('contact_phone', ''),
   ('contact_whatsapp', '+226 64 71 20 44'),
@@ -5904,7 +5904,7 @@ ALTER TABLE public.app_error_logs
   ADD COLUMN IF NOT EXISTS client_kind TEXT;
 
 COMMENT ON COLUMN public.app_error_logs.client_kind IS
-  'Origine client : web (FasoStock web), flutter (app Flutter), ou NULL (inconnu / ancien).';
+  'Origine client : web (Gabostock web), flutter (app Flutter), ou NULL (inconnu / ancien).';
 
 CREATE INDEX IF NOT EXISTS idx_app_error_logs_client_kind
   ON public.app_error_logs(client_kind);
@@ -5954,7 +5954,7 @@ CREATE TRIGGER trg_app_error_logs_client_kind
 
 -- >>> MIGRATION FILE: 00075_companies_business_type_slug.sql <<<
 
--- Type d’activité choisi à l’inscription (slug aligné appweb `lib/config/business-types.ts`).
+-- Type d’activité choisi à l’inscription (slug aligné gabostock `lib/config/business-types.ts`).
 
 ALTER TABLE public.companies
   ADD COLUMN IF NOT EXISTS business_type_slug TEXT NULL;
@@ -7438,7 +7438,7 @@ COMMENT ON COLUMN public.products.wholesale_qty IS 'Seuil : si quantité dans le
 
 -- >>> SEED FILE: seed.sql (après schéma — rôles, démo, etc.) <<<
 
--- FasoStock — Seed: roles, permissions, demo companies/stores/products
+-- Gabostock — Seed: roles, permissions, demo companies/stores/products
 -- Run after migrations. For full demo, create a user in Supabase Auth and set SEED_USER_ID below.
 
 -- ========== ROLES ==========

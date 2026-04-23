@@ -1,4 +1,4 @@
--- FasoStock — RPC pour créer entreprise + owner + première boutique
+-- Gabostock — RPC pour créer entreprise + owner + première boutique
 -- Évite les problèmes RLS lors de l'inscription (exécuté avec session utilisateur)
 
 CREATE OR REPLACE FUNCTION public.create_company_with_owner(

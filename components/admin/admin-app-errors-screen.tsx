@@ -27,7 +27,7 @@ function ClientKindBadge({ kind }: { kind: AdminAppErrorLog["clientKind"] }) {
   return (
     <span
       className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ring-1 ${cls}`}
-      title="Origine de l’erreur (FasoStock web vs app Flutter)"
+      title="Origine de l’erreur (Gabostock web vs app Flutter)"
     >
       {label}
     </span>

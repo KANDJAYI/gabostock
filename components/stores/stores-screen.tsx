@@ -107,7 +107,7 @@ export function StoresScreen() {
       : "Sélectionnez une entreprise";
 
   const btnPrimary =
-    "touch-manipulation inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-[10px] bg-[#F97316] px-4 text-sm font-semibold text-white shadow-sm active:opacity-95 min-[480px]:min-h-11 min-[480px]:w-auto";
+    "touch-manipulation inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-[10px] bg-[#f97316] px-4 text-sm font-semibold text-white shadow-sm active:opacity-95 min-[480px]:min-h-11 min-[480px]:w-auto";
 
   if (ctx.isLoading || permLoading) {
     return (
@@ -325,7 +325,7 @@ function EmptyStoresState({
         <button
           type="button"
           onClick={onCreate}
-          className="touch-manipulation mt-7 inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-[#F97316] px-6 py-3 text-sm font-semibold text-white active:opacity-95 sm:w-auto"
+          className="touch-manipulation mt-7 inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-[#f97316] px-6 py-3 text-sm font-semibold text-white active:opacity-95 sm:w-auto"
         >
           <MdAdd className="h-5 w-5" aria-hidden />
           Créer une boutique

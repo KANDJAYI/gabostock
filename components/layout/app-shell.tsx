@@ -335,7 +335,7 @@ export function AppShell({ children, userEmail }: AppShellProps) {
                     )}
                   </span>
                   <span className="min-w-0 text-base font-bold tracking-tight text-fs-text">
-                    Faso<span className="text-[var(--fs-accent)]">Stock</span>
+                    Gabo<span className="text-[var(--fs-accent)]">stock</span>
                   </span>
                 </Link>
                 {!isPosRoute && primaryMobile.length > 0 ? (

@@ -15,7 +15,7 @@ Le projet utilise `verify_jwt = false` pour ces fonctions dans `config.toml` : l
 ## Déployer la fonction de création d'utilisateur
 
 ```bash
-# À la racine du projet (c:\SOFCOM)
+# À la racine du projet (c:\gabostock)
 supabase functions deploy create-company-user
 supabase functions deploy reset-user-password
 ```

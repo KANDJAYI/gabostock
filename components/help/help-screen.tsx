@@ -82,7 +82,7 @@ export function HelpScreen() {
       </header>
 
       <p className="mb-6 text-base font-semibold leading-snug text-fs-accent">
-        Bienvenue dans FasoStock. Voici l&apos;essentiel pour bien démarrer.
+        Bienvenue dans Gabostock. Voici l&apos;essentiel pour bien démarrer.
       </p>
 
       <div className="flex flex-col gap-6">

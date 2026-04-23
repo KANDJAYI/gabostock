@@ -1,5 +1,5 @@
 /**
- * Thème FasoStock web — aligné Paramètres Flutter (Système / Clair / Sombre).
+ * Thème Gabostock web — aligné Paramètres Flutter (Système / Clair / Sombre).
  * Source de vérité : `localStorage` clé `fs_theme_mode`, classe `dark` sur `<html>`.
  */
 

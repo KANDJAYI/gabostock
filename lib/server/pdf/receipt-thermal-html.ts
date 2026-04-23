@@ -122,7 +122,7 @@ export async function renderReceiptThermalHtml(
   parts.push(`<div style="height:6px"></div>`);
   parts.push(`<div class="sep mono">${escapeHtml(RECEIPT_SEP_MID)}</div>`);
   parts.push(
-    `<div class="powered small center mono">Powered by FasoStock POS</div>`,
+    `<div class="powered small center mono">Powered by Gabostock POS</div>`,
   );
   parts.push(`<div class="sep mono">${escapeHtml(RECEIPT_SEP_MID)}</div>`);
 

@@ -21,7 +21,7 @@ import { getDefaultDateRange } from "@/lib/features/dashboard/date-range";
 import type { StockMovementByDay } from "@/lib/features/dashboard/types";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
 import { listCategories, listProducts } from "@/lib/features/products/api";
-import { reportsPageToCsv } from "@/lib/features/reports/csv";
+import { reportsPageToFlatProSheet } from "@/lib/features/reports/csv";
 import {
   downloadReportsExcel,
   downloadReportsPdfBlob,
@@ -31,7 +31,7 @@ import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { queryKeys } from "@/lib/query/query-keys";
 import { messageFromUnknownError, toast } from "@/lib/toast";
 import { formatCurrency } from "@/lib/utils/currency";
-import { downloadCsv } from "@/lib/utils/csv";
+import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
 import { cn } from "@/lib/utils/cn";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -308,28 +308,37 @@ export function ReportsScreen() {
     }
   }, [d, description]);
 
-  const exportReportsExcelWithToast = useCallback(() => {
+  const exportReportsExcelWithToast = useCallback(async () => {
     if (!d) return;
     try {
-      downloadReportsExcel(d);
+      await downloadReportsExcel(d, {
+        subtitle: `Généré le ${new Date().toLocaleString("fr-FR")} — ${description}`,
+      });
       toast.success("Excel enregistré.");
     } catch (e) {
       toast.error(messageFromUnknownError(e, "Export Excel impossible."));
     }
-  }, [d]);
+  }, [d, description]);
 
-  const exportReportsCsvWithToast = useCallback(() => {
+  const exportReportsConsolidatedExcelWithToast = useCallback(async () => {
     if (!d) return;
     try {
-      downloadCsv(
-        `rapports_${new Date().toISOString().slice(0, 10)}.csv`,
-        reportsPageToCsv(d),
+      const day = new Date().toISOString().slice(0, 10);
+      await downloadProXlsx(
+        `rapports_${day}_tout-en-une-feuille`,
+        [
+          reportsPageToFlatProSheet(d, {
+            subtitle: `Généré le ${new Date().toLocaleString("fr-FR")} — ${description}`,
+          }),
+        ],
       );
-      toast.success("CSV enregistré.");
+      toast.success("Excel enregistré (vue table unique).");
     } catch (e) {
-      toast.error(messageFromUnknownError(e, "Export CSV impossible."));
+      toast.error(
+        messageFromUnknownError(e, "Export Excel (vue table) impossible."),
+      );
     }
-  }, [d]);
+  }, [d, description]);
 
   const canView = helpers?.canReports ?? false;
 
@@ -916,8 +925,8 @@ export function ReportsScreen() {
                 <h2 className="text-base font-semibold text-fs-text">Export</h2>
               </div>
               <p className="mt-2 text-xs text-neutral-600">
-                PDF, Excel, CSV — données affichées (hors connexion : export CSV
-                conseillé).
+                PDF, Excel multi-feuilles, Excel « table unique » (même contenu
+                qu’un ancien export consolidé) — données affichées.
               </p>
               <div className="mt-4 flex flex-wrap gap-2.5">
                 <button
@@ -930,7 +939,7 @@ export function ReportsScreen() {
                 </button>
                 <button
                   type="button"
-                  onClick={exportReportsExcelWithToast}
+                  onClick={() => void exportReportsExcelWithToast()}
                   className="inline-flex items-center gap-2 rounded-[10px] border border-black/[0.12] bg-fs-card px-4 py-2.5 text-sm font-semibold text-fs-text"
                 >
                   <MdTableChart className="h-5 w-5" aria-hidden />
@@ -938,11 +947,11 @@ export function ReportsScreen() {
                 </button>
                 <button
                   type="button"
-                  onClick={exportReportsCsvWithToast}
+                  onClick={() => void exportReportsConsolidatedExcelWithToast()}
                   className="inline-flex items-center gap-2 rounded-[10px] border border-black/[0.12] bg-fs-card px-4 py-2.5 text-sm font-semibold text-fs-text"
                 >
                   <MdDescription className="h-5 w-5" aria-hidden />
-                  Enregistrer CSV
+                  Excel (1 feuille, couleurs)
                 </button>
                 <button
                   type="button"

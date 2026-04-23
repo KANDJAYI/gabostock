@@ -11,7 +11,7 @@ import { formatCurrency } from "@/lib/utils/currency";
 import type { CategorySales, SalesByDay } from "@/lib/features/dashboard/types";
 import { cn } from "@/lib/utils/cn";
 
-const BAR_COLOR = "#EA580C";
+const BAR_COLOR = "#f97316";
 /** Doit correspondre à `h-[200px] min-[900px]:h-[240px]` sur la zone des barres. */
 const CHART_DRAW_PX = 200;
 const CHART_DRAW_PX_WIDE = 240;
@@ -471,7 +471,7 @@ export function DashboardLineChart({ data }: { data: SalesByDay[] }) {
       {hoverIdx !== null && pts[hoverIdx] ? (
         <div
           role="tooltip"
-          className="pointer-events-none fixed z-50 w-[220px] rounded-lg border border-black/8 bg-white/95 px-3 py-2 text-xs shadow-lg backdrop-blur-sm dark:border-white/10 dark:bg-neutral-900/95"
+          className="pointer-events-none fixed z-50 w-[220px] rounded-lg border border-black/8 bg-fs-card/95 px-3 py-2 text-xs shadow-lg backdrop-blur-sm dark:border-white/10 dark:bg-neutral-900/95"
           style={tooltipStyle}
         >
           <p className="font-semibold text-neutral-800 dark:text-neutral-100">

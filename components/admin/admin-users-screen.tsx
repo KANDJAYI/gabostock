@@ -175,7 +175,7 @@ export function AdminUsersScreen() {
       ) : null}
 
       <input
-        className="w-full max-w-xl rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm"
+        className="w-full max-w-xl rounded-xl border border-slate-200 bg-fs-card px-4 py-2.5 text-sm"
         placeholder="Rechercher par nom, email, entreprise…"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -265,7 +265,7 @@ export function AdminUsersScreen() {
 
       {edit ? (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-fs-card p-6 shadow-xl">
             <h3 className="text-lg font-bold text-slate-900">Modifier l&apos;utilisateur</h3>
             <p className="mt-1 text-sm text-slate-500">{edit.email ?? "—"}</p>
             <label className="mt-4 block text-sm font-medium">

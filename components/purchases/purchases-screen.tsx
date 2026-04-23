@@ -20,12 +20,21 @@ import type { PurchaseDetail, PurchaseListItem, PurchaseStatus } from "@/lib/fea
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { queryKeys } from "@/lib/query/query-keys";
+import { purchasesToProSheet } from "@/lib/features/purchases/csv";
 import { formatCurrency } from "@/lib/utils/currency";
+import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
 import { cn } from "@/lib/utils/cn";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { MdAdd, MdChevronLeft, MdChevronRight, MdErrorOutline, MdLock } from "react-icons/md";
-import { toast, toastMutationError } from "@/lib/toast";
+import {
+  MdAdd,
+  MdChevronLeft,
+  MdChevronRight,
+  MdDownload,
+  MdErrorOutline,
+  MdLock,
+} from "react-icons/md";
+import { messageFromUnknownError, toast, toastMutationError } from "@/lib/toast";
 
 const PURCHASES_PAGE_SIZE = 20;
 
@@ -339,6 +348,20 @@ export function PurchasesScreen() {
     setCreateOpen(true);
   };
 
+  const exportExcel = () => {
+    if (rows.length === 0) return;
+    const d = new Date().toISOString().slice(0, 10);
+    const sub = `Généré le ${new Date().toLocaleString("fr-FR")}`;
+    void (async () => {
+      try {
+        await downloadProXlsx(`achats-${d}`, [purchasesToProSheet(rows, { subtitle: sub })]);
+        toast.success("Excel enregistré");
+      } catch (e) {
+        toast.error(messageFromUnknownError(e, "Export Excel impossible."));
+      }
+    })();
+  };
+
   const errMsg = purchasesQ.isError
     ? purchasesQ.error instanceof Error
       ? purchasesQ.error.message
@@ -385,16 +408,28 @@ export function PurchasesScreen() {
           <h1 className="min-w-0 text-[22px] font-bold tracking-[-0.4px] text-fs-text min-[700px]:text-2xl">
             Achats
           </h1>
-          {canCreate ? (
-            <button
-              type="button"
-              onClick={openCreate}
-              className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center gap-2 rounded-[10px] bg-fs-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm active:scale-[0.99] min-[420px]:w-auto"
-            >
-              <MdAdd className="h-[18px] w-[18px]" aria-hidden />
-              Nouveau achat
-            </button>
-          ) : null}
+          <div className="flex w-full flex-col gap-2 min-[420px]:w-auto min-[420px]:flex-row min-[420px]:justify-end">
+            {rows.length > 0 ? (
+              <button
+                type="button"
+                onClick={exportExcel}
+                className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[10px] border border-black/10 bg-fs-surface-container px-4 py-2.5 text-sm font-semibold text-fs-text shadow-sm ring-1 ring-black/[0.06] min-[420px]:w-auto"
+              >
+                <MdDownload className="h-[18px] w-[18px] shrink-0" aria-hidden />
+                Exporter Excel
+              </button>
+            ) : null}
+            {canCreate ? (
+              <button
+                type="button"
+                onClick={openCreate}
+                className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center gap-2 rounded-[10px] bg-fs-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm active:scale-[0.99] min-[420px]:w-auto"
+              >
+                <MdAdd className="h-[18px] w-[18px]" aria-hidden />
+                Nouveau achat
+              </button>
+            ) : null}
+          </div>
         </div>
         <p className="text-sm leading-relaxed text-neutral-600">
           Voir, modifier, annuler ou supprimer les achats.

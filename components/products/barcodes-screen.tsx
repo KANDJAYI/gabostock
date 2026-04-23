@@ -470,7 +470,7 @@ export function BarcodesScreen() {
               {previewLabels.map((item, idx) => (
                 <div
                   key={`${item.barcode}-${idx}`}
-                  className="min-h-[84px] overflow-hidden rounded-lg border border-dashed border-neutral-300 bg-white p-2"
+                  className="min-h-[84px] overflow-hidden rounded-lg border border-dashed border-neutral-300 bg-fs-card p-2"
                 >
                   <div className="truncate text-[10px] font-bold text-neutral-800">
                     {item.name}
@@ -484,7 +484,7 @@ export function BarcodesScreen() {
               ))}
             </div>
           ) : (
-            <div className="rounded-lg border border-dashed border-neutral-300 bg-white px-3 py-4 text-xs text-neutral-500">
+            <div className="rounded-lg border border-dashed border-neutral-300 bg-fs-card px-3 py-4 text-xs text-neutral-500">
               Sélectionnez des produits pour voir l&apos;aperçu avant impression.
             </div>
           )}
@@ -497,7 +497,7 @@ export function BarcodesScreen() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher nom, SKU, code-barres..."
-          className={fsInputClass("pl-9")}
+          className={fsInputClass("pl-10 pr-3 sm:pl-10 sm:pr-3")}
         />
       </div>
 
@@ -527,7 +527,7 @@ export function BarcodesScreen() {
                         type="checkbox"
                         checked={checked}
                         onChange={(e) => toggleProduct(p, e.target.checked)}
-                        className="h-4 w-4 cursor-pointer accent-[#f97316]"
+                        className="h-4 w-4 cursor-pointer accent-[var(--fs-pos-orange)]"
                       />
                     </td>
                     <td className="whitespace-nowrap px-3 py-2">

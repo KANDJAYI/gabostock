@@ -159,7 +159,7 @@ export function ReceiptTicketPreview({ data }: { data: ReceiptTicketData }) {
         ) : null}
         <div style={{ height: 12 }} />
         <div className="flex justify-center">
-          <div className="bg-white" style={{ padding: 0 }}>
+          <div className="bg-fs-card" style={{ padding: 0 }}>
             <QRCode
               value={qrPayload}
               size={108}
@@ -192,7 +192,7 @@ export function ReceiptTicketPreview({ data }: { data: ReceiptTicketData }) {
             margin: 0,
           }}
         >
-          Powered by FasoStock POS
+          Powered by Gabostock POS
         </p>
         <Separator text={RECEIPT_SEP_MID} />
       </div>

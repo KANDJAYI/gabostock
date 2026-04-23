@@ -980,7 +980,7 @@ export function SettingsScreen() {
                     },
                   })
                 }
-                className="inline-flex items-center gap-2 rounded-[10px] border border-red-300 bg-white px-3 py-2 text-xs font-semibold text-red-700 disabled:opacity-50 dark:bg-neutral-900"
+                className="inline-flex items-center gap-2 rounded-[10px] border border-red-300 bg-fs-card px-3 py-2 text-xs font-semibold text-red-700 disabled:opacity-50 dark:bg-neutral-900"
               >
                 {clearingWarehouseStock ? (
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
@@ -1012,7 +1012,7 @@ export function SettingsScreen() {
                     },
                   })
                 }
-                className="inline-flex items-center gap-2 rounded-[10px] border border-red-300 bg-white px-3 py-2 text-xs font-semibold text-red-700 disabled:opacity-50 dark:bg-neutral-900"
+                className="inline-flex items-center gap-2 rounded-[10px] border border-red-300 bg-fs-card px-3 py-2 text-xs font-semibold text-red-700 disabled:opacity-50 dark:bg-neutral-900"
               >
                 {clearingWarehouseMovements ? (
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
@@ -1228,7 +1228,7 @@ export function SettingsScreen() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-fs-text">Déconnexion</p>
-            <p className="mt-1 text-xs text-neutral-600">Se déconnecter de FasoStock</p>
+            <p className="mt-1 text-xs text-neutral-600">Se déconnecter de Gabostock</p>
           </div>
           <div className="shrink-0">
             <LogOutButton className="border-red-500/60 bg-red-600 text-white shadow-none hover:bg-red-700" />

@@ -1,19 +1,19 @@
 import type { MetadataRoute } from "next";
 
-/** Même fichier que le favicon (`public/logo1.png`) — installation PWA. */
-const ICON = "/logo1.png";
+/** Même fichier que le favicon (`public/logo.png`) — installation PWA. */
+const ICON = "/logo.png";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "FasoStock",
-    short_name: "FasoStock",
+    name: "Gabostock",
+    short_name: "Gabostock",
     description: "Gestion de stock et ventes — mode hors ligne",
     start_url: "/",
     scope: "/",
     display: "standalone",
-    background_color: "#F8F7F5",
-    theme_color: "#E85D2C",
+    background_color: "#EBE4D9",
+    theme_color: "#f97316",
     orientation: "portrait-primary",
     lang: "fr",
     icons: [

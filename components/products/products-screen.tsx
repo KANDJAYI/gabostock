@@ -32,8 +32,8 @@ import { ROUTES } from "@/lib/config/routes";
 import { queryKeys } from "@/lib/query/query-keys";
 import { formatCurrency } from "@/lib/utils/currency";
 import { cn } from "@/lib/utils/cn";
-import { productsToCsv } from "@/lib/features/products/csv";
-import { downloadCsv } from "@/lib/utils/csv";
+import { productsToProSheet } from "@/lib/features/products/csv";
+import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
 import {
   FsCard,
   FsFab,
@@ -398,13 +398,24 @@ export function ProductsScreen() {
                   disabled={filtered.length === 0}
                   onClick={() => {
                     const d = new Date().toISOString().slice(0, 10);
-                    downloadCsv(`produits-${d}.csv`, productsToCsv(filtered));
-                    toast.success("CSV enregistré");
+                    const sub = `Généré le ${new Date().toLocaleString("fr-FR")}`;
+                    void (async () => {
+                      try {
+                        await downloadProXlsx(`produits-${d}`, [
+                          productsToProSheet(filtered, { subtitle: sub }),
+                        ]);
+                        toast.success("Excel enregistré");
+                      } catch (e) {
+                        toast.error(
+                          messageFromUnknownError(e, "Export Excel impossible."),
+                        );
+                      }
+                    })();
                   }}
                   className="fs-touch-target inline-flex items-center justify-center gap-2 rounded-[10px] border border-black/[0.1] bg-fs-card px-4 py-3 text-sm font-semibold text-neutral-800 disabled:opacity-40"
                 >
                   <MdDownload className="h-[18px] w-[18px] shrink-0" aria-hidden />
-                  Enregistrer CSV
+                  Exporter Excel
                 </button>
                 {canCreateProduct ? (
                   <button
@@ -430,7 +441,7 @@ export function ProductsScreen() {
                   setPage(0);
                 }}
                 placeholder="Rechercher nom, SKU, code-barres..."
-                className={fsInputClass("pl-9")}
+                className={fsInputClass("pl-10 pr-3 sm:pl-10 sm:pr-3")}
               />
             </div>
             <div className="flex flex-col gap-2 min-[340px]:flex-row min-[340px]:gap-2">
@@ -782,7 +793,7 @@ export function ProductsScreen() {
               setEditing(null);
               setShowForm(true);
             }}
-            className="fixed bottom-8 right-8 z-40 hidden items-center gap-2 rounded-2xl bg-[#f97316] px-5 py-3.5 text-sm font-semibold text-white shadow-lg min-[900px]:inline-flex"
+            className="fixed bottom-8 right-8 z-40 hidden items-center gap-2 rounded-2xl bg-[var(--fs-pos-orange)] px-5 py-3.5 text-sm font-semibold text-white shadow-lg min-[900px]:inline-flex"
           >
             <MdAdd className="h-5 w-5 shrink-0" aria-hidden />
             Nouveau produit
@@ -813,6 +824,21 @@ export function ProductsScreen() {
               editingId: editing?.id ?? null,
               payload,
             });
+          }}
+        />
+      ) : null}
+
+      {showImportCsv && companyId ? (
+        <ImportProductsCsvDialog
+          companyId={companyId}
+          storeId={storeId}
+          onClose={() => setShowImportCsv(false)}
+          onSuccess={() => {
+            setShowImportCsv(false);
+            void qc.invalidateQueries({ queryKey: queryKeys.products(companyId) });
+            if (storeId) {
+              void qc.invalidateQueries({ queryKey: queryKeys.productInventory(storeId) });
+            }
           }}
         />
       ) : null}

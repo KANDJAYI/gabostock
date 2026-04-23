@@ -31,7 +31,7 @@ export function BusinessTypeCard({ option, selected, onSelect }: BusinessTypeCar
         "group relative flex w-full flex-col gap-2 rounded-2xl border bg-fs-card p-4 text-left transition-all duration-200",
         "outline-none focus-visible:ring-2 focus-visible:ring-fs-accent focus-visible:ring-offset-2",
         selected
-          ? "border-fs-accent/50 bg-[color-mix(in_srgb,var(--fs-accent)_8%,var(--fs-card))] shadow-[0_8px_28px_-4px_rgba(232,93,44,0.22)] ring-2 ring-fs-accent/35 dark:bg-[color-mix(in_srgb,var(--fs-accent)_12%,var(--fs-surface-low))]"
+          ? "border-fs-accent/50 bg-[color-mix(in_srgb,var(--fs-accent)_8%,var(--fs-card))] shadow-[0_8px_28px_-4px_color-mix(in_srgb,var(--fs-accent)_30%,transparent)] ring-2 ring-fs-accent/35 dark:bg-[color-mix(in_srgb,var(--fs-accent)_12%,var(--fs-surface-low))]"
           : "border-black/[0.08] shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:border-fs-accent/35 hover:shadow-[0_8px_24px_-6px_rgba(0,0,0,0.08)] dark:border-white/[0.1] dark:hover:border-fs-accent/30",
       )}
     >

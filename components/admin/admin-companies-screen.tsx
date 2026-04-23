@@ -205,7 +205,7 @@ export function AdminCompaniesScreen() {
                               </span>
                               <button
                                 type="button"
-                                className="rounded p-1 hover:bg-white"
+                                className="rounded p-1 hover:bg-fs-card"
                                 onClick={() => mutStore.mutate({ id: s.id, isActive: !s.isActive })}
                               >
                                 <MdPowerSettingsNew className="h-4 w-4" />

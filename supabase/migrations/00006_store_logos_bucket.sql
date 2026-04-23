@@ -1,4 +1,4 @@
--- FasoStock — Bucket Storage pour logos de boutiques
+-- Gabostock — Bucket Storage pour logos de boutiques
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('store-logos', 'store-logos', true)
 ON CONFLICT (id) DO NOTHING;

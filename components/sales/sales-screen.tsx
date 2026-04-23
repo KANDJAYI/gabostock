@@ -17,8 +17,8 @@ import {
 } from "@/lib/features/settings/invoice-table-pos";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatDateTime, toIsoDate } from "@/lib/utils/date";
-import { downloadCsv } from "@/lib/utils/csv";
-import { salesToCsv } from "@/lib/features/sales/csv";
+import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
+import { salesToProSheet } from "@/lib/features/sales/csv";
 import { saleSellerLabel, saleStoreLabel } from "@/lib/features/sales/sale-display";
 import { ROUTES, storeFactureTabPath } from "@/lib/config/routes";
 import { messageFromUnknownError, toast } from "@/lib/toast";
@@ -285,10 +285,17 @@ export function SalesScreen() {
     );
   }
 
-  const exportCsv = () => {
+  const exportExcel = () => {
     const d = new Date().toISOString().slice(0, 10);
-    downloadCsv(`ventes-${d}.csv`, salesToCsv(sales, stores));
-    toast.success("CSV enregistré");
+    const sub = `Généré le ${new Date().toLocaleString("fr-FR")}`;
+    void (async () => {
+      try {
+        await downloadProXlsx(`ventes-${d}`, [salesToProSheet(sales, stores, { subtitle: sub })]);
+        toast.success("Excel enregistré");
+      } catch (e) {
+        toast.error(messageFromUnknownError(e, "Export Excel impossible."));
+      }
+    })();
   };
 
   const actionCards = (
@@ -375,11 +382,11 @@ export function SalesScreen() {
             <button
               type="button"
               disabled={sales.length === 0 || salesQ.isFetching}
-              onClick={exportCsv}
+              onClick={exportExcel}
               className={btnOutline}
             >
               <MdDownload className="h-[18px] w-[18px] shrink-0" aria-hidden />
-              Enregistrer CSV
+              Exporter Excel
             </button>
             {canCreateSale && currentStoreId ? (
               <Link href={`${ROUTES.stores}/${currentStoreId}/pos-quick`} className={btnPrimary}>
@@ -465,7 +472,10 @@ export function SalesScreen() {
                     setPage(0);
                   }}
                   max={to || undefined}
-                  className={cn(fsInputClass("pl-10"), "min-h-12 sm:min-h-11")}
+                  className={cn(
+                    fsInputClass("pl-10 pr-3 sm:pl-10 sm:pr-3"),
+                    "min-h-12 sm:min-h-11",
+                  )}
                 />
               </div>
             </div>
@@ -487,7 +497,10 @@ export function SalesScreen() {
                   }}
                   min={from || undefined}
                   max={toIsoDate(new Date())}
-                  className={cn(fsInputClass("pl-10"), "min-h-12 sm:min-h-11")}
+                  className={cn(
+                    fsInputClass("pl-10 pr-3 sm:pl-10 sm:pr-3"),
+                    "min-h-12 sm:min-h-11",
+                  )}
                 />
               </div>
             </div>
@@ -816,7 +829,7 @@ function SaleCard({
 
   return (
     <article
-      className="touch-manipulation cursor-pointer rounded-xl border border-black/[0.06] bg-fs-card p-4 shadow-sm transition-colors active:bg-neutral-100/80 dark:active:bg-white/[0.06]"
+      className="touch-manipulation cursor-pointer rounded-xl border border-black/[0.06] bg-fs-card p-4 shadow-sm transition-colors active:bg-fs-surface-container dark:active:bg-white/[0.06]"
       onClick={onDetail}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

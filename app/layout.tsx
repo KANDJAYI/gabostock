@@ -18,25 +18,22 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "FasoStock",
-    template: "%s · FasoStock",
+    default: "Gabostock",
+    template: "%s · Gabostock",
   },
   description:
-    "Gestion de stock, ventes et dépôt — FasoStock Web (offline-first).",
-  applicationName: "FasoStock",
-  /**
-   * Icônes : copies de `public/logo1.png` dans `app/icon.png` et `app/apple-icon.png`
-   * (convention Next.js — prioritaire sur ce `metadata.icons`).
-   */
+    "Gestion de stock, ventes et dépôt — Gabostock Web (offline-first).",
+  applicationName: "Gabostock",
+  /** Favicon & raccourcis : `public/logo.png` */
   icons: {
-    icon: [{ url: "/logo1.png", type: "image/png" }],
-    apple: "/logo1.png",
-    shortcut: "/logo1.png",
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: "/logo.png",
+    shortcut: "/logo.png",
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "FasoStock",
+    title: "Gabostock",
   },
   formatDetection: {
     telephone: false,
@@ -44,7 +41,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#E85D2C",
+  themeColor: "#f97316",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

@@ -22,7 +22,7 @@ export function SelectBusinessTypeScreen() {
 
   return (
     <div className="mx-auto w-full max-w-5xl">
-      <div className="rounded-2xl border border-neutral-200/80 bg-white p-4 shadow-[0_8px_32px_rgba(0,0,0,0.06)] sm:p-6 dark:border-white/10 dark:bg-fs-surface-low/80">
+      <div className="rounded-2xl border border-neutral-200/80 bg-fs-card p-4 shadow-[0_8px_32px_rgba(0,0,0,0.06)] sm:p-6 dark:border-white/10 dark:bg-fs-surface-low/80">
         <div className="mb-4 text-center sm:mb-5">
           <Link
             href={ROUTES.login}
@@ -35,18 +35,18 @@ export function SelectBusinessTypeScreen() {
 
         <div className="flex flex-col items-center text-center">
           <Image
-            src="/logo1.png"
+            src="/logo.png"
             alt=""
-            width={80}
-            height={80}
-            className="h-[72px] w-[72px] object-contain sm:h-20 sm:w-20"
+            width={96}
+            height={96}
+            className="h-20 w-20 object-contain sm:h-24 sm:w-24"
             priority
           />
           <h1 className="mt-3 max-w-md text-[1.45rem] font-bold leading-tight tracking-tight text-fs-text sm:text-[1.65rem]">
             Quel type de commerce gérez-vous ?
           </h1>
           <p className="mt-2 max-w-lg text-[15px] leading-relaxed text-neutral-600 sm:text-base dark:text-neutral-400">
-            Choisissez votre activité principale pour que FasoStock adapte votre espace.
+            Choisissez votre activité principale pour que Gabostock adapte votre espace.
           </p>
         </div>
 
