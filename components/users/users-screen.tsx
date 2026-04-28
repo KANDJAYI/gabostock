@@ -282,7 +282,7 @@ export function UsersScreen() {
                 className="inline-flex items-center gap-2 rounded-[10px] border border-black/8 bg-fs-card px-2.5 py-1.5 text-xs font-semibold text-neutral-800"
               >
                 <MdAdd className="h-4 w-4" aria-hidden />
-                Creer un utilisateur
+                Créer un utilisateur
               </button>
             ) : null}
           </div>

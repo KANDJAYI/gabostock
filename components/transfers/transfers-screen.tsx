@@ -499,7 +499,7 @@ export function TransfersScreen() {
                         {formatTransferDate(row.createdAt)} · {statusLabel(row.status)}
                       </p>
                       {row.id.startsWith("pending:") ? (
-                        <p className="mt-1 text-[11px] font-semibold text-violet-700">Non synchronisé</p>
+                        <p className="mt-1 text-[11px] font-semibold text-orange-700">Non synchronisé</p>
                       ) : null}
                     </div>
                     <div className="flex shrink-0 items-center gap-0.5 pr-1 sm:pr-2">
@@ -652,14 +652,14 @@ export function TransfersScreen() {
                                 type="button"
                                 disabled={approveMut.isPending}
                                 onClick={() => approveMut.mutate(d.id)}
-                                className="fs-touch-target inline-flex w-full items-center justify-center gap-2 rounded-[10px] bg-violet-600 py-3.5 text-sm font-semibold text-white disabled:opacity-50"
+                                className="fs-touch-target inline-flex w-full items-center justify-center gap-2 rounded-[10px] bg-fs-accent py-3.5 text-sm font-semibold text-white disabled:opacity-50"
                               >
                                 <MdCheckCircle className="h-5 w-5" aria-hidden />
                                 Approuver
                               </button>
                             ) : null}
                             {needsApproval && !canApprove ? (
-                              <p className="rounded-[10px] border border-violet-200 bg-violet-50 px-3 py-2 text-xs text-violet-900">
+                              <p className="rounded-[10px] border border-orange-200 bg-orange-50 px-3 py-2 text-xs text-orange-950">
                                 En attente d&apos;approbation par un utilisateur autorisé.
                               </p>
                             ) : null}

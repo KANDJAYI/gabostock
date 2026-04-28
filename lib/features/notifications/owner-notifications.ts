@@ -469,7 +469,7 @@ export function ownerNotificationStyle(kind: OwnerNotificationKind, trendLabel?:
         bg: "bg-emerald-500/10",
       };
     case "massiveStockEntry":
-      return { color: "text-blue-800", border: "border-l-4 border-l-blue-600", bg: "bg-blue-500/10" };
+      return { color: "text-orange-900", border: "border-l-4 border-l-orange-500", bg: "bg-orange-500/10" };
     case "productsNotSoldMonths":
       return {
         color: "text-orange-800",

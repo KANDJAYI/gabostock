@@ -464,13 +464,13 @@ export function DashboardScreen() {
               label="Ticket moyen"
               value={formatCurrency(d.ticketAverage)}
               icon={MdReceiptLong}
-              color="#0EA5E9"
+              color="#ea580c"
             />
             <KpiCard
               label="Produits vendus"
               value={`${d.salesSummary.itemsSold}`}
               icon={MdInventory2}
-              color="#2563EB"
+              color="#d97706"
             />
             <KpiCard
               label="Marge"
@@ -490,7 +490,7 @@ export function DashboardScreen() {
               label="Valeur stock"
               value={formatCurrency(d.stockValue.totalValue)}
               icon={MdWarehouse}
-              color="#7C3AED"
+              color="#ea580c"
               subtitle={`${d.stockValue.productCount} produits`}
             />
             <KpiCard
@@ -835,13 +835,13 @@ function Shortcuts({
       label: "Ventes",
       href: ROUTES.sales,
       icon: MdShoppingCart,
-      color: "#2563EB",
+      color: "#f97316",
     },
     {
       label: "Inventaire",
       href: ROUTES.inventory,
       icon: MdWarehouse,
-      color: "#2563EB",
+      color: "#ea580c",
     },
     {
       label: "Achats",

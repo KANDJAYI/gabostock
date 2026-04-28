@@ -22,7 +22,7 @@ function ClientKindBadge({ kind }: { kind: AdminAppErrorLog["clientKind"] }) {
     kind === "web"
       ? "bg-emerald-100 text-emerald-900 ring-emerald-200"
       : kind === "flutter"
-        ? "bg-sky-100 text-sky-900 ring-sky-200"
+        ? "bg-orange-100 text-orange-900 ring-orange-200"
         : "bg-slate-100 text-slate-600 ring-slate-200";
   return (
     <span

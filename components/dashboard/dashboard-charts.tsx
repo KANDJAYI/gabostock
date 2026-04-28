@@ -106,9 +106,9 @@ function donutSlicePath(
 const PIE_COLORS = [
   "var(--fs-accent)",
   "#059669",
-  "#2563EB",
+  "#0d9488",
   "#D97706",
-  "#7C3AED",
+  "#f59e0b",
   "#DC2626",
 ];
 

@@ -436,9 +436,11 @@ CREATE TABLE public.stock_transfer_items (
 -- ========== AUDIT & NOTIFICATIONS ==========
 CREATE TABLE public.audit_logs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  company_id UUID REFERENCES public.companies(id) ON DELETE SET NULL,
-  store_id UUID REFERENCES public.stores(id) ON DELETE SET NULL,
-  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  -- Intentionally no foreign keys: audit rows must remain insertable during cascading deletes.
+  -- Example: deleting a company cascades deletes to products/sales, whose audit triggers insert rows after the parent company row is gone.
+  company_id UUID,
+  store_id UUID,
+  user_id UUID,
   action TEXT NOT NULL,
   entity_type TEXT NOT NULL,
   entity_id UUID,

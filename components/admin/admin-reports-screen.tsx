@@ -39,8 +39,8 @@ export function AdminReportsScreen() {
       <div className="grid gap-4 md:grid-cols-2">
         <AdminCard>
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100">
-              <MdShoppingCart className="h-7 w-7 text-violet-600" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100">
+              <MdShoppingCart className="h-7 w-7 text-orange-600" />
             </div>
             <div>
               <p className="text-xs font-bold uppercase text-slate-500">Ventes totales (complétées)</p>

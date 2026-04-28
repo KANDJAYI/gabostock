@@ -221,7 +221,7 @@ export function SaleDetailModal({
                         "bg-orange-100 text-orange-900",
                       sale.status === "cancelled" && "bg-red-100 text-red-900",
                       sale.status === "refunded" &&
-                        "bg-violet-100 text-violet-900",
+                        "bg-orange-100 text-orange-900",
                       sale.status === "draft" && "bg-neutral-200 text-neutral-800",
                     )}
                   >

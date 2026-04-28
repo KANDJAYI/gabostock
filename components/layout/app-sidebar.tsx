@@ -59,20 +59,20 @@ export function AppSidebar({
               "transition-[width] duration-300 ease-[cubic-bezier(0.33,1,0.68,1)]",
               effectiveCollapsed ? "w-[58px]" : "w-[204px]",
             ),
-        "border-r border-black/[0.06] dark:border-white/[0.08]",
-        "bg-fs-card shadow-[inset_-1px_0_0_0_rgba(0,0,0,0.03)] dark:shadow-[inset_-1px_0_0_0_rgba(255,255,255,0.04)]",
+        "border-r border-[color-mix(in_srgb,var(--fs-accent)_16%,transparent)] dark:border-white/[0.08]",
+        "bg-fs-sidebar-surface shadow-[inset_-1px_0_0_0_rgba(0,0,0,0.04)] dark:shadow-[inset_-1px_0_0_0_rgba(0,0,0,0.2)]",
       )}
       aria-label="Navigation"
     >
-      {/* Fond décoratif très léger — même famille que la surface principale */}
+      {/* Voile chaud : renforce l’orange tendre (évite l’effet « barre blanche ») */}
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-fs-surface-low/80 via-transparent to-fs-surface-container/50 dark:from-white/[0.02] dark:via-transparent dark:to-white/[0.03]"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[color-mix(in_srgb,var(--fs-accent)_24%,#fff)]/45 via-transparent to-[color-mix(in_srgb,var(--fs-accent)_14%,var(--fs-surface))] dark:from-[color-mix(in_srgb,var(--fs-accent)_14%,transparent)] dark:via-transparent dark:to-transparent"
         aria-hidden
       />
 
       <div
         className={cn(
-          "relative z-[1] flex h-[58px] shrink-0 items-center border-b border-black/[0.06] dark:border-white/[0.08]",
+          "relative z-[1] flex h-[58px] shrink-0 items-center border-b border-[color-mix(in_srgb,var(--fs-accent)_18%,transparent)] dark:border-white/[0.08]",
           effectiveCollapsed ? "justify-center px-2" : "gap-3 px-4",
         )}
       >
@@ -80,7 +80,7 @@ export function AppSidebar({
           href="/dashboard"
           className={cn(
             "flex min-w-0 items-center rounded-2xl outline-none transition-[transform,box-shadow] duration-200",
-            "focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-fs-card",
+            "focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--fs-sidebar-surface)]",
             effectiveCollapsed ? "justify-center p-1.5" : "gap-3 p-1 pr-2",
           )}
           title={effectiveCollapsed ? "Gabostock — Tableau de bord" : undefined}
@@ -92,12 +92,12 @@ export function AppSidebar({
               companyLogoUrl && !brandLogoErr
                 ? cn(
                     "rounded-none bg-transparent p-0 ring-0",
-                    effectiveCollapsed ? "h-10 w-10" : "h-9 w-9",
+                    "h-10 w-10",
                   )
                 : cn(
-                    "overflow-hidden rounded-xl bg-fs-surface-container",
-                    "ring-1 ring-black/[0.06] dark:ring-white/[0.08]",
-                    effectiveCollapsed ? "h-10 w-10" : "h-9 w-9",
+                    "overflow-hidden rounded-xl bg-[color-mix(in_srgb,var(--fs-accent)_8%,var(--fs-surface-container))]",
+                    "ring-1 ring-[color-mix(in_srgb,var(--fs-accent)_20%,transparent)] dark:ring-white/[0.08]",
+                    "h-10 w-10",
                   ),
             )}
             aria-hidden
@@ -129,7 +129,8 @@ export function AppSidebar({
       <nav
         className={cn(
           "relative z-[1] flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overflow-x-hidden",
-          "px-2.5 py-3 [scrollbar-gutter:stable]",
+          "py-3 [scrollbar-gutter:stable]",
+          effectiveCollapsed ? "px-1" : "px-2.5",
         )}
         aria-label="Sections de l’application"
       >
@@ -145,17 +146,17 @@ export function AppSidebar({
               className={cn(
                 "group/nav relative flex items-center rounded-2xl text-[13px] font-semibold leading-tight tracking-tight",
                 "outline-none transition-[color,background-color,transform,box-shadow] duration-200 ease-out",
-                "focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-fs-card",
-                effectiveCollapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-2.5",
+                "focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-fs-sidebar-surface",
+                effectiveCollapsed ? "justify-center px-0 py-2" : "gap-3 px-3 py-2.5",
                 active
                   ? [
-                      "bg-[color-mix(in_srgb,var(--fs-accent)_13%,transparent)] text-[var(--fs-accent)]",
-                      "shadow-[0_1px_2px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.45)]",
+                      "bg-[color-mix(in_srgb,var(--fs-accent)_20%,transparent)] text-[var(--fs-accent)]",
+                      "shadow-[0_1px_2px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.4)]",
                       "dark:shadow-[0_1px_3px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)]",
                     ]
                   : [
-                      "text-black hover:bg-black/[0.035] hover:text-black",
-                      "active:scale-[0.99] dark:text-neutral-100 dark:hover:bg-white/[0.06] dark:hover:text-white",
+                      "text-[var(--fs-text)] hover:bg-[color-mix(in_srgb,var(--fs-accent)_14%,transparent)]",
+                      "active:scale-[0.99] dark:text-neutral-100 dark:hover:bg-white/[0.08] dark:hover:text-white",
                     ],
               )}
             >
@@ -167,17 +168,22 @@ export function AppSidebar({
               ) : null}
               <span
                 className={cn(
-                  "flex shrink-0 items-center justify-center rounded-xl transition-colors duration-200",
+                  "flex shrink-0 items-center justify-center transition-colors duration-200",
                   active
-                    ? "bg-[color-mix(in_srgb,var(--fs-accent)_18%,transparent)] text-[var(--fs-accent)]"
-                    : "bg-black/[0.04] text-black group-hover/nav:bg-black/[0.07] group-hover/nav:text-black dark:bg-white/[0.06] dark:text-neutral-100 dark:group-hover/nav:bg-white/[0.1] dark:group-hover/nav:text-white",
-                  effectiveCollapsed ? "h-9 w-9" : "h-8 w-8",
+                    ? "bg-[color-mix(in_srgb,var(--fs-accent)_22%,transparent)] text-[var(--fs-accent)]"
+                    : "bg-[color-mix(in_srgb,var(--fs-accent)_9%,transparent)] text-black group-hover/nav:bg-[color-mix(in_srgb,var(--fs-accent)_16%,transparent)] group-hover/nav:text-[var(--fs-text)] dark:bg-white/[0.07] dark:text-neutral-100 dark:group-hover/nav:bg-white/[0.11] dark:group-hover/nav:text-white",
+                  effectiveCollapsed
+                    ? "h-10 w-10 rounded-2xl"
+                    : "h-9 w-9 rounded-xl",
                 )}
                 aria-hidden
               >
                 <Icon
-                  className="h-4 w-4"
-                  strokeWidth={active ? 2.35 : 2}
+                  className={cn(
+                    "shrink-0",
+                    effectiveCollapsed ? "h-6 w-6" : "h-5 w-5",
+                  )}
+                  strokeWidth={active ? 2.25 : 2}
                 />
               </span>
               {!effectiveCollapsed ? (
@@ -188,7 +194,7 @@ export function AppSidebar({
         })}
       </nav>
 
-      <div className="relative z-[1] mt-auto space-y-2 border-t border-black/[0.06] p-2.5 dark:border-white/[0.08]">
+      <div className="relative z-[1] mt-auto space-y-2 border-t border-[color-mix(in_srgb,var(--fs-accent)_15%,transparent)] p-2.5 dark:border-white/[0.08]">
         {isDrawer ? (
           <button
             type="button"
@@ -196,18 +202,18 @@ export function AppSidebar({
             aria-label="Fermer le menu"
             className={cn(
               "group/drawer-close flex w-full items-center justify-between gap-3 rounded-full px-4 py-3",
-              "bg-neutral-100 text-fs-text",
+              "bg-fs-sidebar-surface-elevated text-fs-text",
               "shadow-[0_2px_10px_rgba(0,0,0,0.07)]",
               "transition-[transform,background-color,box-shadow] duration-200",
-              "hover:bg-neutral-50 hover:shadow-[0_3px_12px_rgba(0,0,0,0.08)] active:scale-[0.98]",
+              "hover:bg-[color-mix(in_srgb,var(--fs-accent)_22%,var(--fs-surface-container))] hover:shadow-[0_3px_12px_rgba(0,0,0,0.08)] active:scale-[0.98]",
               "dark:bg-white/[0.09] dark:shadow-[0_2px_14px_rgba(0,0,0,0.35)] dark:hover:bg-white/[0.12]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-fs-card",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-fs-sidebar-surface",
             )}
           >
             <span className="flex items-center gap-2.5">
               <Menu
-                className="h-[18px] w-[18px] shrink-0 text-[var(--fs-accent)]"
-                strokeWidth={2.25}
+                className="h-6 w-6 shrink-0 text-[var(--fs-accent)]"
+                strokeWidth={2.15}
                 aria-hidden
               />
               <span className="text-sm font-bold tracking-tight text-neutral-800 dark:text-neutral-100">
@@ -224,21 +230,29 @@ export function AppSidebar({
             type="button"
             onClick={onToggleCollapsed}
             className={cn(
-              "group/collapse flex w-full items-center rounded-2xl border border-black/[0.07] bg-fs-surface-container/60 text-fs-on-surface-variant",
+              "group/collapse flex w-full items-center rounded-2xl border border-[color-mix(in_srgb,var(--fs-accent)_20%,transparent)] bg-fs-sidebar-surface-elevated/90 text-fs-on-surface-variant",
               "shadow-sm transition-[color,background-color,transform,border-color] duration-200",
-              "hover:border-black/[0.1] hover:bg-fs-surface-container hover:text-fs-text",
-              "active:scale-[0.98] dark:border-white/[0.1] dark:bg-white/[0.04] dark:hover:border-white/[0.14] dark:hover:bg-white/[0.07]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-fs-card",
-              effectiveCollapsed ? "justify-center p-3" : "justify-between gap-2 px-3 py-2.5",
+              "hover:border-[color-mix(in_srgb,var(--fs-accent)_30%,transparent)] hover:bg-[color-mix(in_srgb,var(--fs-accent)_14%,var(--fs-surface-container))] hover:text-fs-text",
+              "active:scale-[0.98] dark:border-white/[0.1] dark:bg-white/[0.05] dark:hover:border-white/[0.14] dark:hover:bg-white/[0.08]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-fs-sidebar-surface",
+              effectiveCollapsed ? "justify-center p-2.5" : "justify-between gap-2 px-3 py-2.5",
             )}
             title={effectiveCollapsed ? "Agrandir le menu" : "Réduire le menu"}
           >
             {effectiveCollapsed ? (
-              <PanelLeftOpen className="h-4 w-4 shrink-0 text-[var(--fs-accent)]" aria-hidden />
+              <PanelLeftOpen
+                className="h-6 w-6 shrink-0 text-[var(--fs-accent)]"
+                strokeWidth={2.15}
+                aria-hidden
+              />
             ) : (
               <>
                 <span className="flex items-center gap-2 text-xs font-semibold">
-                  <Menu className="h-4 w-4 text-[var(--fs-accent)]" aria-hidden />
+                  <Menu
+                    className="h-5 w-5 shrink-0 text-[var(--fs-accent)]"
+                    strokeWidth={2.1}
+                    aria-hidden
+                  />
                   Menu
                 </span>
                 <ChevronLeft
@@ -253,14 +267,14 @@ export function AppSidebar({
         {userEmail ? (
           <div
             className={cn(
-              "rounded-2xl border border-black/[0.05] bg-fs-surface-low/90 px-2.5 py-2 dark:border-white/[0.07] dark:bg-white/[0.04]",
+              "rounded-2xl border border-[color-mix(in_srgb,var(--fs-accent)_14%,transparent)] bg-[color-mix(in_srgb,var(--fs-accent)_8%,var(--fs-surface-low))] px-2.5 py-2 dark:border-white/[0.07] dark:bg-white/[0.05]",
               effectiveCollapsed && "flex justify-center border-0 bg-transparent p-0",
             )}
           >
             {!effectiveCollapsed ? (
               <div className="flex items-center gap-2.5">
                 <span
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_srgb,var(--fs-accent)_12%,transparent)] text-[10px] font-bold tabular-nums text-[var(--fs-accent)] ring-1 ring-[color-mix(in_srgb,var(--fs-accent)_20%,transparent)]"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_srgb,var(--fs-accent)_12%,transparent)] text-[10px] font-bold tabular-nums text-[var(--fs-accent)] ring-1 ring-[color-mix(in_srgb,var(--fs-accent)_20%,transparent)]"
                   aria-hidden
                 >
                   {navInitials(userEmail)}
@@ -274,7 +288,7 @@ export function AppSidebar({
               </div>
             ) : (
               <span
-                className="flex h-9 w-9 items-center justify-center rounded-xl bg-[color-mix(in_srgb,var(--fs-accent)_12%,transparent)] text-[10px] font-bold tabular-nums text-[var(--fs-accent)] ring-1 ring-[color-mix(in_srgb,var(--fs-accent)_20%,transparent)]"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-[color-mix(in_srgb,var(--fs-accent)_12%,transparent)] text-[10px] font-bold tabular-nums text-[var(--fs-accent)] ring-1 ring-[color-mix(in_srgb,var(--fs-accent)_20%,transparent)]"
                 title={userEmail}
               >
                 {navInitials(userEmail)}

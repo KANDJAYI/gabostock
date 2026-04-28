@@ -21,12 +21,16 @@
   --fs-surface-low: #f5f4f0;
   --fs-card: #ffffff;
   --fs-text: #1c1b1f;
+  --fs-paint-watermark-opacity: 0.42;
   /* Material 3 onSurfaceVariant (clair) — texte secondaire / labels */
   --fs-on-surface-variant: #49454f;
   --fs-on-primary-container: #5c2a0e;
   --fs-splash: #f1f5f9;
   --fs-pos-orange: #f97316;
   --fs-safe-bottom: env(safe-area-inset-bottom, 0px);
+  /** Fond menu latéral : teinte orange un peu plus marquée. */
+  --fs-sidebar-surface: color-mix(in oklab, var(--fs-accent) 20%, var(--fs-surface));
+  --fs-sidebar-surface-elevated: color-mix(in oklab, var(--fs-accent) 28%, var(--fs-surface-container));
 }
 
 html.dark {
@@ -35,10 +39,13 @@ html.dark {
   --fs-surface-low: #181818;
   --fs-card: #1c1b1f;
   --fs-text: #e6e1e5;
+  --fs-paint-watermark-opacity: 0.26;
   /* Aligné AppTheme Flutter (ColorScheme.dark + M3 onSurfaceVariant) */
   --fs-on-surface-variant: #cac4d0;
   --fs-on-primary-container: #ffdbd0;
   --fs-splash: #1a1a1a;
+  --fs-sidebar-surface: color-mix(in oklab, var(--fs-accent) 22%, var(--fs-surface));
+  --fs-sidebar-surface-elevated: color-mix(in oklab, var(--fs-accent) 30%, var(--fs-surface-container));
 }
 
 @theme inline {
@@ -50,6 +57,8 @@ html.dark {
   --color-fs-text: var(--fs-text);
   --color-fs-on-surface-variant: var(--fs-on-surface-variant);
   --color-fs-pos-orange: var(--fs-pos-orange);
+  --color-fs-sidebar-surface: var(--fs-sidebar-surface);
+  --color-fs-sidebar-surface-elevated: var(--fs-sidebar-surface-elevated);
   --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -61,6 +70,32 @@ body {
   background: var(--fs-surface);
   color: var(--fs-text);
   font-family: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+  isolation: isolate;
+  position: relative;
+}
+
+body::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='960' height='680' viewBox='0 0 960 680' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%238c8c8c' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M86 385 C210 210 390 155 612 174 C736 185 833 145 890 72' stroke-width='76' stroke-opacity='.13'/%3E%3Cpath d='M52 481 C212 392 350 363 515 382 C666 399 778 357 914 254' stroke-width='48' stroke-opacity='.1'/%3E%3Cpath d='M183 585 C316 516 466 506 637 548 C731 571 815 556 899 489' stroke-width='62' stroke-opacity='.08'/%3E%3Cpath d='M146 287 C278 206 417 214 553 248 C635 269 708 263 793 210' stroke-width='28' stroke-opacity='.09'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='720' height='560' viewBox='0 0 720 560' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23777777' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M68 408 C177 274 317 231 462 268 C543 289 615 267 675 187' stroke-width='58' stroke-opacity='.1'/%3E%3Cpath d='M32 493 C156 438 297 418 433 439 C536 455 606 430 694 356' stroke-width='34' stroke-opacity='.08'/%3E%3C/g%3E%3C/svg%3E");
+  background-position:
+    right -180px top 74px,
+    left -190px bottom -120px;
+  background-repeat: no-repeat;
+  background-size:
+    min(980px, 108vw) auto,
+    min(720px, 92vw) auto;
+  content: "";
+  inset: 0;
+  opacity: var(--fs-paint-watermark-opacity);
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+}
+
+body > :not(script) {
+  position: relative;
+  z-index: 1;
 }
 
 /* Zone tactile minimale mobile (type Flutter 48) */

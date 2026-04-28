@@ -489,19 +489,19 @@ export function CreditScreen() {
           value={formatCurrency(kpiBase.totalSaleTotal)}
           subtitle="TTC sur la période filtrée"
           icon={MdReceiptLong}
-          colorClass="bg-sky-500/15 text-sky-600"
+          colorClass="bg-orange-500/15 text-orange-700"
         />
         <KpiCard
           label="Ventes avec solde"
           value={String(kpiBase.countOpen)}
           icon={MdShoppingCart}
-          colorClass="bg-blue-600/15 text-blue-700"
+          colorClass="bg-fs-accent/15 text-fs-accent"
         />
         <KpiCard
           label="Clients débiteurs"
           value={String(kpiBase.debtors)}
           icon={MdPeople}
-          colorClass="bg-violet-500/15 text-violet-700"
+          colorClass="bg-orange-500/15 text-orange-700"
         />
         <KpiCard
           label="En retard"

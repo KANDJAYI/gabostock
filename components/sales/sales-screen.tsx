@@ -930,7 +930,10 @@ function LoadingState() {
 
 function EmptyStateCard({ currentStoreId }: { currentStoreId: string | null }) {
   return (
-    <FsCard className="py-14 text-center sm:py-16" padding="px-5 py-14 sm:px-6 sm:py-16">
+    <FsCard
+      className="mb-14 py-14 text-center sm:py-16 max-[1023px]:mb-28"
+      padding="px-5 py-14 sm:px-6 sm:py-16"
+    >
       <MdShoppingCart
         className="mx-auto h-14 w-14 text-neutral-300"
         aria-hidden

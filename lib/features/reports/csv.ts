@@ -59,12 +59,12 @@ function reportsPageFlatMatrix(
 
 const SECTION_TINT: Record<string, string> = {
   Section: "FFF1F5F9",
-  Synthèse: "FFEFF6FF",
+  Synthèse: "FFFFF7ED",
   "Top produits": "FFFFEDD5",
   "Moins vendus": "FFFEE2E2",
   Catégories: "FFECFDF5",
-  "Ventes par jour": "FFEDE9FE",
-  "Stock boutique": "FFE0F2FE",
+  "Ventes par jour": "FFFFEDD5",
+  "Stock boutique": "FFFFEDD5",
 };
 
 export function reportsPageToFlatProSheet(

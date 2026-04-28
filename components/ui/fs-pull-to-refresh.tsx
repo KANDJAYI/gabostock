@@ -7,8 +7,22 @@ import { MdRefresh } from "react-icons/md";
 const THRESHOLD_PX = 56;
 
 /**
+ * Position de scroll : le shell (`app-shell`) fait défiler `<main>`, pas `window`.
+ * Si on lit seulement `window.scrollY`, il reste à 0 et chaque `touchmove` avec dy>0
+ * appelle `preventDefault()` → scroll tactile bloqué sur mobile.
+ */
+function getAppScrollTop(): number {
+  if (typeof document === "undefined") return 0;
+  const main = document.querySelector("main");
+  if (main) return main.scrollTop;
+  return (
+    window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0
+  );
+}
+
+/**
  * Pull-to-refresh tactile (mobile), proche de `RefreshIndicator` Flutter.
- * S’active lorsque la page est scrollée en haut (`window.scrollY` ≈ 0).
+ * S’active lorsque le conteneur de scroll de l’app est en haut (scrollTop ≈ 0).
  */
 export function FsPullToRefresh({
   onRefresh,
@@ -32,21 +46,15 @@ export function FsPullToRefresh({
   useEffect(() => {
     if (disabled) return;
 
-    const scrollTop = () =>
-      window.scrollY ||
-      document.documentElement.scrollTop ||
-      document.body.scrollTop ||
-      0;
-
     const onTouchStart = (e: TouchEvent) => {
-      if (scrollTop() > 2) return;
+      if (getAppScrollTop() > 2) return;
       tracking.current = true;
       startY.current = e.touches[0].clientY;
     };
 
     const onTouchMove = (e: TouchEvent) => {
       if (!tracking.current) return;
-      if (scrollTop() > 2) {
+      if (getAppScrollTop() > 2) {
         tracking.current = false;
         pullAmt.current = 0;
         setPull(0);

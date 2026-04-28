@@ -19,7 +19,7 @@ const COLORS = {
   dark: {
     success: "#15803D",
     error: "#DC2626",
-    info: "#2563EB",
+    info: "#f97316",
   },
 } as const;
 

@@ -642,13 +642,13 @@ export function ReportsScreen() {
                 label="Ticket moyen"
                 value={formatCurrency(d.ticketAverage)}
                 icon={MdReceiptLong}
-                colorClass="bg-sky-500/15 text-sky-600"
+                colorClass="bg-orange-500/15 text-orange-700"
               />
               <KpiCard
                 label="Produits vendus"
                 value={String(d.salesSummary.itemsSold)}
                 icon={MdInventory2}
-                colorClass="bg-blue-600/15 text-blue-700"
+                colorClass="bg-fs-accent/15 text-fs-accent"
               />
               <KpiCard
                 label="Marge"
@@ -673,7 +673,7 @@ export function ReportsScreen() {
                     : "—"
                 }
                 icon={MdWarehouse}
-                colorClass="bg-violet-500/15 text-violet-700"
+                colorClass="bg-orange-500/15 text-orange-700"
               />
             </div>
 
@@ -824,7 +824,7 @@ export function ReportsScreen() {
                   >
                     <div className="rounded-[10px] bg-fs-surface-container/80 px-3 py-2.5">
                       <p className="text-[11px] text-neutral-600">Produits en stock</p>
-                      <p className="mt-1 text-lg font-bold text-blue-700">
+                      <p className="mt-1 text-lg font-bold text-fs-accent">
                         {d.stockReport.currentStockCount}
                       </p>
                     </div>

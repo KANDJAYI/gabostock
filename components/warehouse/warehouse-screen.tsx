@@ -94,8 +94,10 @@ const ACCENT = {
   /** Accent principal (POS / CTA) — aligné sur `--fs-pos-orange`. */
   primary: "#f97316",
   rose: "#DB2777",
-  blue: "#2563EB",
-  violet: "#7C3AED",
+  /** Ambre — différencier des boutons orange plein (KPI, liens). */
+  amber: "#d97706",
+  /** Accent secondaire (orange chaud) pour KPIs / graphiques. */
+  warmAccent: "#ea580c",
 };
 
 function refLabel(m: WarehouseMovement): string {
@@ -143,9 +145,9 @@ function statusColor(s: TransferStatus): string {
     case "pending":
       return "#f97316";
     case "approved":
-      return "#4f46e5";
+      return "#059669";
     case "shipped":
-      return "#2563eb";
+      return "#0d9488";
     case "received":
       return "#16a34a";
     case "rejected":
@@ -543,7 +545,7 @@ export function WarehouseScreen() {
                   <button
                     type="button"
                     onClick={() => setTab(1)}
-                    className="inline-flex min-h-[44px] min-w-[44px] items-center gap-1.5 rounded-[12px] bg-[#E6DDF6] px-3 py-2.5 text-[13px] font-bold text-[#7C3AED] active:opacity-90 sm:min-h-[48px] sm:gap-2 sm:rounded-[14px] sm:px-4 sm:py-3.5 sm:text-sm"
+                    className="inline-flex min-h-[44px] min-w-[44px] items-center gap-1.5 rounded-[12px] bg-[#ffedd5] px-3 py-2.5 text-[13px] font-bold text-[#c2410c] active:opacity-90 sm:min-h-[48px] sm:gap-2 sm:rounded-[14px] sm:px-4 sm:py-3.5 sm:text-sm"
                   >
                     <MdCategory className="h-[18px] w-[18px] shrink-0 sm:h-5 sm:w-5" />
                     Produits
@@ -551,7 +553,7 @@ export function WarehouseScreen() {
                   <button
                     type="button"
                     onClick={openTransferDialog}
-                    className="inline-flex min-h-[44px] min-w-[44px] items-center gap-1.5 rounded-[12px] bg-[#DCE5F3] px-3 py-2.5 text-[13px] font-bold text-[#2563EB] active:opacity-90 sm:min-h-[48px] sm:gap-2 sm:rounded-[14px] sm:px-4 sm:py-3.5 sm:text-sm"
+                    className="inline-flex min-h-[44px] min-w-[44px] items-center gap-1.5 rounded-[12px] bg-[#ffedd5] px-3 py-2.5 text-[13px] font-bold text-[#c2410c] active:opacity-90 sm:min-h-[48px] sm:gap-2 sm:rounded-[14px] sm:px-4 sm:py-3.5 sm:text-sm"
                   >
                     <MdSwapHoriz className="h-[18px] w-[18px] shrink-0 sm:h-5 sm:w-5" />
                     Transferts
@@ -571,13 +573,13 @@ export function WarehouseScreen() {
                     <Kpi
                       title="Valeur au prix de vente"
                       value={formatCurrency(dashboard.valueAtSalePrice)}
-                      color={ACCENT.blue}
+                      color={ACCENT.amber}
                       icon={<MdBarChart className="h-5 w-5" />}
                     />
                     <Kpi
                       title="Références en stock"
                       value={`${dashboard.skuCount}`}
-                      color={ACCENT.violet}
+                      color={ACCENT.warmAccent}
                       icon={<MdCategory className="h-5 w-5" />}
                     />
                     <Kpi
@@ -810,7 +812,7 @@ export function WarehouseScreen() {
                 }}
               />
               <ActionRow
-                color="#7C3AED"
+                color="#ea580c"
                 icon={<MdCategory className="h-6 w-6" />}
                 title="Catalogue produits"
                 subtitle="Créer ou modifier des articles (dépôt et boutiques)"
@@ -820,7 +822,7 @@ export function WarehouseScreen() {
                 }}
               />
               <ActionRow
-                color="#2563EB"
+                color="#f97316"
                 icon={<MdSwapHoriz className="h-6 w-6" />}
                 title="Transfert vers une boutique"
                 subtitle="Envoyer du stock du dépôt vers une boutique"
@@ -850,7 +852,7 @@ export function WarehouseScreen() {
                 }}
               />
               <ActionRow
-                color="#2563EB"
+                color="#d97706"
                 icon={<MdArticle className="h-6 w-6" />}
                 title="Historique des bons"
                 subtitle="Voir les bons/factures"
@@ -971,14 +973,14 @@ export function WarehouseScreen() {
                               type="button"
                               disabled={approveMut.isPending}
                               onClick={() => approveMut.mutate(d.id)}
-                              className="fs-touch-target inline-flex w-full items-center justify-center gap-2 rounded-[10px] bg-violet-600 py-3.5 text-sm font-semibold text-white disabled:opacity-50"
+                              className="fs-touch-target inline-flex w-full items-center justify-center gap-2 rounded-[10px] bg-fs-accent py-3.5 text-sm font-semibold text-white disabled:opacity-50"
                             >
                               <MdCheckCircle className="h-5 w-5" aria-hidden />
                               Approuver
                             </button>
                           ) : null}
                           {needsApproval && !canApproveTransfer ? (
-                            <p className="rounded-[10px] border border-violet-200 bg-violet-50 px-3 py-2 text-xs text-violet-900">
+                            <p className="rounded-[10px] border border-orange-200 bg-orange-50 px-3 py-2 text-xs text-orange-950">
                               En attente d&apos;approbation par un utilisateur autorisé.
                             </p>
                           ) : null}
