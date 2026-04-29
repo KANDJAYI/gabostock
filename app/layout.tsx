@@ -1,4 +1,5 @@
 import { AppProviders } from "@/components/providers/app-providers";
+import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { RegisterServiceWorker } from "@/components/pwa/register-sw";
 import type { Metadata, Viewport } from "next";
 import { Roboto } from "next/font/google";
@@ -77,6 +78,7 @@ export default function RootLayout({
         <AppProviders>
           {children}
           <RegisterServiceWorker />
+          <InstallPrompt />
         </AppProviders>
       </body>
     </html>
