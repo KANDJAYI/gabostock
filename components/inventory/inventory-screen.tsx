@@ -824,6 +824,7 @@ export function InventoryScreen() {
           setAdjustTarget(null);
         }}
         productName={adjustTarget?.name ?? ""}
+        productImageUrl={adjustTarget?.imageUrl ?? null}
         unit={adjustTarget?.unit ?? "pce"}
         currentQty={adjustTarget?.availableQuantity ?? 0}
         onConfirm={async ({ delta, reason }) => {

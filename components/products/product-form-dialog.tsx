@@ -113,6 +113,7 @@ export function ProductFormDialog({
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [pendingPreviews, setPendingPreviews] = useState<string[]>([]);
   const [removedImageIds, setRemovedImageIds] = useState<string[]>([]);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [inlineBusy, setInlineBusy] = useState(false);
 
@@ -126,6 +127,15 @@ export function ProductFormDialog({
       for (const u of pendingPreviews) URL.revokeObjectURL(u);
     };
   }, [pendingPreviews]);
+
+  useEffect(() => {
+    if (!previewUrl) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreviewUrl(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [previewUrl]);
 
   const onPickFiles = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const list = e.target.files;
@@ -254,6 +264,26 @@ export function ProductFormDialog({
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/45 p-0 sm:items-center sm:p-6">
+      {previewUrl ? (
+        <button
+          type="button"
+          className="fixed inset-0 z-[90] cursor-zoom-out bg-black/60 backdrop-blur-[2px]"
+          onClick={() => setPreviewUrl(null)}
+          aria-label="Fermer l'aperçu image"
+        >
+          <span className="absolute left-1/2 top-1/2 w-[min(92vw,420px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-white/15 bg-black/20 shadow-2xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewUrl}
+              alt=""
+              className="block h-auto w-full object-contain"
+              loading="eager"
+              decoding="async"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </span>
+        </button>
+      ) : null}
       <div
         className="flex max-h-[min(700px,88vh)] w-full max-w-[520px] flex-col rounded-t-2xl border border-black/[0.08] bg-fs-card shadow-2xl sm:rounded-2xl"
         role="dialog"
@@ -272,17 +302,29 @@ export function ProductFormDialog({
             <div className="mt-1.5 flex flex-wrap gap-2">
               {existingImages.map((img) => (
                 <div key={img.id} className="relative">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={img.url}
-                    alt=""
-                    className="h-16 w-16 rounded-lg border border-black/[0.08] object-cover"
-                  />
+                  <button
+                    type="button"
+                    className="block rounded-lg"
+                    onClick={() => setPreviewUrl(img.url)}
+                    aria-label="Agrandir l'image"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={img.url}
+                      alt=""
+                      className="h-16 w-16 rounded-lg border border-black/[0.08] object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
                   <button
                     type="button"
                     className="absolute -right-1 -top-1 flex h-7 w-7 items-center justify-center rounded-full bg-red-600 text-white shadow"
                     aria-label="Retirer l'image"
-                    onClick={() => markImageRemoved(img.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      markImageRemoved(img.id);
+                    }}
                   >
                     <MdClose className="h-4 w-4" />
                   </button>
@@ -290,17 +332,29 @@ export function ProductFormDialog({
               ))}
               {pendingPreviews.map((src, i) => (
                 <div key={src} className="relative">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={src}
-                    alt=""
-                    className="h-16 w-16 rounded-lg border border-black/[0.08] object-cover"
-                  />
+                  <button
+                    type="button"
+                    className="block rounded-lg"
+                    onClick={() => setPreviewUrl(src)}
+                    aria-label="Agrandir l'image"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={src}
+                      alt=""
+                      className="h-16 w-16 rounded-lg border border-black/[0.08] object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
                   <button
                     type="button"
                     className="absolute -right-1 -top-1 flex h-7 w-7 items-center justify-center rounded-full bg-red-600 text-white shadow"
                     aria-label="Retirer"
-                    onClick={() => removePending(i)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removePending(i);
+                    }}
                   >
                     <MdClose className="h-4 w-4" />
                   </button>

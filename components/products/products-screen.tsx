@@ -126,7 +126,9 @@ export function ProductsScreen() {
   });
   const inventoryQ = useQuery({
     queryKey: queryKeys.productInventory(storeId),
-    queryFn: () => listStoreInventory(storeId),
+    // IMPORTANT: React Query / persistance ne sérialise pas bien `Map` (devient `{}`),
+    // ce qui fait afficher 0 partout. On renvoie un objet simple.
+    queryFn: async () => Object.fromEntries(await listStoreInventory(storeId)),
     enabled: !!storeId,
   });
 
@@ -495,13 +497,14 @@ export function ProductsScreen() {
               const threshold =
                 p.stock_min > 0 ? p.stock_min : DEFAULT_STOCK_THRESHOLD;
               const thumbUrl = firstProductImageUrl(p);
+              const allUrls = p.product_images?.map((img) => img.url).filter(Boolean) ?? [];
               return (
                 <article
                   key={p.id}
                   className="rounded-xl border border-black/[0.06] bg-fs-card p-3 shadow-sm sm:rounded-2xl"
                 >
                   <div className="flex items-start gap-3">
-                    <ProductListThumbnail imageUrl={thumbUrl} />
+                    <ProductListThumbnail imageUrl={thumbUrl} allImageUrls={allUrls} />
                     <div className="min-w-0 flex-1">
                       <h3
                         className={cn(

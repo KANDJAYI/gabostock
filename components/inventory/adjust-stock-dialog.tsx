@@ -11,6 +11,7 @@ export type AdjustStockDialogProps = {
   open: boolean;
   onClose: () => void;
   productName: string;
+  productImageUrl?: string | null;
   /** Unité affichée comme Flutter (`Stock actuel: X ${unit}`). */
   unit?: string;
   currentQty: number;
@@ -25,12 +26,14 @@ export function AdjustStockDialog({
   open,
   onClose,
   productName,
+  productImageUrl = null,
   unit = "pce",
   currentQty,
   onConfirm,
 }: AdjustStockDialogProps) {
   const [mode, setMode] = useState<"delta" | "inventory">("delta");
-  const [delta, setDelta] = useState("");
+  const [deltaKind, setDeltaKind] = useState<"add" | "remove">("add");
+  const [deltaAbs, setDeltaAbs] = useState("");
   const [counted, setCounted] = useState(String(currentQty));
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
@@ -39,7 +42,8 @@ export function AdjustStockDialog({
   useEffect(() => {
     if (!open) return;
     setMode("delta");
-    setDelta("");
+    setDeltaKind("add");
+    setDeltaAbs("");
     setCounted(String(currentQty));
     setReason("");
     setBusy(false);
@@ -52,9 +56,11 @@ export function AdjustStockDialog({
       if (!Number.isFinite(c) || c < 0) return 0;
       return c - currentQty;
     }
-    const d = Number.parseInt(delta, 10);
-    return Number.isFinite(d) ? Math.trunc(d) : 0;
-  }, [mode, delta, counted, currentQty]);
+    const abs = Number.parseInt(deltaAbs, 10);
+    const v = Number.isFinite(abs) ? Math.trunc(abs) : 0;
+    if (v <= 0) return 0;
+    return deltaKind === "remove" ? -v : v;
+  }, [mode, deltaAbs, deltaKind, counted, currentQty]);
 
   const needsAdjust = computedDelta !== 0;
 
@@ -91,7 +97,18 @@ export function AdjustStockDialog({
                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] bg-fs-surface-container ring-1 ring-black/[0.06]"
                 aria-hidden
               >
-                <MdInventory2 className="h-6 w-6 text-neutral-600" />
+                {productImageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={productImageUrl}
+                    alt=""
+                    className="h-full w-full rounded-[10px] object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <MdInventory2 className="h-6 w-6 text-neutral-600" />
+                )}
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-base font-semibold leading-snug text-fs-text line-clamp-2">
@@ -147,15 +164,41 @@ export function AdjustStockDialog({
                   htmlFor="adjust-delta"
                   className="block text-sm font-medium text-neutral-800"
                 >
-                  Variation (positif = entrée, négatif = sortie)
+                  Variation
                 </label>
+                <div className="mt-2 inline-flex w-full rounded-xl border border-black/[0.08] bg-fs-surface-container p-1">
+                  <button
+                    type="button"
+                    onClick={() => setDeltaKind("add")}
+                    className={cn(
+                      "flex-1 rounded-lg px-3 py-2 text-sm font-semibold",
+                      deltaKind === "add"
+                        ? "bg-fs-card text-fs-text shadow-sm"
+                        : "text-neutral-600",
+                    )}
+                  >
+                    Ajouter
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeltaKind("remove")}
+                    className={cn(
+                      "flex-1 rounded-lg px-3 py-2 text-sm font-semibold",
+                      deltaKind === "remove"
+                        ? "bg-fs-card text-fs-text shadow-sm"
+                        : "text-neutral-600",
+                    )}
+                  >
+                    Diminuer
+                  </button>
+                </div>
                 <input
                   id="adjust-delta"
                   inputMode="numeric"
                   className={cn(fsInputClass(), "mt-1.5")}
-                  value={delta}
-                  onChange={(e) => setDelta(e.target.value)}
-                  placeholder="Ex: 10 ou -5"
+                  value={deltaAbs}
+                  onChange={(e) => setDeltaAbs(e.target.value)}
+                  placeholder="Ex: 10"
                   autoComplete="off"
                 />
               </>
