@@ -24,6 +24,20 @@ export const metadata: Metadata = {
   description:
     "Gestion de stock, ventes et dépôt — Gabostock Web (offline-first).",
   applicationName: "Gabostock",
+  openGraph: {
+    type: "website",
+    siteName: "Gabostock",
+    title: "Gabostock",
+    description: "Gestion de stock, ventes et dépôt — Gabostock Web (offline-first).",
+    url: siteUrl,
+    images: [{ url: "/logogabostock.png" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "Gabostock",
+    description: "Gestion de stock, ventes et dépôt — Gabostock Web (offline-first).",
+    images: ["/logogabostock.png"],
+  },
   /** Favicon & raccourcis : `public/logogabostock.png` */
   icons: {
     icon: [{ url: "/logogabostock.png", type: "image/png" }],
