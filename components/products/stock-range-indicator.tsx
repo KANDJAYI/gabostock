@@ -8,11 +8,34 @@ export function StockRangeIndicator({
   alertThreshold,
   className,
 }: {
-  quantity: number;
+  /** `null` = inventaire pas encore chargé — évite d’afficher 0 trompeurs. */
+  quantity: number | null;
   alertThreshold: number;
   /** Ex. contrainte largeur sur petits écrans (liste stock caissier). */
   className?: string;
 }) {
+  if (quantity === null) {
+    return (
+      <div
+        className={cn("flex min-w-0 items-center gap-2", className)}
+        role="status"
+        aria-busy="true"
+        aria-label="Chargement du stock"
+      >
+        <span className="w-7 shrink-0 text-right text-sm font-semibold tabular-nums text-neutral-400">
+          —
+        </span>
+        <div
+          className={cn(
+            "h-2 w-[100px] max-w-full overflow-hidden rounded bg-neutral-200/80",
+          )}
+        >
+          <div className="h-full w-2/5 animate-pulse rounded bg-neutral-300/90" />
+        </div>
+      </div>
+    );
+  }
+
   const t = alertThreshold <= 0 ? 5 : alertThreshold;
   const q = Math.max(0, quantity);
   const variant = variantFor(q, t);

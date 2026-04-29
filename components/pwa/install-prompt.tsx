@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils/cn";
 import { Z } from "@/lib/config/z-index";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { MdClose, MdDownload } from "react-icons/md";
 
 type BeforeInstallPromptEvent = Event & {
@@ -54,10 +55,15 @@ function markDismissed() {
 
 /** Message éphémère d’installation (PWA). */
 export function InstallPrompt() {
+  const [mounted, setMounted] = useState(false);
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
 
   const iosHint = useMemo(() => isLikelyIosSafari(), []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isStandalone()) return;
@@ -102,14 +108,14 @@ export function InstallPrompt() {
   const show = visible && !isStandalone() && (!recentlyDismissed());
   if (!show) return null;
 
-  return (
+  const layer = (
     <div
-      className="fixed inset-x-0 top-0 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6"
-      style={{ zIndex: Z.toast + 1 }}
+      className="pointer-events-none fixed inset-x-0 top-0 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6"
+      style={{ zIndex: Z.toast + 1, bottom: "auto" }}
     >
       <div
         className={cn(
-          "mx-auto flex w-full max-w-xl items-start gap-3 rounded-2xl border border-black/10 bg-fs-card px-4 py-3 shadow-2xl",
+          "pointer-events-auto mx-auto flex w-full max-w-xl items-start gap-3 rounded-2xl border border-black/10 bg-fs-card px-4 py-3 shadow-2xl",
           "dark:border-white/10",
         )}
         role="status"
@@ -155,5 +161,8 @@ export function InstallPrompt() {
       </div>
     </div>
   );
+
+  if (!mounted || typeof document === "undefined") return null;
+  return createPortal(layer, document.body);
 }
 

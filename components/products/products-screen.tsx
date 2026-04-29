@@ -493,7 +493,6 @@ export function ProductsScreen() {
           <div className="mt-2 space-y-2 pb-24">
             {productsQ.isLoading ? <LoadingState /> : null}
             {!productsQ.isError ? paginated.map((p) => {
-              const qty = stockByProduct.get(p.id) ?? 0;
               const threshold =
                 p.stock_min > 0 ? p.stock_min : DEFAULT_STOCK_THRESHOLD;
               const thumbUrl = firstProductImageUrl(p);
@@ -521,7 +520,11 @@ export function ProductsScreen() {
                       {storeId ? (
                         <div className="mt-1">
                           <StockRangeIndicator
-                            quantity={qty}
+                            quantity={
+                              inventoryQ.isSuccess
+                                ? (stockByProduct.get(p.id) ?? 0)
+                                : null
+                            }
                             alertThreshold={threshold}
                           />
                         </div>
