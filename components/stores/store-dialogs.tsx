@@ -219,7 +219,7 @@ export function CreateStoreModal({
             type="button"
             disabled={loading}
             onClick={() => void submit()}
-            className="flex-1 rounded-xl bg-[#f97316] py-3 text-sm font-semibold text-white disabled:opacity-60"
+            className="flex-1 rounded-xl bg-fs-accent py-3 text-sm font-semibold text-white disabled:opacity-60"
           >
             {loading ? "Création…" : "Créer"}
           </button>
@@ -563,7 +563,7 @@ export function EditStoreModal({
             </label>
           </div>
           <div className="border-t border-black/[0.08] pt-4" role="region" aria-label="Paramètres facture A4">
-            <p className="text-sm font-bold text-[#f97316]">Paramètres facture A4</p>
+            <p className="text-sm font-bold text-fs-accent">Paramètres facture A4</p>
             <p className="mt-1 text-xs text-neutral-500">
               Logo et identité affichés sur la facture A4.
             </p>
@@ -586,10 +586,10 @@ export function EditStoreModal({
               type="button"
               disabled={previewLoading}
               onClick={() => void handlePreviewInvoiceA4()}
-              className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border-2 border-[#f97316] bg-fs-card px-4 py-3 text-sm font-semibold text-[#f97316] disabled:opacity-50"
+              className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border-2 border-fs-accent bg-fs-card px-4 py-3 text-sm font-semibold text-fs-accent disabled:opacity-50"
             >
               {previewLoading ? (
-                <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-fs-accent border-t-transparent" />
               ) : (
                 <MdPictureAsPdf className="h-5 w-5 shrink-0" aria-hidden />
               )}
@@ -635,7 +635,7 @@ export function EditStoreModal({
                   type="file"
                   accept="image/*"
                   onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
-                  className="mt-2 w-full min-h-11 text-sm file:mr-2 file:rounded-lg file:border-0 file:bg-orange-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-[#f97316]"
+                  className="mt-2 w-full min-h-11 text-sm file:mr-2 file:rounded-lg file:border-0 file:bg-[color-mix(in_srgb,var(--fs-accent)_10%,transparent)] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-fs-accent"
                 />
               </div>
             </div>
@@ -852,7 +852,7 @@ export function EditStoreModal({
             onClick={() => void submit()}
             className={cn(
               "flex-1 rounded-xl py-3 text-sm font-semibold text-white disabled:opacity-60",
-              "bg-[#f97316]",
+              "bg-fs-accent",
             )}
           >
             {loading ? "Enregistrement…" : "Enregistrer"}

@@ -114,7 +114,7 @@ export function RegisterForm() {
 
         <div className="flex flex-col items-center text-center">
           <Image
-            src="/logo.png"
+            src="/logogabostock.png"
             alt=""
             width={80}
             height={80}

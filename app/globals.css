@@ -5,7 +5,7 @@
 
 /* Gabostock (UI admin / graphiques) — `var(--fs-palette-*)` : inchangé si absent */
 :root {
-  --fs-palette-primary: #f97316;
+  --fs-palette-primary: #0066ff;
   --fs-palette-forest: #2f3a32;
   --fs-palette-sage: #545748;
   --fs-palette-caramel: #db9f75;
@@ -15,7 +15,10 @@
 
 /* FasoStock — aligné sur `cm.md` / AppTheme Flutter (mobile first) */
 :root {
-  --fs-accent: #e85d2c;
+  /* Bleu électrique */
+  --fs-accent: #0066ff;
+  /* Marque : "Stock" vert-jaune */
+  --fs-brand-stock: #84cc16;
   --fs-surface: #f8f7f5;
   --fs-surface-container: #f1f0ec;
   --fs-surface-low: #f5f4f0;
@@ -26,7 +29,7 @@
   --fs-on-surface-variant: #49454f;
   --fs-on-primary-container: #5c2a0e;
   --fs-splash: #f1f5f9;
-  --fs-pos-orange: #f97316;
+  --fs-pos-orange: #0066ff;
   --fs-safe-bottom: env(safe-area-inset-bottom, 0px);
   /** Fond menu latéral : teinte orange un peu plus marquée. */
   --fs-sidebar-surface: color-mix(in oklab, var(--fs-accent) 20%, var(--fs-surface));
@@ -110,6 +113,66 @@ body > :not(script) {
  * Flutter (texte principal + onSurfaceVariant) pour retrouver un contraste lisible.
  */
 @layer utilities {
+  /*
+   * Remap Tailwind "orange" utilities → accent (bleu électrique).
+   * Cela évite de devoir toucher chaque `bg-orange-*` / `text-orange-*` existant.
+   */
+  /* Remap legacy hardcoded hex utility classes → accent. */
+  .bg-\[\#f97316\] {
+    background-color: var(--fs-accent) !important;
+  }
+  .text-\[\#f97316\] {
+    color: var(--fs-accent) !important;
+  }
+  .border-\[\#f97316\] {
+    border-color: var(--fs-accent) !important;
+  }
+  .border-\[\#f97316\]\/35 {
+    border-color: color-mix(in srgb, var(--fs-accent) 35%, transparent) !important;
+  }
+  .bg-\[\#c2410c\] {
+    background-color: var(--fs-accent) !important;
+  }
+  .text-\[\#c2410c\] {
+    color: var(--fs-accent) !important;
+  }
+  .bg-\[\#ffedd5\] {
+    background-color: color-mix(in srgb, var(--fs-accent) 12%, white) !important;
+  }
+
+  .bg-orange-50 {
+    background-color: color-mix(in srgb, var(--fs-accent) 8%, white);
+  }
+  .bg-orange-100 {
+    background-color: color-mix(in srgb, var(--fs-accent) 14%, white);
+  }
+  .bg-orange-500\/10,
+  .bg-orange-500\/12,
+  .bg-orange-500\/15 {
+    background-color: color-mix(in srgb, var(--fs-accent) 12%, transparent);
+  }
+  .bg-orange-600 {
+    background-color: var(--fs-accent);
+  }
+
+  .text-orange-600,
+  .text-orange-700,
+  .text-orange-800,
+  .text-orange-900,
+  .text-orange-950 {
+    color: var(--fs-accent);
+  }
+
+  .border-orange-200 {
+    border-color: color-mix(in srgb, var(--fs-accent) 22%, white);
+  }
+  .border-orange-400,
+  .border-orange-500,
+  .border-l-orange-500,
+  .border-l-orange-600 {
+    border-color: var(--fs-accent);
+  }
+
   html.dark .text-neutral-950,
   html.dark .text-neutral-900,
   html.dark .text-neutral-800 {

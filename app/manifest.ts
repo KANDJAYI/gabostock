@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
-/** Même fichier que le favicon (`public/logo.png`) — installation PWA. */
-const ICON = "/logo.png";
+/** Même fichier que le favicon (`public/logogabostock.png`) — installation PWA. */
+const ICON = "/logogabostock.png";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -13,7 +13,7 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     background_color: "#EBE4D9",
-    theme_color: "#f97316",
+    theme_color: "#0066ff",
     orientation: "portrait-primary",
     lang: "fr",
     icons: [

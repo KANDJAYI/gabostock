@@ -111,7 +111,7 @@ export function AppSidebar({
               />
             ) : (
               <img
-                src="/logo.png"
+                src="/logogabostock.png"
                 alt=""
                 className="h-full w-full object-contain object-center p-0.5"
               />
@@ -119,8 +119,8 @@ export function AppSidebar({
           </span>
           {!effectiveCollapsed ? (
             <span className="min-w-0 font-bold tracking-tight">
-              <span className="text-fs-text">Gabo</span>
-              <span className="text-[var(--fs-accent)]">stock</span>
+              <span className="text-[var(--fs-accent)]">Gabo</span>
+              <span className="text-[var(--fs-brand-stock)]">Stock</span>
             </span>
           ) : null}
         </Link>

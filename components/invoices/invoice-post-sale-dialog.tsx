@@ -129,7 +129,7 @@ export function InvoicePostSaleDialog({
           <button
             type="button"
             onClick={onClose}
-            className="mt-4 w-full rounded-xl py-2.5 text-sm font-semibold text-[#f97316] hover:bg-orange-50"
+            className="mt-4 w-full rounded-xl py-2.5 text-sm font-semibold text-fs-accent hover:bg-[color-mix(in_srgb,var(--fs-accent)_10%,transparent)]"
           >
             Fermer
           </button>
@@ -165,7 +165,7 @@ function PostSaleAction({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "touch-manipulation inline-flex min-h-11 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl bg-[#f97316] px-4 text-sm font-semibold text-white shadow-sm hover:bg-[#f97316] disabled:opacity-50",
+        "touch-manipulation inline-flex min-h-11 min-w-0 flex-1 items-center justify-center gap-2 rounded-xl bg-fs-accent px-4 text-sm font-semibold text-white shadow-sm hover:opacity-[0.96] disabled:opacity-50",
       )}
     >
       {loading ? (

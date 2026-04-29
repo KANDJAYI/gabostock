@@ -11,7 +11,7 @@ import { formatCurrency } from "@/lib/utils/currency";
 import type { CategorySales, SalesByDay } from "@/lib/features/dashboard/types";
 import { cn } from "@/lib/utils/cn";
 
-const BAR_COLOR = "#f97316";
+const BAR_COLOR = "var(--fs-accent)";
 /** Doit correspondre à `h-[200px] min-[900px]:h-[240px]` sur la zone des barres. */
 const CHART_DRAW_PX = 200;
 const CHART_DRAW_PX_WIDE = 240;
@@ -107,8 +107,8 @@ const PIE_COLORS = [
   "var(--fs-accent)",
   "#059669",
   "#0d9488",
-  "#D97706",
-  "#f59e0b",
+  "var(--fs-accent)",
+  "color-mix(in srgb, var(--fs-accent) 85%, white)",
   "#DC2626",
 ];
 

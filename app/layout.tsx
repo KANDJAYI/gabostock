@@ -24,11 +24,11 @@ export const metadata: Metadata = {
   description:
     "Gestion de stock, ventes et dépôt — Gabostock Web (offline-first).",
   applicationName: "Gabostock",
-  /** Favicon & raccourcis : `public/logo.png` */
+  /** Favicon & raccourcis : `public/logogabostock.png` */
   icons: {
-    icon: [{ url: "/logo.png", type: "image/png" }],
-    apple: "/logo.png",
-    shortcut: "/logo.png",
+    icon: [{ url: "/logogabostock.png", type: "image/png" }],
+    apple: "/logogabostock.png",
+    shortcut: "/logogabostock.png",
   },
   appleWebApp: {
     capable: true,
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f97316",
+  themeColor: "#0066ff",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

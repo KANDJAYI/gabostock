@@ -104,7 +104,7 @@ export function AdminDashboardScreen() {
     },
   });
 
-  if (q.isLoading) {
+  if (q.isLoading || !q.data) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center p-8">
         <div className="h-10 w-10 animate-spin rounded-full border-2 border-[color-mix(in_srgb,var(--fs-palette-primary)_35%,transparent)] border-t-[var(--fs-palette-primary)]" />
@@ -120,7 +120,7 @@ export function AdminDashboardScreen() {
     );
   }
 
-  const { stats, salesByCompany, salesOverTime } = q.data!;
+  const { stats, salesByCompany, salesOverTime } = q.data;
   const maxLine = Math.max(...salesOverTime.map((d) => d.total), 1);
   const topCa = salesByCompany.slice(0, 10);
   const maxCa = Math.max(...topCa.map((x) => x.totalAmount), 1);

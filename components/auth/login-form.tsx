@@ -158,15 +158,22 @@ export function LoginForm() {
       <div className="rounded-2xl border border-neutral-200/80 bg-fs-card p-5 shadow-[0_8px_32px_rgba(0,0,0,0.06)] sm:p-6">
         <div className="flex flex-col items-center text-center">
           <Image
-            src="/logo.png"
+            src="/logogabostock.png"
             alt=""
             width={80}
             height={80}
             className="h-16 w-16 object-contain sm:h-20 sm:w-20"
             priority
           />
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-[1.65rem]">
-            Gabostock
+          <h1
+            className="mt-2 text-2xl font-bold tracking-tight sm:text-[1.65rem]"
+            style={{
+              textShadow:
+                "0 2px 0 rgba(0,0,0,0.06), 0 10px 20px rgba(0,0,0,0.20)",
+            }}
+          >
+            <span className="text-[var(--fs-accent)]">Gabo</span>
+            <span className="text-[var(--fs-brand-stock)]">Stock</span>
           </h1>
           <p className="mt-1 text-sm text-neutral-600 sm:text-[15px]">
             Connexion à votre espace

@@ -1,11 +1,14 @@
 "use client";
 
 import { signOutAndRedirect } from "@/lib/auth/sign-out-client";
+import { uploadMyAvatar, updateMyAvatarUrl } from "@/lib/features/users/avatar";
 import { cn } from "@/lib/utils/cn";
+import { messageFromUnknownError, toast } from "@/lib/toast";
+import { createClient } from "@/lib/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   MdAutoAwesome,
   MdBarChart,
@@ -47,24 +50,87 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [avatarBusy, setAvatarBusy] = useState(false);
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
   async function signOut() {
     await signOutAndRedirect(router, { queryClient });
+  }
+
+  useEffect(() => {
+    const supabase = createClient();
+    void (async () => {
+      const { data } = await supabase.auth.getUser();
+      const user = data.user;
+      if (!user) return;
+      const { data: p, error } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (error) return;
+      const url = (p as { avatar_url?: string | null } | null)?.avatar_url ?? null;
+      setAvatarUrl(url?.trim() ? url.trim() : null);
+    })();
+  }, []);
+
+  async function onPickAvatar(file: File) {
+    try {
+      setAvatarBusy(true);
+      const url = await uploadMyAvatar(file);
+      await updateMyAvatarUrl(url);
+      setAvatarUrl(url);
+      toast.success("Photo de profil mise à jour.");
+    } catch (e) {
+      toast.error(messageFromUnknownError(e, "Upload impossible."));
+    } finally {
+      setAvatarBusy(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
   }
 
   const NavBody = () => (
     <>
       <div className="border-b border-white/10 px-4 py-5">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[color-mix(in_srgb,var(--fs-palette-terracotta)_42%,transparent)] bg-[color-mix(in_srgb,var(--fs-palette-terracotta)_22%,transparent)]">
-            <MdShield className="h-6 w-6 text-[var(--fs-palette-terracotta)]" aria-hidden />
-          </div>
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            disabled={avatarBusy}
+            className={cn(
+              "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border",
+              "border-[color-mix(in_srgb,var(--fs-palette-terracotta)_42%,transparent)]",
+              "bg-[color-mix(in_srgb,var(--fs-palette-terracotta)_22%,transparent)]",
+              "transition-opacity disabled:opacity-60",
+            )}
+            aria-label="Changer la photo de profil"
+            title="Changer la photo de profil"
+          >
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <MdShield className="h-6 w-6 text-[var(--fs-palette-terracotta)]" aria-hidden />
+            )}
+          </button>
           <div className="min-w-0">
             <p className="text-lg font-extrabold tracking-tight text-slate-100">Plateforme</p>
             <p className="text-[13px] font-semibold text-slate-400">Super Admin</p>
           </div>
         </div>
       </div>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0] ?? null;
+          if (!f) return;
+          void onPickAvatar(f);
+        }}
+      />
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
         {NAV.map((item) => {
           const active = navActive(pathname, item.href, "exact" in item && item.exact === true);
@@ -125,9 +191,25 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <MdMenu className="h-6 w-6" />
         </button>
         <div className="flex min-w-0 items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[color-mix(in_srgb,var(--fs-palette-terracotta)_18%,transparent)]">
-            <MdShield className="h-5 w-5 text-[var(--fs-palette-terracotta)]" />
-          </div>
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            disabled={avatarBusy}
+            className={cn(
+              "flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg",
+              "bg-[color-mix(in_srgb,var(--fs-palette-terracotta)_18%,transparent)]",
+              "transition-opacity disabled:opacity-60",
+            )}
+            aria-label="Changer la photo de profil"
+            title="Changer la photo de profil"
+          >
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <MdShield className="h-5 w-5 text-[var(--fs-palette-terracotta)]" />
+            )}
+          </button>
           <span className="truncate text-sm font-bold text-fs-text">Super Admin</span>
         </div>
       </header>

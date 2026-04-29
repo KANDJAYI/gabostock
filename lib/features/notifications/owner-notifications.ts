@@ -458,9 +458,9 @@ export function ownerNotificationStyle(kind: OwnerNotificationKind, trendLabel?:
       return { color: "text-red-700", border: "border-l-4 border-l-red-600", bg: "bg-red-500/10" };
     case "underMinStock":
       return {
-        color: "text-orange-700",
-        border: "border-l-4 border-l-orange-600",
-        bg: "bg-orange-500/10",
+        color: "text-[var(--fs-accent)]",
+        border: "border-l-4 border-l-[var(--fs-accent)]",
+        bg: "bg-[color-mix(in_srgb,var(--fs-accent)_12%,transparent)]",
       };
     case "topSalesToday":
       return {
@@ -469,12 +469,16 @@ export function ownerNotificationStyle(kind: OwnerNotificationKind, trendLabel?:
         bg: "bg-emerald-500/10",
       };
     case "massiveStockEntry":
-      return { color: "text-orange-900", border: "border-l-4 border-l-orange-500", bg: "bg-orange-500/10" };
+      return {
+        color: "text-[var(--fs-accent)]",
+        border: "border-l-4 border-l-[var(--fs-accent)]",
+        bg: "bg-[color-mix(in_srgb,var(--fs-accent)_12%,transparent)]",
+      };
     case "productsNotSoldMonths":
       return {
-        color: "text-orange-800",
-        border: "border-l-4 border-l-orange-600",
-        bg: "bg-orange-500/10",
+        color: "text-[var(--fs-accent)]",
+        border: "border-l-4 border-l-[var(--fs-accent)]",
+        bg: "bg-[color-mix(in_srgb,var(--fs-accent)_12%,transparent)]",
       };
     case "top10ProductsSold":
       return {

@@ -35,7 +35,7 @@ export function InvoicePdfPreviewDialog({
         aria-busy="true"
         aria-label="Chargement du PDF"
       >
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-fs-accent border-t-transparent" />
       </div>
     );
   }

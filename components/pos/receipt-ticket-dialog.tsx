@@ -70,7 +70,7 @@ export function ReceiptTicketDialog({
             className="inline-flex min-w-[140px] items-center justify-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] py-3 pl-4 pr-5 text-sm font-semibold text-[#1F2937] disabled:opacity-60"
           >
             {printing ? (
-              <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#f97316] border-t-transparent" />
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-fs-accent border-t-transparent" />
             ) : (
               <MdPrint className="h-5 w-5 text-[#1F2937]" aria-hidden />
             )}

@@ -464,13 +464,13 @@ export function DashboardScreen() {
               label="Ticket moyen"
               value={formatCurrency(d.ticketAverage)}
               icon={MdReceiptLong}
-              color="#ea580c"
+              color="var(--fs-accent)"
             />
             <KpiCard
               label="Produits vendus"
               value={`${d.salesSummary.itemsSold}`}
               icon={MdInventory2}
-              color="#d97706"
+              color="var(--fs-accent)"
             />
             <KpiCard
               label="Marge"
@@ -483,21 +483,21 @@ export function DashboardScreen() {
               label="Achats"
               value={formatCurrency(d.purchasesSummary.totalAmount)}
               icon={MdLocalShipping}
-              color="#D97706"
+              color="var(--fs-accent)"
               subtitle={`${d.purchasesSummary.count} commandes`}
             />
             <KpiCard
               label="Valeur stock"
               value={formatCurrency(d.stockValue.totalValue)}
               icon={MdWarehouse}
-              color="#ea580c"
+              color="var(--fs-accent)"
               subtitle={`${d.stockValue.productCount} produits`}
             />
             <KpiCard
               label="Alertes stock"
               value={`${d.lowStockCount}`}
               icon={MdWarningAmber}
-              color="#D97706"
+              color="var(--fs-accent)"
               inventoryLink={d.lowStockCount > 0 ? ROUTES.inventory : undefined}
             />
           </section>
@@ -827,7 +827,7 @@ function Shortcuts({
       label: "Facture (tableau)",
       href: storeId ? storeFactureTabPath(storeId) : ROUTES.stores,
       icon: MdTableChart,
-      color: "#f97316",
+      color: "var(--fs-accent)",
     });
   }
   tiles.push(
@@ -835,19 +835,19 @@ function Shortcuts({
       label: "Ventes",
       href: ROUTES.sales,
       icon: MdShoppingCart,
-      color: "#f97316",
+      color: "var(--fs-accent)",
     },
     {
       label: "Inventaire",
       href: ROUTES.inventory,
       icon: MdWarehouse,
-      color: "#ea580c",
+      color: "var(--fs-accent)",
     },
     {
       label: "Achats",
       href: ROUTES.purchases,
       icon: MdLocalShipping,
-      color: "#D97706",
+      color: "var(--fs-accent)",
     },
   );
 
