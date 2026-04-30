@@ -13,3 +13,11 @@ export function hasSupabaseConfig(): boolean {
     process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() && getSupabaseAnonKeyFromEnv()
   );
 }
+
+/**
+ * Clé service_role — **uniquement serveur** (Route Handlers, jamais exposée au navigateur).
+ * Permet des opérations admin (ex. suppression d’entreprise) qui contournent la RLS.
+ */
+export function getSupabaseServiceRoleKeyFromEnv(): string | undefined {
+  return process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+}

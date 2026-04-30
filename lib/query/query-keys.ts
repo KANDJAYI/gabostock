@@ -44,6 +44,9 @@ export const queryKeys = {
   stores: (companyId: string) => ["stores", companyId] as const,
   /** Page Boutiques : `fetchStoresPageData` (liste + quota). */
   storesPage: (companyId: string) => ["stores", companyId, "page"] as const,
+  /** Centre Abonnement — `SubscriptionScreen`. */
+  subscriptionPage: (companyId: string) =>
+    ["subscription-page", companyId] as const,
   dashboard: (params: {
     companyId: string;
     storeId: string | null;
@@ -80,4 +83,6 @@ export const queryKeys = {
   /** Panneau owner (ruptures, tendances…) — aligné `OwnerNotificationsDialog` Flutter. */
   ownerNotifications: (companyId: string, storeId: string | null) =>
     ["owner-notifications", companyId, storeId ?? "__all__"] as const,
+  /** Abonnements plateforme (Super Admin). */
+  adminSubscriptionOverview: ["admin-subscription-overview"] as const,
 } as const;

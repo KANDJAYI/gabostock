@@ -114,23 +114,6 @@ function SettingsGreySelect({
   );
 }
 
-function formatSubscriptionStatus(status: string): string {
-  if (status === "active") return "Actif";
-  if (status === "past_due") return "Paiement en attente";
-  if (status === "canceled") return "Résilié";
-  return status;
-}
-
-function formatSubscriptionDate(iso: string | null): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-  return `${dd}/${mm}/${yyyy}`;
-}
-
 export function SettingsScreen() {
   const router = useRouter();
   const qc = useQueryClient();
@@ -304,28 +287,6 @@ export function SettingsScreen() {
   useEffect(() => {
     setProfileName(meQ.data?.fullName ?? "");
   }, [meQ.data?.fullName]);
-
-  const subscriptionQ = useQuery({
-    queryKey: ["subscription", companyId] as const,
-    queryFn: async () => {
-      const supabase = createClient();
-      const { data } = await supabase
-        .from("company_subscriptions")
-        .select("status, current_period_end, plan:subscription_plans(slug, name)")
-        .eq("company_id", companyId)
-        .maybeSingle();
-      if (!data) return null;
-      const planRaw = (data as { plan?: { slug?: string; name?: string } | { slug?: string; name?: string }[] }).plan;
-      const plan = Array.isArray(planRaw) ? planRaw[0] : planRaw;
-      return {
-        status: String((data as { status?: string }).status ?? "active"),
-        currentPeriodEnd: ((data as { current_period_end?: string | null }).current_period_end ?? null) as string | null,
-        planName: String(plan?.name ?? "Gratuit"),
-      };
-    },
-    enabled: Boolean(companyId),
-    staleTime: 60_000,
-  });
 
   const profileMut = useMutation({
     mutationFn: async () => {
@@ -848,30 +809,22 @@ export function SettingsScreen() {
         </FsCard>
       ) : null}
 
-      {/* Abonnement */}
+      {/* Abonnement — centre dédié */}
       {companyId ? (
-        <FsCard className="mt-5" padding="p-5">
-          <SettingsCardTitle icon={MdCardMembership} title="Abonnement" />
-          {subscriptionQ.isLoading ? (
-            <div className="mt-4 flex justify-center py-3">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-fs-accent border-t-transparent" aria-hidden />
-            </div>
-          ) : (
-            <div className="mt-4 space-y-1 text-sm">
-              <p>
-                <span className="text-neutral-600">Plan :</span>{" "}
-                <span className="font-medium text-fs-text">{subscriptionQ.data?.planName ?? "Gratuit"}</span>
+        <FsCard className="mt-5 p-0">
+          <Link
+            href={ROUTES.subscription}
+            className="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.04]"
+          >
+            <MdCardMembership className="h-[22px] w-[22px] shrink-0 text-fs-accent" aria-hidden />
+            <div className="min-w-0 flex-1">
+              <p className="text-base font-semibold text-fs-text">Abonnement &amp; facturation</p>
+              <p className="mt-0.5 text-xs text-neutral-600 dark:text-neutral-400">
+                Plan actuel, quotas, comparaison d&apos;offres et portail Stripe
               </p>
-              <p className="text-xs text-neutral-600">
-                Statut : {formatSubscriptionStatus(subscriptionQ.data?.status ?? "active")}
-              </p>
-              {subscriptionQ.data?.currentPeriodEnd ? (
-                <p className="text-xs text-neutral-600">
-                  Renouvellement : {formatSubscriptionDate(subscriptionQ.data.currentPeriodEnd)}
-                </p>
-              ) : null}
             </div>
-          )}
+            <ChevronRight className="h-5 w-5 shrink-0 text-neutral-400" aria-hidden />
+          </Link>
         </FsCard>
       ) : null}
 

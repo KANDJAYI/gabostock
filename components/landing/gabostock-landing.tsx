@@ -25,6 +25,7 @@ import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { GabostockDailyChallengesSection } from "./gabostock-daily-challenges-section";
+import { GabostockSolutionShowcaseSection } from "./gabostock-solution-showcase-section";
 import { LandingHeroMockupsComposition } from "./landing-hero-mockups";
 import { LandingHeader } from "./landing-header";
 
@@ -315,6 +316,8 @@ export function GabostockLanding() {
         </section>
 
         <GabostockDailyChallengesSection />
+
+        <GabostockSolutionShowcaseSection />
 
         {/* How it works */}
         <section

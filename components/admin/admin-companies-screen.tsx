@@ -10,6 +10,7 @@ import {
   adminUpdateStore,
 } from "@/lib/features/admin/api";
 import type { AdminCompany, AdminStore } from "@/lib/features/admin/types";
+import { queryKeys } from "@/lib/query/query-keys";
 import { messageFromUnknownError, toast } from "@/lib/toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, useMemo, useState } from "react";
@@ -61,7 +62,9 @@ export function AdminCompaniesScreen() {
     mutationFn: (id: string) => adminDeleteCompany(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["admin-companies"] });
-      toast.success("Supprimé définitivement");
+      void qc.invalidateQueries({ queryKey: queryKeys.adminSubscriptionOverview });
+      void qc.invalidateQueries({ queryKey: ["admin-platform-dashboard"] });
+      toast.success("Entreprise supprimée (données liées incluses).");
     },
     onError: (e) => toast.error(messageFromUnknownError(e)),
   });
@@ -76,21 +79,16 @@ export function AdminCompaniesScreen() {
   });
 
   function confirmDeleteCompany(c: AdminCompany) {
-    if (!window.confirm(`Supprimer l'entreprise « ${c.name} » ? Irréversible.`)) return;
+    const msg =
+      `Supprimer définitivement l'entreprise « ${c.name} » ?\n\n` +
+      "Toute donnée rattachée (ventes, produits, abonnement, membres, boutiques, etc.) sera perdue. Cette opération n’est pas annulable.";
+    if (!window.confirm(msg)) return;
     mutDelCompany.mutate(c.id);
   }
 
   function confirmDeleteStore(s: AdminStore) {
     if (!window.confirm(`Supprimer la boutique « ${s.name} » ? Irréversible.`)) return;
     mutDelStore.mutate(s.id);
-  }
-
-  if (q.isLoading) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center p-8">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
-      </div>
-    );
   }
 
   if (q.isError) {
@@ -101,7 +99,16 @@ export function AdminCompaniesScreen() {
     );
   }
 
-  const companies = q.data!.companies;
+  // v5: `isLoading` is only isPending && isFetching; a pending query can have isLoading false (e.g. disabled / idle). Require data before render.
+  if (q.isPending || !q.data) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center p-8">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  const { companies } = q.data;
 
   return (
     <div className="space-y-6 p-5 md:p-8">

@@ -25,6 +25,8 @@ export const ROUTES = {
   suppliers: "/suppliers",
   reports: "/reports",
   ai: "/ai",
+  /** Facturation & plan Gabostock — centre d’abonnement web. */
+  subscription: "/subscription",
   settings: "/settings",
   /** Imprimantes locales (QZ Tray) — association ticket / facture A4. */
   printers: "/printers",

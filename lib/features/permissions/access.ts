@@ -173,6 +173,7 @@ export function filterNavItemsForPermissions(
     if (href === ROUTES.reports) return h.canReports;
     /** Même logique que `app_shell.dart` (Flutter) — pas de filtre `isCashier` sur le menu. */
     if (href === ROUTES.ai) return h.canAi;
+    if (href === ROUTES.subscription) return h.canSettings;
     if (href === ROUTES.users) return h.canUsers;
     if (href === ROUTES.settings || href === ROUTES.printers) return h.canSettings;
     if (href === ROUTES.transfers) return h.canTransfers;
@@ -214,6 +215,7 @@ const APP_SHELL_ROUTE_PREFIXES: readonly string[] = [
   ROUTES.suppliers,
   ROUTES.reports,
   ROUTES.ai,
+  ROUTES.subscription,
   ROUTES.users,
   ROUTES.audit,
   ROUTES.settings,

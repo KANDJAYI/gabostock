@@ -24,11 +24,13 @@ import {
   MdShield,
   MdStore,
   MdTune,
+  MdCardMembership,
 } from "react-icons/md";
 
 const NAV = [
   { href: "/admin", label: "Tableau", icon: MdDashboard, exact: true },
   { href: "/admin/companies", label: "Entreprises", icon: MdBusiness },
+  { href: "/admin/subscription", label: "Abonnements", icon: MdCardMembership },
   { href: "/admin/fonctionnalites", label: "Fonctionnalités", icon: MdTune },
   { href: "/admin/stores", label: "Boutiques", icon: MdStore },
   { href: "/admin/users", label: "Utilisateurs", icon: MdPeople },

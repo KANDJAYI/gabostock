@@ -107,9 +107,18 @@ export async function adminUpdateStore(id: string, isActive: boolean): Promise<v
 }
 
 export async function adminDeleteCompany(id: string): Promise<void> {
-  const supabase = createClient();
-  const { error } = await supabase.from("companies").delete().eq("id", id);
-  if (error) throw mapSupabaseError(error);
+  const res = await fetch("/api/admin/delete-company", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ companyId: id }),
+    credentials: "same-origin",
+  });
+  const data = (await res.json().catch(() => ({}))) as { error?: string; hint?: string };
+  if (!res.ok) {
+    const base = data.error?.trim() || res.statusText || "Suppression impossible";
+    const hint = data.hint ? ` ${data.hint}` : "";
+    throw new Error(`${base}${hint}`);
+  }
 }
 
 export async function adminDeleteStore(id: string): Promise<void> {
