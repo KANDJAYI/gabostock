@@ -1,0 +1,336 @@
+@import "tailwindcss";
+
+/* `dark:` basé sur la classe `dark` sur `<html>` (Paramètres → Apparence). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Gabostock (UI admin / graphiques) — `var(--fs-palette-*)` : inchangé si absent */
+:root {
+  --fs-palette-primary: #0066ff;
+  --fs-palette-forest: #2f3a32;
+  --fs-palette-sage: #545748;
+  --fs-palette-caramel: #db9f75;
+  --fs-palette-terracotta: #804012;
+  --fs-palette-chocolate: #3e2411;
+}
+
+/* FasoStock — aligné sur `cm.md` / AppTheme Flutter (mobile first) */
+:root {
+  /* Bleu électrique */
+  --fs-accent: #0066ff;
+  /* Marque : "Stock" vert-jaune */
+  --fs-brand-stock: #84cc16;
+  --fs-surface: #f8f7f5;
+  --fs-surface-container: #f1f0ec;
+  --fs-surface-low: #f5f4f0;
+  --fs-card: #ffffff;
+  --fs-text: #1c1b1f;
+  --fs-paint-watermark-opacity: 0.42;
+  /* Material 3 onSurfaceVariant (clair) — texte secondaire / labels */
+  --fs-on-surface-variant: #49454f;
+  --fs-on-primary-container: #5c2a0e;
+  --fs-splash: #f1f5f9;
+  --fs-pos-orange: #0066ff;
+  --fs-safe-bottom: env(safe-area-inset-bottom, 0px);
+  /** Fond menu latéral : teinte orange un peu plus marquée. */
+  --fs-sidebar-surface: color-mix(in oklab, var(--fs-accent) 20%, var(--fs-surface));
+  --fs-sidebar-surface-elevated: color-mix(in oklab, var(--fs-accent) 28%, var(--fs-surface-container));
+}
+
+html.dark {
+  --fs-surface: #121212;
+  --fs-surface-container: #1e1e1e;
+  --fs-surface-low: #181818;
+  --fs-card: #1c1b1f;
+  --fs-text: #e6e1e5;
+  --fs-paint-watermark-opacity: 0.26;
+  /* Aligné AppTheme Flutter (ColorScheme.dark + M3 onSurfaceVariant) */
+  --fs-on-surface-variant: #cac4d0;
+  --fs-on-primary-container: #ffdbd0;
+  --fs-splash: #1a1a1a;
+  --fs-sidebar-surface: color-mix(in oklab, var(--fs-accent) 22%, var(--fs-surface));
+  --fs-sidebar-surface-elevated: color-mix(in oklab, var(--fs-accent) 30%, var(--fs-surface-container));
+}
+
+@theme inline {
+  --color-fs-accent: var(--fs-accent);
+  --color-fs-surface: var(--fs-surface);
+  --color-fs-surface-container: var(--fs-surface-container);
+  --color-fs-surface-low: var(--fs-surface-low);
+  --color-fs-card: var(--fs-card);
+  --color-fs-text: var(--fs-text);
+  --color-fs-on-surface-variant: var(--fs-on-surface-variant);
+  --color-fs-pos-orange: var(--fs-pos-orange);
+  --color-fs-sidebar-surface: var(--fs-sidebar-surface);
+  --color-fs-sidebar-surface-elevated: var(--fs-sidebar-surface-elevated);
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--fs-surface);
+  color: var(--fs-text);
+  font-family: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+  isolation: isolate;
+  position: relative;
+}
+
+@keyframes landing-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.landing-marquee {
+  animation: landing-marquee 26s linear infinite;
+  will-change: transform;
+}
+
+/* Scroll reveal (IntersectionObserver) */
+.sr-reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0) scale(0.985);
+  filter: blur(8px);
+  transition:
+    opacity 720ms ease,
+    transform 720ms cubic-bezier(0.2, 0.85, 0.2, 1),
+    filter 720ms ease;
+  transition-delay: var(--sr-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.sr-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-marquee {
+    animation: none !important;
+    transform: none !important;
+  }
+  .sr-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+body::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='960' height='680' viewBox='0 0 960 680' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%238c8c8c' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M86 385 C210 210 390 155 612 174 C736 185 833 145 890 72' stroke-width='76' stroke-opacity='.13'/%3E%3Cpath d='M52 481 C212 392 350 363 515 382 C666 399 778 357 914 254' stroke-width='48' stroke-opacity='.1'/%3E%3Cpath d='M183 585 C316 516 466 506 637 548 C731 571 815 556 899 489' stroke-width='62' stroke-opacity='.08'/%3E%3Cpath d='M146 287 C278 206 417 214 553 248 C635 269 708 263 793 210' stroke-width='28' stroke-opacity='.09'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='720' height='560' viewBox='0 0 720 560' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23777777' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M68 408 C177 274 317 231 462 268 C543 289 615 267 675 187' stroke-width='58' stroke-opacity='.1'/%3E%3Cpath d='M32 493 C156 438 297 418 433 439 C536 455 606 430 694 356' stroke-width='34' stroke-opacity='.08'/%3E%3C/g%3E%3C/svg%3E");
+  background-position:
+    right -180px top 74px,
+    left -190px bottom -120px;
+  background-repeat: no-repeat;
+  background-size:
+    min(980px, 108vw) auto,
+    min(720px, 92vw) auto;
+  content: "";
+  inset: 0;
+  opacity: var(--fs-paint-watermark-opacity);
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+}
+
+/*
+ * Ancrer le stacking de l’application sans écraser `position: fixed` des overlays portés sous
+ * `document.body` (menus, toasts…) : leur racine doit porter `data-fs-portal-layer`.
+ */
+body > :not(script):not([data-fs-portal-layer]) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Zone tactile minimale mobile (type Flutter 48) */
+.fs-touch-target {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+/*
+ * Mode sombre : les utilitaires Tailwind `text-neutral-*` restent des gris « papier »
+ * (sombre sur fond clair). Sous `html.dark`, on les remap sur les jetons FasoStock /
+ * Flutter (texte principal + onSurfaceVariant) pour retrouver un contraste lisible.
+ */
+@layer utilities {
+  /*
+   * Remap Tailwind "orange" utilities → accent (bleu électrique).
+   * Cela évite de devoir toucher chaque `bg-orange-*` / `text-orange-*` existant.
+   */
+  /* Remap legacy hardcoded hex utility classes → accent. */
+  .bg-\[\#f97316\] {
+    background-color: var(--fs-accent) !important;
+  }
+  .text-\[\#f97316\] {
+    color: var(--fs-accent) !important;
+  }
+  .border-\[\#f97316\] {
+    border-color: var(--fs-accent) !important;
+  }
+  .border-\[\#f97316\]\/35 {
+    border-color: color-mix(in srgb, var(--fs-accent) 35%, transparent) !important;
+  }
+  .bg-\[\#c2410c\] {
+    background-color: var(--fs-accent) !important;
+  }
+  .text-\[\#c2410c\] {
+    color: var(--fs-accent) !important;
+  }
+  .bg-\[\#ffedd5\] {
+    background-color: color-mix(in srgb, var(--fs-accent) 12%, white) !important;
+  }
+
+  .bg-orange-50 {
+    background-color: color-mix(in srgb, var(--fs-accent) 8%, white);
+  }
+  .bg-orange-100 {
+    background-color: color-mix(in srgb, var(--fs-accent) 14%, white);
+  }
+  .bg-orange-500\/10,
+  .bg-orange-500\/12,
+  .bg-orange-500\/15 {
+    background-color: color-mix(in srgb, var(--fs-accent) 12%, transparent);
+  }
+  .bg-orange-600 {
+    background-color: var(--fs-accent);
+  }
+
+  .text-orange-600,
+  .text-orange-700,
+  .text-orange-800,
+  .text-orange-900,
+  .text-orange-950 {
+    color: var(--fs-accent);
+  }
+
+  .border-orange-200 {
+    border-color: color-mix(in srgb, var(--fs-accent) 22%, white);
+  }
+  .border-orange-400,
+  .border-orange-500,
+  .border-l-orange-500,
+  .border-l-orange-600 {
+    border-color: var(--fs-accent);
+  }
+
+  html.dark .text-neutral-950,
+  html.dark .text-neutral-900,
+  html.dark .text-neutral-800 {
+    color: var(--fs-text);
+  }
+
+  html.dark .text-neutral-700 {
+    color: color-mix(in oklab, var(--fs-text) 92%, transparent);
+  }
+
+  html.dark .text-neutral-600 {
+    color: var(--fs-on-surface-variant);
+  }
+
+  html.dark .text-neutral-500 {
+    color: color-mix(in oklab, var(--fs-on-surface-variant) 90%, transparent);
+  }
+
+  html.dark .text-neutral-400 {
+    color: color-mix(in oklab, var(--fs-on-surface-variant) 72%, transparent);
+  }
+
+  html.dark .text-neutral-300 {
+    color: color-mix(in oklab, var(--fs-on-surface-variant) 55%, transparent);
+  }
+
+  /* Surfaces neutres (pagination, pastilles, zones tactiles) */
+  html.dark .bg-neutral-200,
+  html.dark .bg-neutral-200\/90 {
+    background-color: color-mix(in oklab, var(--fs-surface-container) 100%, transparent);
+  }
+
+  html.dark .active\:bg-neutral-300\/90:active {
+    background-color: color-mix(in oklab, var(--fs-surface-low) 95%, transparent);
+  }
+
+  html.dark .bg-neutral-100,
+  html.dark .bg-neutral-100\/80,
+  html.dark .bg-neutral-100\/50 {
+    background-color: var(--fs-surface-container);
+  }
+
+  html.dark .bg-neutral-50,
+  html.dark .bg-neutral-50\/80 {
+    background-color: var(--fs-surface-low);
+  }
+
+  html.dark .active\:bg-neutral-50:active,
+  html.dark .active\:bg-neutral-50\/80:active {
+    background-color: var(--fs-surface-container);
+  }
+
+  html.dark .active\:bg-neutral-100\/80:active,
+  html.dark .hover\:bg-neutral-100\/80:hover {
+    background-color: color-mix(in oklab, var(--fs-surface-container) 90%, transparent);
+  }
+
+  html.dark .hover\:bg-neutral-50:hover {
+    background-color: var(--fs-surface-container);
+  }
+
+  /* Bordures noires très légères : visibles sur fond #121212 / carte */
+  html.dark .border-black\/\[0\.06\] {
+    border-color: color-mix(in oklab, white 10%, transparent);
+  }
+
+  html.dark .border-black\/\[0\.08\] {
+    border-color: color-mix(in oklab, white 11%, transparent);
+  }
+
+  html.dark .border-black\/\[0\.1\] {
+    border-color: color-mix(in oklab, white 12%, transparent);
+  }
+
+  html.dark .border-black\/\[0\.12\] {
+    border-color: color-mix(in oklab, white 14%, transparent);
+  }
+
+  html.dark .border-black\/6 {
+    border-color: color-mix(in oklab, white 10%, transparent);
+  }
+
+  html.dark .border-black\/8 {
+    border-color: color-mix(in oklab, white 10%, transparent);
+  }
+
+  html.dark .border-black\/10 {
+    border-color: color-mix(in oklab, white 12%, transparent);
+  }
+
+  /* Ripples / survol basés sur du noir — équivalent clair sur fond sombre */
+  html.dark .hover\:bg-black\/5:hover,
+  html.dark .active\:bg-black\/5:active {
+    background-color: color-mix(in oklab, white 8%, transparent);
+  }
+
+  html.dark .hover\:bg-black\/\[0\.02\]:hover {
+    background-color: color-mix(in oklab, white 4%, transparent);
+  }
+
+  html.dark .hover\:bg-black\/\[0\.04\]:hover {
+    background-color: color-mix(in oklab, white 6%, transparent);
+  }
+}
+
+/* Spinner AppShell : reduced motion en CSS (évite mismatch d’hydratation lié aux variantes `motion-reduce:` sur SSR vs client). */
+@media (prefers-reduced-motion: reduce) {
+  .fs-app-shell-loading-spinner {
+    animation: none !important;
+    border-top-color: color-mix(in srgb, var(--fs-accent) 45%, transparent);
+  }
+}
