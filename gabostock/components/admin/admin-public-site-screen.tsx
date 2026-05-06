@@ -2,6 +2,7 @@
 
 import { AdminCard, AdminPageHeader } from "@/components/admin/admin-page-header";
 import { adminGetPlatformSettings, adminSetPlatformSetting } from "@/lib/features/admin/api";
+import { uploadPublicSiteImage } from "@/lib/features/admin/public-site-assets";
 import { messageFromUnknownError, toast } from "@/lib/toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
@@ -34,6 +35,10 @@ const METIERS_KEY = "public_site_metiers";
 const FAQ_KEY = "public_site_faq";
 const PARTNERS_TITLE_KEY = "public_site_partners_title";
 const PARTNERS_SUBTITLE_KEY = "public_site_partners_subtitle";
+
+const IMG_LOGO_KEY = "public_site_image_logo";
+const IMG_DAILY_CHALLENGES_KEY = "public_site_image_daily_challenges";
+const IMG_SOLUTION_KEY = "public_site_image_solution";
 
 function safeParsePartners(raw: string | null | undefined): PartnerForm[] {
   const txt = (raw ?? "").trim();
@@ -110,6 +115,12 @@ export function AdminPublicSiteScreen() {
   const [steps, setSteps] = useState<StepItem[]>([]);
   const [metiers, setMetiers] = useState<TextItem[]>([]);
   const [faq, setFaq] = useState<FaqItem[]>([]);
+  const [images, setImages] = useState({
+    logo: "",
+    dailyChallenges: "",
+    solution: "",
+  });
+  const [uploading, setUploading] = useState<string | null>(null);
 
   useEffect(() => {
     if (!q.data) return;
@@ -132,6 +143,11 @@ export function AdminPublicSiteScreen() {
     setPartnersMeta({
       title: q.data[PARTNERS_TITLE_KEY] ?? "",
       subtitle: q.data[PARTNERS_SUBTITLE_KEY] ?? "",
+    });
+    setImages({
+      logo: q.data[IMG_LOGO_KEY] ?? "",
+      dailyChallenges: q.data[IMG_DAILY_CHALLENGES_KEY] ?? "",
+      solution: q.data[IMG_SOLUTION_KEY] ?? "",
     });
     setFeatures(
       safeParseJsonArray<TextItem>(q.data[FEATURES_KEY], (x) => {
@@ -203,6 +219,9 @@ export function AdminPublicSiteScreen() {
         adminSetPlatformSetting(STEPS_KEY, stepsJson),
         adminSetPlatformSetting(METIERS_KEY, metiersJson),
         adminSetPlatformSetting(FAQ_KEY, faqJson),
+        adminSetPlatformSetting(IMG_LOGO_KEY, images.logo.trim()),
+        adminSetPlatformSetting(IMG_DAILY_CHALLENGES_KEY, images.dailyChallenges.trim()),
+        adminSetPlatformSetting(IMG_SOLUTION_KEY, images.solution.trim()),
       ]);
     },
     onSuccess: () => {
@@ -246,6 +265,24 @@ export function AdminPublicSiteScreen() {
     next[idx] = next[to];
     next[to] = tmp;
     return next;
+  }
+
+  async function uploadImage(settingKey: string, file: File) {
+    try {
+      setUploading(settingKey);
+      const url = await uploadPublicSiteImage({ key: settingKey, file });
+      setImages((cur) => {
+        if (settingKey === IMG_LOGO_KEY) return { ...cur, logo: url };
+        if (settingKey === IMG_DAILY_CHALLENGES_KEY) return { ...cur, dailyChallenges: url };
+        if (settingKey === IMG_SOLUTION_KEY) return { ...cur, solution: url };
+        return cur;
+      });
+      toast.success("Image uploadée");
+    } catch (e) {
+      toast.error(messageFromUnknownError(e, "Upload impossible."));
+    } finally {
+      setUploading(null);
+    }
   }
 
   if (q.isLoading) {
@@ -390,6 +427,78 @@ export function AdminPublicSiteScreen() {
             placeholder="Rejoignez Gabostock : créez votre espace..."
           />
         </label>
+      </AdminCard>
+
+      <AdminCard>
+        <h3 className="text-base font-bold text-slate-900">Images (landing)</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Uploadez une image, puis cliquez sur “Enregistrer” pour l’appliquer.
+        </p>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+          {[
+            {
+              key: IMG_LOGO_KEY,
+              label: "Logo (header/sections landing)",
+              value: images.logo,
+              setValue: (v: string) => setImages((cur) => ({ ...cur, logo: v })),
+            },
+            {
+              key: IMG_DAILY_CHALLENGES_KEY,
+              label: "Image (Défis quotidiens)",
+              value: images.dailyChallenges,
+              setValue: (v: string) => setImages((cur) => ({ ...cur, dailyChallenges: v })),
+            },
+            {
+              key: IMG_SOLUTION_KEY,
+              label: "Image (Solution)",
+              value: images.solution,
+              setValue: (v: string) => setImages((cur) => ({ ...cur, solution: v })),
+            },
+          ].map((item) => (
+            <div key={item.key} className="rounded-2xl border border-slate-200 bg-white p-4">
+              <p className="text-sm font-bold text-slate-900">{item.label}</p>
+              <input
+                className="mt-3 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                value={item.value}
+                onChange={(e) => item.setValue(e.target.value)}
+                placeholder="URL publique (auto après upload)"
+              />
+              <div className="mt-3 flex items-center gap-3">
+                <label className="rounded-xl bg-fs-accent px-4 py-2 text-sm font-semibold text-white">
+                  {uploading === item.key ? "Upload..." : "Uploader"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploading != null}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0] ?? null;
+                      if (!f) return;
+                      void uploadImage(item.key, f);
+                      e.currentTarget.value = "";
+                    }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                  onClick={() => item.setValue("")}
+                >
+                  Reset
+                </button>
+              </div>
+              {item.value?.trim() ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={item.value}
+                  alt=""
+                  className="mt-4 h-32 w-full rounded-xl border border-slate-200 object-contain bg-slate-50"
+                />
+              ) : null}
+            </div>
+          ))}
+        </div>
       </AdminCard>
 
       <AdminCard>

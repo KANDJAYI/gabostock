@@ -30,6 +30,7 @@ import { fetchStoresPageData } from "@/lib/features/stores/api";
 import type { Store } from "@/lib/features/stores/types";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
 import { queryKeys } from "@/lib/query/query-keys";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
 import {
   fetchInvoiceTablePosEnabled,
   peekInvoiceTablePosEnabled,
@@ -101,9 +102,11 @@ export function StoresScreen() {
     await storesQ.refetch();
   }
 
+  const isPharmacy = isPharmacyBusinessTypeSlug(ctx.data?.businessTypeSlug);
+
   const headerDescription =
     companyName.length > 0
-      ? `${companyName} — Quota : ${quota} boutique(s) · ${stores.length} créée(s)`
+      ? `${companyName} — Quota : ${quota} ${isPharmacy ? "point(s) de vente" : "boutique(s)"} · ${stores.length} créée(s)`
       : "Sélectionnez une entreprise";
 
   const btnPrimary =
@@ -173,7 +176,7 @@ export function StoresScreen() {
         <div className="flex flex-col gap-4 min-[560px]:flex-row min-[560px]:items-start min-[560px]:justify-between min-[560px]:gap-6">
           <div className="min-w-0">
             <h1 className="text-[22px] font-bold leading-tight tracking-[-0.4px] text-fs-text min-[900px]:text-2xl">
-              Boutiques
+              {isPharmacy ? "Points de Vente" : "Boutiques"}
             </h1>
             <p className="mt-1 text-sm leading-relaxed text-neutral-600 min-[900px]:text-base">
               {headerDescription}
@@ -196,7 +199,7 @@ export function StoresScreen() {
             {canAdd ? (
               <button type="button" onClick={() => setCreateOpen(true)} className={btnPrimary}>
                 <MdAdd className="h-5 w-5 shrink-0" aria-hidden />
-                Nouvelle boutique
+                {isPharmacy ? "Nouveau point de vente" : "Nouvelle boutique"}
               </button>
             ) : null}
           </div>
@@ -210,8 +213,9 @@ export function StoresScreen() {
             <div className="flex gap-3">
               <MdInfoOutline className="h-5 w-5 shrink-0 text-amber-700" aria-hidden />
               <p>
-                Quota de boutiques atteint ({quota}). L&apos;augmentation du nombre de boutiques autorisées n&apos;est
-                pas disponible pour votre offre. Contactez l&apos;administrateur de la plateforme.
+                Quota {isPharmacy ? "de points de vente" : "de boutiques"} atteint ({quota}). L&apos;augmentation du
+                nombre {isPharmacy ? "de points de vente" : "de boutiques"} autorisés n&apos;est pas disponible pour
+                votre offre. Contactez l&apos;administrateur de la plateforme.
               </p>
             </div>
           </div>
@@ -227,7 +231,7 @@ export function StoresScreen() {
               <div className="min-w-0 flex-1">
                 <p>
                   {(storesQ.error as Error)?.message ??
-                    "Impossible de charger les boutiques."}
+                    `Impossible de charger les ${isPharmacy ? "points de vente" : "boutiques"}.`}
                 </p>
                 <button
                   type="button"
@@ -246,7 +250,11 @@ export function StoresScreen() {
             <div className="h-9 w-9 animate-spin rounded-full border-2 border-fs-accent border-t-transparent" />
           </div>
         ) : stores.length === 0 ? (
-          <EmptyStoresState canAdd={canAdd} onCreate={() => setCreateOpen(true)} />
+          <EmptyStoresState
+            isPharmacy={isPharmacy}
+            canAdd={canAdd}
+            onCreate={() => setCreateOpen(true)}
+          />
         ) : (
           <div
             className={cn(
@@ -270,7 +278,10 @@ export function StoresScreen() {
         )}
 
         {canAdd && stores.length > 0 ? (
-          <FsFab ariaLabel="Nouvelle boutique" onClick={() => setCreateOpen(true)}>
+          <FsFab
+            ariaLabel={isPharmacy ? "Nouveau point de vente" : "Nouvelle boutique"}
+            onClick={() => setCreateOpen(true)}
+          >
             <MdAdd className="h-7 w-7" aria-hidden />
           </FsFab>
         ) : null}
@@ -278,6 +289,7 @@ export function StoresScreen() {
         <CreateStoreModal
           open={createOpen}
           companyId={companyId}
+          isPharmacy={isPharmacy}
           onClose={() => setCreateOpen(false)}
           onCreated={() => {
             void qc.invalidateQueries({ queryKey: queryKeys.stores(companyId) });
@@ -287,6 +299,7 @@ export function StoresScreen() {
         <EditStoreModal
           open={!!editStore}
           store={editStore}
+          isPharmacy={isPharmacy}
           onClose={() => setEditStore(null)}
           onUpdated={() => {
             void qc.invalidateQueries({ queryKey: queryKeys.stores(companyId) });
@@ -299,9 +312,11 @@ export function StoresScreen() {
 }
 
 function EmptyStoresState({
+  isPharmacy,
   canAdd,
   onCreate,
 }: {
+  isPharmacy: boolean;
   canAdd: boolean;
   onCreate: () => void;
 }) {
@@ -314,12 +329,16 @@ function EmptyStoresState({
         <MdStore className="h-14 w-14 text-[var(--fs-accent)]" />
       </div>
       <h2 className="mt-6 text-lg font-bold leading-snug text-neutral-900 sm:text-xl">
-        Aucune boutique
+        {isPharmacy ? "Aucun point de vente" : "Aucune boutique"}
       </h2>
       <p className="mt-2 text-sm leading-relaxed text-neutral-600">
         {canAdd
-          ? "Créez votre première boutique pour gérer le stock et les ventes (POS)."
-          : "Quota atteint. Contactez l’administrateur pour augmenter le nombre de boutiques."}
+          ? isPharmacy
+            ? "Créez votre premier point de vente pour gérer le stock et les ventes (POS)."
+            : "Créez votre première boutique pour gérer le stock et les ventes (POS)."
+          : isPharmacy
+            ? "Quota atteint. Contactez l’administrateur pour augmenter le nombre de points de vente."
+            : "Quota atteint. Contactez l’administrateur pour augmenter le nombre de boutiques."}
       </p>
       {canAdd ? (
         <button
@@ -328,7 +347,7 @@ function EmptyStoresState({
           className="touch-manipulation mt-7 inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-fs-accent px-6 py-3 text-sm font-semibold text-white active:opacity-95 sm:w-auto"
         >
           <MdAdd className="h-5 w-5" aria-hidden />
-          Créer une boutique
+          {isPharmacy ? "Créer un point de vente" : "Créer une boutique"}
         </button>
       ) : null}
     </FsCard>

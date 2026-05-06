@@ -55,7 +55,8 @@ export const NAV_ITEMS: NavItem[] = [
   { href: ROUTES.suppliers, label: "Fournisseurs", icon: Building2 },
   { href: ROUTES.reports, label: "Rapports", icon: BarChart3 },
   { href: ROUTES.ai, label: "Prédictions IA", icon: Sparkles },
-  { href: ROUTES.subscription, label: "Abonnement", icon: Gem },
+  // Abonnement: accessible via route, mais masqué du menu latéral.
+  { href: ROUTES.subscription, label: "Abonnement", icon: Gem, showInSidebar: false },
   { href: ROUTES.users, label: "Utilisateurs", icon: UserCog },
   { href: ROUTES.audit, label: "Journal d'audit", icon: ScrollText },
   {

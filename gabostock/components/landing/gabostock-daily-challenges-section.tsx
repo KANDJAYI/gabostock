@@ -123,7 +123,11 @@ function FloatingPainTag({
 }
 
 /** Section « défis quotidiens » — après Fonctionnalités. */
-export function GabostockDailyChallengesSection() {
+export function GabostockDailyChallengesSection({
+  imageSrc = "/landing/defis-commerce.png",
+}: {
+  imageSrc?: string;
+}) {
   return (
     <section
       id="defis"
@@ -163,7 +167,7 @@ export function GabostockDailyChallengesSection() {
             <ScrollReveal delayMs={120}>
               <figure className="relative aspect-[638/758] w-full overflow-hidden rounded-[22px] sm:rounded-[26px]">
                 <Image
-                  src="/landing/defis-commerce.png"
+                  src={imageSrc}
                   alt="Commerçant face aux difficultés de gestion"
                   fill
                   className="object-cover object-[50%_18%]"

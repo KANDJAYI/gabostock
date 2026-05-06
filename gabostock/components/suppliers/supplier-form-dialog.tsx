@@ -4,6 +4,9 @@ import { FsCard, fsInputClass } from "@/components/ui/fs-screen-primitives";
 import { cn } from "@/lib/utils/cn";
 import { useEffect, useState } from "react";
 import { MdClose, MdErrorOutline } from "react-icons/md";
+import { useAppContext } from "@/lib/features/common/app-context";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
+import { pharmacySupplierActionLabels } from "@/lib/features/pharmacy/labels";
 
 export type SupplierFormValue = {
   name: string;
@@ -12,6 +15,12 @@ export type SupplierFormValue = {
   email: string;
   address: string;
   notes: string;
+  /** ===== Pharmacie (optionnel) ===== */
+  pharmacyLicenseNumber?: string;
+  pharmacyRegulatoryId?: string;
+  pharmacyIsManufacturer?: boolean;
+  pharmacyColdChainSupported?: boolean;
+  pharmacyPaymentTermsDays?: string;
 };
 
 const fieldLabelClass = "mb-1.5 block text-xs font-medium leading-tight text-neutral-600 sm:text-[13px]";
@@ -31,7 +40,10 @@ export function SupplierFormDialog({
   initialValue?: Partial<SupplierFormValue> | null;
   onSubmit: (value: SupplierFormValue) => Promise<void> | void;
 }) {
-  const title = variant === "edit" ? "Modifier le fournisseur" : "Nouveau fournisseur";
+  const appCtx = useAppContext();
+  const isPharmacy = isPharmacyBusinessTypeSlug(appCtx.data?.businessTypeSlug);
+  const s = pharmacySupplierActionLabels(isPharmacy);
+  const title = variant === "edit" ? s.dialogEditTitle : s.dialogNewTitle;
   const submitLabel = variant === "edit" ? "Enregistrer" : "Créer";
   const [v, setV] = useState<SupplierFormValue>({
     name: "",
@@ -40,6 +52,11 @@ export function SupplierFormDialog({
     email: "",
     address: "",
     notes: "",
+    pharmacyLicenseNumber: "",
+    pharmacyRegulatoryId: "",
+    pharmacyIsManufacturer: false,
+    pharmacyColdChainSupported: false,
+    pharmacyPaymentTermsDays: "",
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +70,27 @@ export function SupplierFormDialog({
       email: initialValue?.email ?? "",
       address: initialValue?.address ?? "",
       notes: initialValue?.notes ?? "",
+      pharmacyLicenseNumber:
+        (initialValue as any)?.pharmacy_license_number ??
+        (initialValue as any)?.pharmacyLicenseNumber ??
+        "",
+      pharmacyRegulatoryId:
+        (initialValue as any)?.pharmacy_regulatory_id ??
+        (initialValue as any)?.pharmacyRegulatoryId ??
+        "",
+      pharmacyIsManufacturer:
+        ((initialValue as any)?.pharmacy_is_manufacturer ??
+          (initialValue as any)?.pharmacyIsManufacturer) === true,
+      pharmacyColdChainSupported:
+        ((initialValue as any)?.pharmacy_cold_chain_supported ??
+          (initialValue as any)?.pharmacyColdChainSupported) === true,
+      pharmacyPaymentTermsDays: (() => {
+        const n =
+          (initialValue as any)?.pharmacy_payment_terms_days ??
+          (initialValue as any)?.pharmacyPaymentTermsDays ??
+          null;
+        return n == null ? "" : String(n);
+      })(),
     });
     setBusy(false);
     setError(null);
@@ -197,6 +235,78 @@ export function SupplierFormDialog({
                   rows={2}
                 />
               </div>
+
+              {isPharmacy ? (
+                <div className="rounded-xl border border-[color-mix(in_srgb,var(--fs-accent)_18%,transparent)] bg-[color-mix(in_srgb,var(--fs-accent)_6%,transparent)] p-3">
+                  <p className="text-sm font-semibold text-fs-text">Pharmacie (optionnel)</p>
+                  <p className="mt-1 text-xs text-neutral-600">
+                    Ces champs n&apos;apparaissent que pour les pharmacies.
+                  </p>
+
+                  <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className={fieldLabelClass}>N° licence / agrément</label>
+                      <input
+                        className={fsInputClass(inputOutline)}
+                        value={v.pharmacyLicenseNumber ?? ""}
+                        onChange={(e) =>
+                          setV((p) => ({ ...p, pharmacyLicenseNumber: e.target.value }))
+                        }
+                        placeholder="Ex: AGR-12345"
+                      />
+                    </div>
+                    <div>
+                      <label className={fieldLabelClass}>Identifiant règlementaire</label>
+                      <input
+                        className={fsInputClass(inputOutline)}
+                        value={v.pharmacyRegulatoryId ?? ""}
+                        onChange={(e) =>
+                          setV((p) => ({ ...p, pharmacyRegulatoryId: e.target.value }))
+                        }
+                        placeholder="Ex: REG-…"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <label className="flex cursor-pointer items-center gap-2 rounded-[10px] bg-fs-card/60 px-3 py-2">
+                      <input
+                        type="checkbox"
+                        checked={v.pharmacyIsManufacturer === true}
+                        onChange={(e) =>
+                          setV((p) => ({ ...p, pharmacyIsManufacturer: e.target.checked }))
+                        }
+                        className="h-4 w-4 rounded border-black/[0.2] text-fs-accent focus:ring-fs-accent"
+                      />
+                      <span className="text-sm text-fs-text">Fabricant / laboratoire</span>
+                    </label>
+                    <label className="flex cursor-pointer items-center gap-2 rounded-[10px] bg-fs-card/60 px-3 py-2">
+                      <input
+                        type="checkbox"
+                        checked={v.pharmacyColdChainSupported === true}
+                        onChange={(e) =>
+                          setV((p) => ({ ...p, pharmacyColdChainSupported: e.target.checked }))
+                        }
+                        className="h-4 w-4 rounded border-black/[0.2] text-fs-accent focus:ring-fs-accent"
+                      />
+                      <span className="text-sm text-fs-text">Chaîne du froid</span>
+                    </label>
+                  </div>
+
+                  <div className="mt-3">
+                    <label className={fieldLabelClass}>Délais de paiement (jours)</label>
+                    <input
+                      className={fsInputClass(inputOutline)}
+                      value={v.pharmacyPaymentTermsDays ?? ""}
+                      onChange={(e) =>
+                        setV((p) => ({ ...p, pharmacyPaymentTermsDays: e.target.value }))
+                      }
+                      inputMode="numeric"
+                      placeholder="Ex: 30"
+                    />
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -227,7 +337,23 @@ export function SupplierFormDialog({
                   }
                   try {
                     setBusy(true);
-                    await onSubmit({ ...v, name });
+                    const termsRaw = (v.pharmacyPaymentTermsDays ?? "").trim();
+                    const termsNum =
+                      termsRaw.length > 0 ? Math.max(0, Math.trunc(Number(termsRaw))) : null;
+                    await onSubmit({
+                      ...v,
+                      name,
+                      ...(isPharmacy
+                        ? {
+                            pharmacyLicenseNumber: (v.pharmacyLicenseNumber ?? "").trim(),
+                            pharmacyRegulatoryId: (v.pharmacyRegulatoryId ?? "").trim(),
+                            pharmacyIsManufacturer: v.pharmacyIsManufacturer === true,
+                            pharmacyColdChainSupported: v.pharmacyColdChainSupported === true,
+                            pharmacyPaymentTermsDays:
+                              termsNum == null || !Number.isFinite(termsNum) ? "" : String(termsNum),
+                          }
+                        : {}),
+                    });
                     onClose();
                   } catch (e) {
                     setError(e instanceof Error ? e.message : "Enregistrement impossible.");

@@ -167,6 +167,9 @@ const FALLBACK_PARTNERS: LandingPartner[] = [
 
 export async function GabostockLanding() {
   let partners: LandingPartner[] = FALLBACK_PARTNERS;
+  let landingLogoSrc: string | null = null;
+  let dailyChallengesImageSrc: string | null = null;
+  let solutionImageSrc: string | null = null;
   let heroBadgeLeft: string | null = null;
   let heroBadgeRight: string | null = null;
   let heroTitleLine1: string | null = null;
@@ -208,6 +211,9 @@ export async function GabostockLanding() {
         "public_site_final_cta_description",
         "public_site_partners_title",
         "public_site_partners_subtitle",
+        "public_site_image_logo",
+        "public_site_image_daily_challenges",
+        "public_site_image_solution",
       ]);
     const map = new Map<string, string>();
     for (const r of (rows ?? []) as unknown[]) {
@@ -231,6 +237,9 @@ export async function GabostockLanding() {
     finalCtaDescription = get("public_site_final_cta_description");
     partnersTitle = get("public_site_partners_title");
     partnersSubtitle = get("public_site_partners_subtitle");
+    landingLogoSrc = get("public_site_image_logo");
+    dailyChallengesImageSrc = get("public_site_image_daily_challenges");
+    solutionImageSrc = get("public_site_image_solution");
   } catch {
     // fallback to hardcoded list when settings are unavailable
   }
@@ -244,7 +253,7 @@ export async function GabostockLanding() {
         "min-h-dvh bg-fs-surface text-fs-text antialiased",
       )}
     >
-      <LandingHeader variant="heroDark" />
+      <LandingHeader variant="heroDark" logoSrc={landingLogoSrc ?? "/logogabostock.png"} />
 
       <main>
         {/* Bannière : fond + contenu + maquettes */}
@@ -377,15 +386,18 @@ export async function GabostockLanding() {
             </div>
 
             <div className="relative z-[1] min-w-0 lg:flex lg:justify-end lg:pl-2">
-              <LandingHeroMockupsComposition />
+              <LandingHeroMockupsComposition logoSrc={landingLogoSrc ?? "/logogabostock.png"} />
             </div>
             </div>
           </div>
         </section>
 
-        <GabostockDailyChallengesSection />
+        <GabostockDailyChallengesSection imageSrc={dailyChallengesImageSrc ?? "/landing/defis-commerce.png"} />
 
-        <GabostockSolutionShowcaseSection />
+        <GabostockSolutionShowcaseSection
+          imageSrc={solutionImageSrc ?? "/landing/solution-commerce.png"}
+          logoSrc={landingLogoSrc ?? "/logogabostock.png"}
+        />
 
         {/* Fonctionnalités — même fond navy, grille 7 cartes façon keynote */}
         <section
@@ -438,25 +450,59 @@ export async function GabostockLanding() {
           className="scroll-mt-20 border-b border-neutral-200/80 bg-fs-surface-container/40 py-16 dark:border-neutral-700/80 sm:py-20"
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Comment ça marche</h2>
-              <p className="mt-4 text-lg text-fs-on-surface-variant">
-                Trois étapes pour sortir du chaos des fichiers dispersés et retrouver une vision
-                unique de votre activité.
-              </p>
-            </div>
-            <ol className="mt-12 grid gap-8 lg:grid-cols-3">
-              {STEPS.map((s) => (
-                <li
-                  key={s.step}
-                  className="relative rounded-2xl border border-neutral-200 bg-fs-card p-8 dark:border-neutral-700"
-                >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fs-accent text-base font-bold text-white">
-                    {s.step}
+            <ScrollReveal>
+              <div className="mx-auto max-w-2xl text-center">
+                <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-fs-accent/25 bg-fs-accent/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-fs-accent">
+                  Parcours
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--fs-brand-stock)]" aria-hidden />
+                  Simple
+                </div>
+                <h2 className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-fs-text sm:text-4xl">
+                  Comment{" "}
+                  <span className="bg-gradient-to-r from-fs-accent to-[var(--fs-brand-stock)] bg-clip-text text-transparent">
+                    ça marche
                   </span>
-                  <h3 className="mt-5 text-xl font-semibold">{s.title}</h3>
-                  <p className="mt-3 text-fs-on-surface-variant">{s.body}</p>
-                </li>
+                </h2>
+                <p className="mx-auto mt-4 max-w-2xl text-[1.03rem] leading-relaxed text-fs-on-surface-variant">
+                  Trois étapes pour sortir du chaos des fichiers dispersés et retrouver une vision unique de votre activité.
+                </p>
+              </div>
+            </ScrollReveal>
+
+            <ol className="mt-12 grid gap-6 lg:grid-cols-3 lg:gap-8">
+              {STEPS.map((s, idx) => (
+                <ScrollReveal key={s.step} delayMs={idx * 90}>
+                  <li className="group relative overflow-hidden rounded-2xl border border-neutral-200 bg-fs-card p-8 shadow-sm transition hover:border-fs-accent/30 hover:shadow-md dark:border-neutral-700">
+                    <div
+                      className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-[0.12] blur-2xl"
+                      style={{
+                        background:
+                          "radial-gradient(circle at 30% 30%, var(--fs-accent), transparent 62%)",
+                      }}
+                      aria-hidden
+                    />
+                    <div className="flex items-center gap-4">
+                      <span
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl text-base font-extrabold text-white shadow-sm"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, var(--fs-accent), var(--fs-brand-stock))",
+                        }}
+                      >
+                        {s.step}
+                      </span>
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-bold leading-snug text-fs-text">{s.title}</h3>
+                        <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-fs-on-surface-variant">
+                          Étape {s.step}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-[0.98rem] leading-relaxed text-fs-on-surface-variant">
+                      {s.body}
+                    </p>
+                  </li>
+                </ScrollReveal>
               ))}
             </ol>
           </div>
@@ -546,30 +592,63 @@ export async function GabostockLanding() {
         {/* FAQ */}
         <section
           id="faq"
-          className="scroll-mt-20 py-16 sm:py-20"
+          className="scroll-mt-20 border-t border-neutral-200/80 bg-fs-surface-container/50 py-16 dark:border-neutral-700/80 sm:py-20"
         >
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
-              Questions fréquentes
-            </h2>
-            <p className="mt-4 text-center text-lg text-fs-on-surface-variant">
-              Réponses synthétiques aux demandes les plus courantes avant de créer votre compte.
-            </p>
+            <div className="text-center">
+              <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-fs-accent/25 bg-fs-accent/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-fs-accent">
+                FAQ
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--fs-brand-stock)]" aria-hidden />
+                Support
+              </div>
+              <h2 className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-fs-text sm:text-4xl">
+                Questions{" "}
+                <span className="bg-gradient-to-r from-fs-accent to-[var(--fs-brand-stock)] bg-clip-text text-transparent">
+                  fréquentes
+                </span>
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-[1.03rem] leading-relaxed text-fs-on-surface-variant">
+                Les réponses aux questions les plus courantes avant de créer votre compte.
+              </p>
+            </div>
+
             <div className="mt-10 space-y-3">
               {FAQ_ITEMS.map((item) => (
                 <details
                   key={item.q}
-                  className="group rounded-2xl border border-neutral-200 bg-fs-card px-5 py-1 dark:border-neutral-700 [&_summary::-webkit-details-marker]:hidden"
+                  className="group overflow-hidden rounded-2xl border border-neutral-200 bg-fs-card shadow-sm transition hover:border-fs-accent/30 hover:shadow-md dark:border-neutral-700 [&_summary::-webkit-details-marker]:hidden"
                 >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-4 text-left font-semibold text-fs-text hover:text-fs-accent">
-                    <span>{item.q}</span>
-                    <span className="text-fs-on-surface-variant transition group-open:rotate-45">
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-4 px-5 py-4 text-left">
+                    <span className="flex min-w-0 items-start gap-3">
+                      <span
+                        className="mt-0.5 h-6 w-1 rounded-full"
+                        style={{
+                          background:
+                            "linear-gradient(180deg, var(--fs-accent), var(--fs-brand-stock))",
+                        }}
+                        aria-hidden
+                      />
+                      <span className="min-w-0">
+                        <span className="block font-semibold leading-snug text-fs-text transition group-hover:text-fs-accent">
+                          {item.q}
+                        </span>
+                        <span className="mt-1 block text-xs text-fs-on-surface-variant">
+                          Cliquez pour afficher la réponse
+                        </span>
+                      </span>
+                    </span>
+
+                    <span
+                      className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-fs-surface text-fs-accent transition group-open:rotate-45 dark:border-neutral-600"
+                      aria-hidden
+                      title="Ouvrir"
+                    >
                       +
                     </span>
                   </summary>
-                  <p className="border-t border-neutral-200 pb-5 pt-0 text-sm leading-relaxed text-fs-on-surface-variant dark:border-neutral-600">
+                  <div className="border-t border-neutral-200 px-5 pb-5 pt-4 text-sm leading-relaxed text-fs-on-surface-variant dark:border-neutral-600">
                     {item.a}
-                  </p>
+                  </div>
                 </details>
               ))}
             </div>
@@ -607,35 +686,106 @@ export async function GabostockLanding() {
         <LandingPartnersSection partners={partners} title={partnersTitle} subtitle={partnersSubtitle} />
       </main>
 
-      <footer className="border-t border-neutral-200/80 bg-fs-surface-container/60 py-10 dark:border-neutral-700/80">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <Image
-              src="/logogabostock.png"
-              alt=""
-              width={36}
-              height={36}
-              className="h-9 w-9 rounded-lg object-contain"
-            />
-            <span className="text-lg font-semibold">
-              <span className="text-fs-text">Gabo</span>
-              <span className="text-[var(--fs-brand-stock)]">Stock</span>
-            </span>
+      <footer className="border-t border-neutral-200/80 bg-fs-surface-container/60 dark:border-neutral-700/80">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Image
+                  src={landingLogoSrc ?? "/logogabostock.png"}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 rounded-xl object-contain"
+                />
+                <div className="min-w-0">
+                  <p className="text-lg font-extrabold tracking-tight text-fs-text">
+                    <span>Gabo</span>
+                    <span className="text-[var(--fs-brand-stock)]">Stock</span>
+                  </p>
+                  <p className="text-sm text-fs-on-surface-variant">
+                    Stock, ventes & dépôt — simple, rapide, fiable.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href={ROUTES.registerSelectActivity}
+                  className="inline-flex items-center justify-center rounded-xl bg-fs-accent px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-fs-accent/20 hover:opacity-95"
+                >
+                  Créer un compte
+                </Link>
+                <Link
+                  href={ROUTES.login}
+                  className="inline-flex items-center justify-center rounded-xl border border-neutral-300 bg-fs-card px-4 py-2 text-sm font-semibold text-fs-text hover:bg-fs-surface-low dark:border-neutral-600"
+                >
+                  Connexion
+                </Link>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-fs-text">Produit</p>
+              <ul className="mt-4 space-y-2 text-sm">
+                {[
+                  { href: "#fonctionnalites", label: "Fonctionnalités" },
+                  { href: "#parcours", label: "Comment ça marche" },
+                  { href: "#metiers", label: "Métiers" },
+                  { href: "#faq", label: "FAQ" },
+                ].map((l) => (
+                  <li key={l.href}>
+                    <a className="text-fs-on-surface-variant hover:text-fs-accent" href={l.href}>
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-fs-text">Ressources</p>
+              <ul className="mt-4 space-y-2 text-sm">
+                {[
+                  { href: "/login", label: "Accéder à mon compte" },
+                  { href: "/register/select-activity", label: "Créer un espace" },
+                  { href: "/setup", label: "Configuration" },
+                ].map((l) => (
+                  <li key={l.href}>
+                    <Link className="text-fs-on-surface-variant hover:text-fs-accent" href={l.href}>
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-fs-text">Contact</p>
+              <div className="mt-4 space-y-2 text-sm text-fs-on-surface-variant">
+                <p>Support & démo</p>
+                <p className="text-xs">
+                  Un besoin spécifique (multi-magasins, dépôt, impression) ? Écrivez-nous et on vous
+                  guide.
+                </p>
+              </div>
+            </div>
           </div>
-          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
-            <Link href={ROUTES.login} className="text-fs-on-surface-variant hover:text-fs-accent">
-              Connexion
-            </Link>
-            <Link
-              href={ROUTES.registerSelectActivity}
-              className="text-fs-on-surface-variant hover:text-fs-accent"
-            >
-              Inscription
-            </Link>
-          </nav>
-          <p className="max-w-xs text-center text-xs text-fs-on-surface-variant sm:max-w-none sm:text-right">
-            Gabostock — gestion de stock, ventes et dépôt. © {new Date().getFullYear()}.
-          </p>
+
+          <div className="mt-10 flex flex-col gap-3 border-t border-neutral-200/80 pt-6 text-xs text-fs-on-surface-variant dark:border-neutral-700/80 sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              © {new Date().getFullYear()} Gabostock. Tous droits réservés.
+            </p>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <a href="#top" className="hover:text-fs-accent">
+                Retour en haut
+              </a>
+              <span className="hidden sm:inline">•</span>
+              <span className="text-[color-mix(in_oklab,var(--fs-on-surface-variant)_88%,transparent)]">
+                Construit pour le terrain.
+              </span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

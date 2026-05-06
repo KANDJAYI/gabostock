@@ -17,7 +17,13 @@ const NAV = [
 
 export type LandingHeaderVariant = "surface" | "heroDark";
 
-export function LandingHeader({ variant = "surface" }: { variant?: LandingHeaderVariant }) {
+export function LandingHeader({
+  variant = "surface",
+  logoSrc = "/logogabostock.png",
+}: {
+  variant?: LandingHeaderVariant;
+  logoSrc?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -48,21 +54,21 @@ export function LandingHeader({ variant = "surface" }: { variant?: LandingHeader
     open &&
     createPortal(
       <div data-fs-portal-layer className="fixed inset-0 z-[200]">
-        {/* Sous la barre sticky (h-14 / sm:h-16) */}
+        {/* Sous la barre sticky (h-16 / sm:h-[72px]) */}
         <button
           type="button"
           aria-hidden
           tabIndex={-1}
-          className="absolute inset-x-0 bottom-0 top-14 z-0 cursor-default bg-neutral-950/45 backdrop-blur-[3px] sm:top-16 dark:bg-neutral-950/60"
+          className="absolute inset-x-0 bottom-0 top-16 z-0 cursor-default bg-neutral-950/45 backdrop-blur-[3px] sm:top-[72px] dark:bg-neutral-950/60"
           onClick={() => setOpen(false)}
         />
 
         <div
           id="landing-mobile-menu"
           className={cn(
-            "absolute bottom-0 right-0 top-14 z-[1] flex w-[min(20rem,calc(100vw-0.75rem))] flex-col rounded-l-[1.375rem]",
+            "absolute bottom-0 right-0 top-16 z-[1] flex w-[min(20rem,calc(100vw-0.75rem))] flex-col rounded-l-[1.375rem]",
             "border-l border-neutral-200 bg-fs-card shadow-[0_25px_50px_-12px_rgba(0,0,0,0.28)] dark:border-neutral-600 dark:bg-fs-surface-container",
-            "sm:top-16",
+            "sm:top-[72px]",
           )}
           style={{
             paddingBottom: `max(1rem, env(safe-area-inset-bottom))`,
@@ -142,7 +148,7 @@ export function LandingHeader({ variant = "surface" }: { variant?: LandingHeader
             : "border-b border-neutral-200/80 bg-fs-surface/90 dark:border-neutral-700/80",
         )}
       >
-        <div className="mx-auto flex h-14 max-w-6xl min-w-0 items-center gap-2 px-3 sm:h-16 sm:gap-3 sm:px-6 lg:px-10 xl:px-12">
+        <div className="mx-auto flex h-16 max-w-6xl min-w-0 items-center gap-2 px-3 sm:h-[72px] sm:gap-3 sm:px-6 lg:px-10 xl:px-12">
           <a
             href="#top"
             className={cn(
@@ -152,7 +158,7 @@ export function LandingHeader({ variant = "surface" }: { variant?: LandingHeader
             onClick={() => setOpen(false)}
           >
             <Image
-              src="/logogabostock.png"
+              src={logoSrc}
               alt=""
               width={36}
               height={36}

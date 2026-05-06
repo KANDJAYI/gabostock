@@ -34,13 +34,13 @@ function LineChartSvg() {
   );
 }
 
-function LaptopDashboardInner() {
+function LaptopDashboardInner({ logoSrc }: { logoSrc: string }) {
   return (
     <div className="flex h-full min-h-[220px] min-w-0 bg-white text-neutral-900 sm:min-h-[260px]">
       <aside className="flex w-[30%] min-w-0 flex-col gap-3 border-r border-neutral-200/98 bg-[#f7f8fa] p-[7%_5%_6%]">
         <div className="flex items-center gap-[6px] border-b border-neutral-200/95 pb-[8%]">
           <Image
-            src="/logogabostock.png"
+            src={logoSrc}
             alt=""
             width={48}
             height={48}
@@ -111,7 +111,7 @@ function LaptopDashboardInner() {
 }
 
 /** MacBook — cadre gris / écran brillant et reflet discret sous la base */
-function LandingHeroLaptopMockup() {
+function LandingHeroLaptopMockup({ logoSrc }: { logoSrc: string }) {
   return (
     <div className="relative w-full max-w-[696px]">
       <div
@@ -126,7 +126,7 @@ function LandingHeroLaptopMockup() {
 
       <div className="relative rounded-t-[17px] border-[11px_11px_0] border-[#3f4450] bg-[#2c3038] pb-0 pt-[13px] shadow-[0_50px_100px_-40px_rgba(0,0,0,.78)] sm:rounded-t-[19px] sm:border-[12px_12px_0] sm:pt-[15px]">
         <div className="aspect-[96/61] overflow-hidden rounded-t-[11px] border border-neutral-200/93 bg-neutral-50 shadow-inner sm:rounded-t-[12px]">
-          <LaptopDashboardInner />
+          <LaptopDashboardInner logoSrc={logoSrc} />
         </div>
         <div className="h-[11px] bg-[#dcdfe5] shadow-[inset_0_2px_0_rgba(255,255,255,0.72)] sm:h-[12px]" />
       </div>
@@ -205,7 +205,7 @@ function LandingHeroMockupsPhoneOverlapping() {
 }
 
 /** Mac + iPhone : sous md l’iPhone est empilé ; à partir de lg il chevauche le coin bas gauche du portable */
-export function LandingHeroMockupsComposition() {
+export function LandingHeroMockupsComposition({ logoSrc = "/logogabostock.png" }: { logoSrc?: string }) {
   return (
     <div className="relative flex w-full items-end justify-center pb-10 pt-8 lg:justify-end lg:pb-[4.875rem] lg:pt-4">
       <div
@@ -214,7 +214,7 @@ export function LandingHeroMockupsComposition() {
       />
       <div className="relative w-full max-w-[min(880px,calc(100vw-1.75rem))]">
         <div className="relative mx-auto flex w-full flex-col items-center lg:mx-0 lg:block">
-          <LandingHeroLaptopMockup />
+          <LandingHeroLaptopMockup logoSrc={logoSrc} />
 
           <div className="relative z-[30] mt-11 w-full max-w-[296px] lg:absolute lg:left-[6%] lg:bottom-[-3.0625rem] lg:mt-0 xl:left-[5.875rem] xl:bottom-[-3.5rem]">
             <LandingHeroMockupsPhoneOverlapping />

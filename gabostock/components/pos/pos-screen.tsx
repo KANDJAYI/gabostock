@@ -28,6 +28,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
+import { pharmacyPosUiLabels } from "@/lib/features/pharmacy/labels";
+import { listPharmacyBatches } from "@/lib/features/pharmacy/batches/api";
+import type { PharmacyBatchRow } from "@/lib/features/pharmacy/batches/types";
 import { InvoicePostSaleDialog } from "@/components/invoices/invoice-post-sale-dialog";
 import { PosBarcodeScannerDialog } from "@/components/pos/pos-barcode-scanner-dialog";
 import { ReceiptTicketDialog } from "@/components/pos/receipt-ticket-dialog";
@@ -65,6 +69,9 @@ import {
 export type PosMode = "quick" | "a4" | "a4-table";
 type CartRow = {
   productId: string;
+  batchId?: string | null;
+  batchLotNumber?: string | null;
+  batchExpiresOn?: string | null;
   name: string;
   quantity: number;
   unitPrice: number;
@@ -105,6 +112,8 @@ export function PosScreen({
   const qc = useQueryClient();
   const { data: ctx, hasPermission, isLoading: permLoading } = usePermissions();
   const companyId = ctx?.companyId ?? "";
+  const isPharmacy = isPharmacyBusinessTypeSlug(ctx?.businessTypeSlug);
+  const posPh = pharmacyPosUiLabels(isPharmacy);
   const [search, setSearch] = useState("");
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [cart, setCart] = useState<CartRow[]>([]);
@@ -138,6 +147,12 @@ export function PosScreen({
 
   const isWide = useMediaQuery("(min-width: 900px)");
   const lastStockToastAt = useRef(0);
+
+  const [batchPickerOpen, setBatchPickerOpen] = useState(false);
+  const [batchPickerProductId, setBatchPickerProductId] = useState<string | null>(null);
+  const [batchPickerProductName, setBatchPickerProductName] = useState<string>("");
+  const [batchPickerUnit, setBatchPickerUnit] = useState<string>("u");
+  const [batchPickerImageUrl, setBatchPickerImageUrl] = useState<string | null>(null);
 
   const profileNameQ = useQuery({
     queryKey: ["pos-profile-name"] as const,
@@ -217,6 +232,13 @@ export function PosScreen({
   });
 
   const store = posQ.data?.store ?? null;
+
+  const batchesQ = useQuery({
+    queryKey: ["pharmacy", "batches", storeId] as const,
+    queryFn: () => listPharmacyBatches({ storeId }),
+    enabled: Boolean(storeId) && isPharmacy,
+    staleTime: 12_000,
+  });
 
   const stripCol1900 = useMediaQuery("(min-width: 1900px)");
   const stripCol1400 = useMediaQuery("(min-width: 1400px)");
@@ -355,9 +377,7 @@ export function PosScreen({
           return;
         }
         if (sale.store_id !== storeId) {
-          setSaleEditBarrierError(
-            "Cette vente appartient à une autre boutique.",
-          );
+          setSaleEditBarrierError(posPh.wrongStoreToast);
           setSaleEditBootstrapping(false);
           return;
         }
@@ -397,7 +417,7 @@ export function PosScreen({
           const img = p?.product_images?.[0]?.url ?? null;
           rows.push({
             productId: pid,
-            name: it.product?.name ?? p?.name ?? "Produit",
+            name: it.product?.name ?? p?.name ?? posPh.productFallbackName,
             quantity: it.quantity,
             unitPrice: it.unit_price,
             unit: it.product?.unit ?? p?.unit ?? "pce",
@@ -440,7 +460,17 @@ export function PosScreen({
     return () => {
       cancelled = true;
     };
-  }, [editSaleIdProp, storeId, mode, canUpdateSales, posQ.data, router, isA4Like]);
+  }, [
+    editSaleIdProp,
+    storeId,
+    mode,
+    canUpdateSales,
+    posQ.data,
+    router,
+    isA4Like,
+    posPh.wrongStoreToast,
+    posPh.productFallbackName,
+  ]);
 
   type CreatePayResult = {
     kind: "create";
@@ -549,6 +579,7 @@ export function PosScreen({
         customerId: isA4Like ? customerId || null : null,
         items: cart.map((c) => ({
           productId: c.productId,
+          batchId: c.batchId ?? null,
           quantity: c.quantity,
           unitPrice: c.unitPrice,
         })),
@@ -709,6 +740,24 @@ export function PosScreen({
     unit: string,
     imageUrl?: string | null,
   ) {
+    if (isPharmacy) {
+      const list = (batchesQ.data ?? []).filter(
+        (b: PharmacyBatchRow) =>
+          b.product_id === productId &&
+          b.quantity > 0 &&
+          (b.expires_on == null || b.expires_on >= new Date().toISOString().slice(0, 10)),
+      );
+      if (list.length === 0) {
+        toast.error(posPh.noLotToast);
+        return;
+      }
+      setBatchPickerProductId(productId);
+      setBatchPickerProductName(name);
+      setBatchPickerUnit(unit || "u");
+      setBatchPickerImageUrl(imageUrl ?? null);
+      setBatchPickerOpen(true);
+      return;
+    }
     const stock = stockByProductId.get(productId) ?? 0;
     setCart((prev) => {
       const idx = prev.findIndex((p) => p.productId === productId);
@@ -747,6 +796,51 @@ export function PosScreen({
     });
   }
 
+  function addToCartWithBatch(params: {
+    productId: string;
+    batchId: string;
+    lotNumber: string | null;
+    expiresOn: string | null;
+    name: string;
+    unit: string;
+    imageUrl?: string | null;
+  }) {
+    const stock = stockByProductId.get(params.productId) ?? 0;
+    setCart((prev) => {
+      const idx = prev.findIndex(
+        (p) => p.productId === params.productId && (p.batchId ?? null) === params.batchId,
+      );
+      if (idx < 0) {
+        if (stock <= 0) return prev;
+        const qty = 1;
+        return [
+          ...prev,
+          {
+            productId: params.productId,
+            batchId: params.batchId,
+            batchLotNumber: params.lotNumber,
+            batchExpiresOn: params.expiresOn,
+            name: params.name,
+            quantity: qty,
+            unitPrice: catalogUnitPrice(params.productId, qty),
+            unit: params.unit || "u",
+            imageUrl: params.imageUrl ?? null,
+            lineTotal: undefined,
+          },
+        ];
+      }
+      const row = prev[idx];
+      if (row.quantity + 1 > stock) return prev;
+      const newQty = row.quantity + 1;
+      const unitPrice = row.linePriceUserSet
+        ? row.unitPrice
+        : catalogUnitPrice(params.productId, newQty);
+      const next = [...prev];
+      next[idx] = { ...row, quantity: newQty, unitPrice, lineTotal: undefined };
+      return next;
+    });
+  }
+
   /** Aligné `PosQuickPage._addByBarcode` : correspondance exacte sur `barcode` trim, puis `isProductShownOnStoreTill`. */
   function addByBarcode(code: string) {
     const trimmed = code.replace(/\r|\n/g, "").trim();
@@ -755,12 +849,12 @@ export function PosScreen({
       (x) => x.is_active && x.barcode && x.barcode.trim() === trimmed,
     );
     if (!p) {
-      toast.error("Aucun produit avec ce code-barres.");
+      toast.error(posPh.barcodeNotFound);
       return;
     }
     const stock = stockByProductId.get(p.id) ?? 0;
     if (stock <= 0) {
-      toast.error("Produit indisponible (stock épuisé).");
+      toast.error(posPh.outOfStock);
       return;
     }
     addToCart(
@@ -905,7 +999,7 @@ export function PosScreen({
           className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-[#f97316] px-4 py-3 text-sm font-semibold text-white"
         >
           <MdArrowBack className="h-4 w-4" aria-hidden />
-          Retour aux boutiques
+          {posPh.backToStores}
         </Link>
       </div>
     );
@@ -958,7 +1052,7 @@ export function PosScreen({
             href={ROUTES.stores}
             className="mt-3 text-sm font-semibold text-[#f97316] underline-offset-2 hover:underline"
           >
-            Retour aux boutiques
+            {posPh.backToStores}
           </Link>
         </div>
       );
@@ -1072,7 +1166,7 @@ export function PosScreen({
                 : "POS Facture A4"}
           </p>
           <p className="truncate text-[10px] text-white/90 sm:text-[11px]">
-            {store?.name ?? "Boutique"}
+            {store?.name ?? posPh.storeNameFallback}
             {mode === "quick" && isWide && profileNameQ.data
               ? ` • ${profileNameQ.data}`
               : ""}
@@ -1111,7 +1205,7 @@ export function PosScreen({
             <Link
               href={`${ROUTES.sales}?store=${encodeURIComponent(storeId)}`}
               className="rounded-full p-2 hover:bg-white/15"
-              aria-label="Historique des ventes de cette boutique"
+              aria-label={posPh.saleHistoryAria}
             >
               <MdHistory className="h-5 w-5" aria-hidden />
             </Link>
@@ -1181,15 +1275,15 @@ export function PosScreen({
             {(posQ.error as Error)?.message ?? "Impossible de charger la caisse."}
           </p>
           <Link href="/stores" className="rounded-[10px] bg-[#f97316] px-4 py-2 text-sm font-semibold text-white">
-            Choisir une boutique
+            {posPh.chooseStorePrompt}
           </Link>
         </div>
       ) : !store ? (
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 overflow-y-auto px-6 py-12 text-center">
           <MdStore className="h-16 w-16 text-red-500" aria-hidden />
-          <p className="text-sm text-[#1F2937]">Boutique introuvable.</p>
+          <p className="text-sm text-[#1F2937]">{posPh.storeNotFound}</p>
           <Link href="/stores" className="rounded-[10px] bg-[#f97316] px-4 py-2 text-sm font-semibold text-white">
-            Retour aux boutiques
+            {posPh.backToStores}
           </Link>
         </div>
       ) : (
@@ -1275,7 +1369,7 @@ export function PosScreen({
                         addByBarcode(v);
                       }
                     }}
-                    placeholder="Scanner ou rechercher un produit..."
+                    placeholder={posPh.scanSearchPlaceholder}
                     autoComplete="off"
                     spellCheck={false}
                     enterKeyHint="done"
@@ -1380,7 +1474,7 @@ export function PosScreen({
                           addByBarcode(v);
                         }
                       }}
-                      placeholder="Rechercher produit (nom, SKU, code-barres)..."
+                      placeholder={posPh.searchProductsPlaceholder}
                       autoComplete="off"
                       spellCheck={false}
                       enterKeyHint="search"
@@ -1467,8 +1561,8 @@ export function PosScreen({
                     {search.trim() !== ""
                       ? "Aucun résultat"
                       : mode === "quick"
-                        ? "Aucun produit"
-                        : "Aucun produit actif"}
+                        ? posPh.noProductsMatch
+                        : posPh.noActiveProducts}
                   </p>
                 </div>
               ) : mode === "a4-table" ? (
@@ -1678,6 +1772,97 @@ export function PosScreen({
         </div>
       ) : null}
 
+      {batchPickerOpen && isPharmacy && batchPickerProductId ? (
+        <button
+          type="button"
+          className="fixed inset-0 z-[80] bg-black/50"
+          aria-label="Fermer le choix du lot"
+          onClick={() => setBatchPickerOpen(false)}
+        >
+          <div
+            className="absolute left-1/2 top-1/2 w-[min(94vw,720px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-white/10 bg-fs-card shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Choisir un lot"
+          >
+            <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-4 sm:px-5">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-fs-text">Choisir un lot</p>
+                <p className="truncate text-xs text-neutral-600">
+                  {batchPickerProductName}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="rounded-full p-2 hover:bg-black/5"
+                aria-label="Fermer"
+                onClick={() => setBatchPickerOpen(false)}
+              >
+                <MdClose className="h-6 w-6 text-neutral-700" aria-hidden />
+              </button>
+            </div>
+
+            <div className="max-h-[65vh] overflow-y-auto p-4 sm:p-5">
+              {(() => {
+                const today = new Date().toISOString().slice(0, 10);
+                const rows = (batchesQ.data ?? [])
+                  .filter(
+                    (b: PharmacyBatchRow) =>
+                      b.product_id === batchPickerProductId &&
+                      b.quantity > 0 &&
+                      (b.expires_on == null || b.expires_on >= today),
+                  )
+                  .sort((a, b) => String(a.expires_on ?? "9999-12-31").localeCompare(String(b.expires_on ?? "9999-12-31")));
+                if (rows.length === 0) {
+                  return (
+                    <p className="text-sm text-neutral-600">
+                      Aucun lot disponible. Ajoutez des lots dans <span className="font-semibold text-fs-text">Lots (pharmacie)</span>.
+                    </p>
+                  );
+                }
+                return (
+                  <div className="space-y-2">
+                    {rows.map((b) => (
+                      <button
+                        key={b.id}
+                        type="button"
+                        className="flex w-full items-center justify-between gap-3 rounded-xl border border-black/[0.06] bg-fs-surface-container px-4 py-3 text-left hover:bg-fs-surface-container/70"
+                        onClick={() => {
+                          addToCartWithBatch({
+                            productId: batchPickerProductId,
+                            batchId: b.id,
+                            lotNumber: b.lot_number ?? null,
+                            expiresOn: b.expires_on ?? null,
+                            name: batchPickerProductName,
+                            unit: batchPickerUnit,
+                            imageUrl: batchPickerImageUrl,
+                          });
+                          setBatchPickerOpen(false);
+                        }}
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-fs-text">
+                            Lot {b.lot_number}
+                          </p>
+                          <p className="mt-0.5 text-xs text-neutral-600">
+                            Expiration: {b.expires_on ?? "—"}
+                          </p>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <p className="text-sm font-bold text-fs-text">{b.quantity}</p>
+                          <p className="text-[11px] text-neutral-500">disponible</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </button>
+      ) : null}
+
       {invoiceDialog ? (
         <InvoicePostSaleDialog
           data={invoiceDialog}
@@ -1749,7 +1934,9 @@ export function PosScreen({
             </h2>
             <div className="mt-4 space-y-2 text-sm">
               <div className="flex gap-3">
-                <span className="w-[140px] shrink-0 font-semibold text-[#1F2937]">Boutique :</span>
+                <span className="w-[140px] shrink-0 font-semibold text-[#1F2937]">
+                  {posPh.settingsStoreLabel}
+                </span>
                 <span className="min-w-0 text-[#1F2937]">{store.name}</span>
               </div>
               <div className="flex gap-3">
@@ -1796,9 +1983,7 @@ export function PosScreen({
                 />
               </button>
             </div>
-            <p className="mt-4 text-xs text-neutral-600">
-              Les autres paramètres de la boutique sont gérés par l&apos;administrateur.
-            </p>
+            <p className="mt-4 text-xs text-neutral-600">{posPh.settingsStoreAdminNote}</p>
             <button
               type="button"
               onClick={() => setQuickSettingsOpen(false)}

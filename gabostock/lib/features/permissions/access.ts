@@ -178,6 +178,9 @@ export function filterNavItemsForPermissions(
     if (href === ROUTES.settings || href === ROUTES.printers) return h.canSettings;
     if (href === ROUTES.transfers) return h.canTransfers;
     if (href === ROUTES.audit) return h.canAudit && !h.isOwner;
+    // Module Pharmacie (menu uniquement; la page elle-même vérifie aussi le domaine d’activité).
+    if (href === ROUTES.pharmacyBatches) return h.canInventory || h.canProducts;
+    if (href === ROUTES.pharmacyExpirations) return h.canInventory || h.canProducts;
     if (href === ROUTES.help) return h.isOwner;
     if (href === ROUTES.notifications) return h.isOwner;
     if (href === ROUTES.integrations) return false;
@@ -223,6 +226,9 @@ const APP_SHELL_ROUTE_PREFIXES: readonly string[] = [
   ROUTES.help,
   ROUTES.notifications,
   ROUTES.integrations,
+  // Module Pharmacie (routes shell; pages gardent leur propre contrôle d'activité).
+  ROUTES.pharmacyBatches,
+  ROUTES.pharmacyExpirations,
 ];
 
 function isAppShellRoute(route: string): boolean {

@@ -35,6 +35,10 @@ export const ROUTES = {
   help: "/help",
   notifications: "/notifications",
   integrations: "/integrations",
+
+  /** Module Pharmacie (activé si `companies.business_type_slug = 'pharmacie'`). */
+  pharmacyBatches: "/pharmacy/batches",
+  pharmacyExpirations: "/pharmacy/expirations",
   /** Espace super-admin (shell dédié, aligné Flutter `AppRoutes.admin`). */
   admin: "/admin",
   adminCompanies: "/admin/companies",

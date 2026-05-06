@@ -11,7 +11,7 @@ import type {
 } from "./types";
 
 const productSelect =
-  "id, company_id, name, sku, barcode, unit, purchase_price, sale_price, wholesale_price, wholesale_qty, stock_min, description, is_active, category_id, brand_id, product_scope, category:categories(id, name), brand:brands(id, name), product_images(id, product_id, url, position)";
+  "id, company_id, name, sku, barcode, unit, purchase_price, sale_price, wholesale_price, wholesale_qty, stock_min, description, is_active, category_id, brand_id, product_scope, pharmacy_lot_number, pharmacy_expiration_date, pharmacy_laboratory, pharmacy_drug_category, pharmacy_prescription_required, pharmacy_dosage, pharmacy_form, category:categories(id, name), brand:brands(id, name), product_images(id, product_id, url, position)";
 
 export async function listProducts(companyId: string): Promise<ProductItem[]> {
   const supabase = createClient();
@@ -116,6 +116,20 @@ export async function createProduct(
     category_id: input.categoryId || null,
     brand_id: input.brandId || null,
     product_scope: input.productScope,
+
+    // Pharmacie (optionnel) — stocké sur `products` pour compat & formulaires rapides.
+    pharmacy_lot_number: input.pharmacyLotNumber?.trim() ? input.pharmacyLotNumber.trim() : null,
+    pharmacy_expiration_date: input.pharmacyExpirationDate?.trim()
+      ? input.pharmacyExpirationDate.trim()
+      : null,
+    pharmacy_laboratory: input.pharmacyLaboratory?.trim() ? input.pharmacyLaboratory.trim() : null,
+    pharmacy_drug_category: input.pharmacyDrugCategory?.trim() ? input.pharmacyDrugCategory.trim() : null,
+    pharmacy_prescription_required:
+      typeof input.pharmacyPrescriptionRequired === "boolean"
+        ? input.pharmacyPrescriptionRequired
+        : null,
+    pharmacy_dosage: input.pharmacyDosage?.trim() ? input.pharmacyDosage.trim() : null,
+    pharmacy_form: input.pharmacyForm?.trim() ? input.pharmacyForm.trim() : null,
   };
   const supabase = createClient();
   if (!navigator.onLine) {
@@ -146,6 +160,20 @@ export async function updateProduct(
     brand_id: input.brandId || null,
     is_active: input.isActive,
     product_scope: input.productScope,
+
+    // Pharmacie (optionnel)
+    pharmacy_lot_number: input.pharmacyLotNumber?.trim() ? input.pharmacyLotNumber.trim() : null,
+    pharmacy_expiration_date: input.pharmacyExpirationDate?.trim()
+      ? input.pharmacyExpirationDate.trim()
+      : null,
+    pharmacy_laboratory: input.pharmacyLaboratory?.trim() ? input.pharmacyLaboratory.trim() : null,
+    pharmacy_drug_category: input.pharmacyDrugCategory?.trim() ? input.pharmacyDrugCategory.trim() : null,
+    pharmacy_prescription_required:
+      typeof input.pharmacyPrescriptionRequired === "boolean"
+        ? input.pharmacyPrescriptionRequired
+        : null,
+    pharmacy_dosage: input.pharmacyDosage?.trim() ? input.pharmacyDosage.trim() : null,
+    pharmacy_form: input.pharmacyForm?.trim() ? input.pharmacyForm.trim() : null,
   };
   const supabase = createClient();
   if (!navigator.onLine) {

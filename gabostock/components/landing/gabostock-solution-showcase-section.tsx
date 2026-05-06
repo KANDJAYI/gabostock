@@ -180,7 +180,13 @@ function SolutionCircuitBackdrop({ className }: { className?: string }) {
 }
 
 /** Section solution complète — placée après « défis / problèmes des commerçants ». */
-export function GabostockSolutionShowcaseSection() {
+export function GabostockSolutionShowcaseSection({
+  imageSrc = "/landing/solution-commerce.png",
+  logoSrc = "/logogabostock.png",
+}: {
+  imageSrc?: string;
+  logoSrc?: string;
+}) {
   return (
     <section
       id="solution"
@@ -256,7 +262,7 @@ export function GabostockSolutionShowcaseSection() {
                   className="relative z-[1] aspect-[3/3.4] w-full overflow-hidden rounded-[1.15rem] border border-white/10 bg-[#0a1224] shadow-[0_32px_80px_-32px_rgba(0,60,200,0.5)] transition duration-500 ease-out group-hover:-translate-y-1"
                 >
                   <Image
-                    src="/landing/solution-commerce.png"
+                    src={imageSrc}
                     alt="Commerçant tenant le téléphone avec le tableau de bord GaboStock"
                     fill
                     className="object-cover object-[50%_15%]"
@@ -285,7 +291,7 @@ export function GabostockSolutionShowcaseSection() {
               <div className="flex shrink-0 items-start gap-3 sm:items-center sm:gap-4 lg:max-w-[22rem] xl:max-w-[24rem]">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center sm:h-16 sm:w-16">
                   <Image
-                    src="/logogabostock.png"
+                    src={logoSrc}
                     alt=""
                     width={64}
                     height={64}

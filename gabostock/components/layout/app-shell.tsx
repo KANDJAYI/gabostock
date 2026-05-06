@@ -18,6 +18,9 @@ import { OwnerNotificationsBell } from "@/components/layout/owner-notifications-
 import { NAV_ITEMS } from "@/lib/config/navigation";
 import { useAppContext } from "@/lib/features/common/app-context";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
+import { PHARMACY_NAV_ITEMS } from "@/lib/features/pharmacy/navigation";
+import { pharmacyLabelForRoute } from "@/lib/features/pharmacy/labels";
 import { useDesktopNav } from "@/lib/hooks/use-media-query";
 import { signOutAndRedirect } from "@/lib/auth/sign-out-client";
 import { cn } from "@/lib/utils/cn";
@@ -78,6 +81,7 @@ export function AppShell({ children, userEmail }: AppShellProps) {
 
   const data = ctx.data;
   const isOwner = data?.roleSlug === "owner";
+  const isPharmacy = isPharmacyBusinessTypeSlug(data?.businessTypeSlug);
 
   useEffect(() => {
     if (data?.isSuperAdmin) router.replace("/admin");
@@ -155,10 +159,51 @@ export function AppShell({ children, userEmail }: AppShellProps) {
     };
   }, [isPosRoute]);
 
-  const sidebarItems = useMemo(
-    () => NAV_ITEMS.filter((i) => i.showInSidebar !== false),
-    [],
-  );
+  const sidebarItems = useMemo(() => {
+    const base = NAV_ITEMS.filter((i) => i.showInSidebar !== false);
+    if (!isPharmacy) return base;
+    // Module Pharmacie: items isolés, ajoutés sans toucher à l'architecture core.
+    const relabeled = base.map((i) => ({ ...i, label: pharmacyLabelForRoute(i.href, i.label) }));
+    const items = [...relabeled, ...PHARMACY_NAV_ITEMS];
+
+    // Bloc terminal fixe pharmacie — toujours en dernier, dans cet ordre (les autres entrées avant).
+    const tailOrder = [
+      ROUTES.notifications,
+      ROUTES.help,
+      ROUTES.printers,
+      ROUTES.settings,
+    ] as const;
+    const tailHrefSet = new Set<string>(tailOrder);
+    const tailItems = tailOrder
+      .map((href) => items.find((i) => i.href === href))
+      .filter((x): x is (typeof items)[number] => x != null);
+    const mainItems = items.filter((i) => !tailHrefSet.has(i.href));
+
+    // Ordre « corps » Pharmacie — sans les 4 dernières (évite que Code barre/Boutiques/… passent après Paramètres).
+    const mainRank = [
+      ROUTES.dashboard,
+      ROUTES.products,
+      ROUTES.sales,
+      ROUTES.inventory,
+      ROUTES.pharmacyExpirations,
+      ROUTES.pharmacyBatches,
+      ROUTES.purchases,
+      ROUTES.suppliers,
+      ROUTES.customers,
+      ROUTES.reports,
+      ROUTES.users,
+      ROUTES.audit,
+    ] as const;
+    const rank = new Map<string, number>(mainRank.map((h, i) => [h, i]));
+    const fallbackRankStart = 10_000;
+    const sortedMain = [...mainItems].sort((a, b) => {
+      const ra = rank.get(a.href) ?? fallbackRankStart;
+      const rb = rank.get(b.href) ?? fallbackRankStart;
+      if (ra !== rb) return ra - rb;
+      return a.label.localeCompare(b.label);
+    });
+    return [...sortedMain, ...tailItems];
+  }, [isPharmacy]);
 
   const visibleNav = useMemo(
     () => filterNavItems(sidebarItems),

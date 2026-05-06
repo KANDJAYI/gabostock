@@ -30,6 +30,8 @@ import type { ProductFormSavePayload, ProductItem } from "@/lib/features/product
 import { ProductFormDialog } from "@/components/products/product-form-dialog";
 import { ROUTES } from "@/lib/config/routes";
 import { queryKeys } from "@/lib/query/query-keys";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
+import { pharmacyProductActionLabels, pharmacySubtitleForScreen } from "@/lib/features/pharmacy/labels";
 import { formatCurrency } from "@/lib/utils/currency";
 import { cn } from "@/lib/utils/cn";
 import { productsToProSheet } from "@/lib/features/products/csv";
@@ -108,6 +110,8 @@ export function ProductsScreen() {
   const readOnlyCategoriesBrands = helpers?.isCashier ?? false;
   const companyId = ctx.data?.companyId ?? "";
   const storeId = ctx.data?.storeId ?? null;
+  const isPharmacy = isPharmacyBusinessTypeSlug(ctx.data?.businessTypeSlug);
+  const pharmaProd = pharmacyProductActionLabels(isPharmacy);
 
   const productsQ = useQuery({
     queryKey: queryKeys.products(companyId),
@@ -186,7 +190,7 @@ export function ProductsScreen() {
       }
       setShowForm(false);
       setEditing(null);
-      toast.success(vars.editingId ? "Produit mis à jour" : "Produit créé");
+      toast.success(vars.editingId ? pharmaProd.toastSavedUpdate : pharmaProd.toastSavedCreate);
     },
     onError: (e) => toast.error(messageFromUnknownError(e)),
   });
@@ -196,7 +200,7 @@ export function ProductsScreen() {
       setProductActive(id, active),
     onSuccess: async (_data, vars) => {
       await qc.invalidateQueries({ queryKey: queryKeys.products(companyId) });
-      toast.success(vars.active ? "Produit activé" : "Produit désactivé");
+      toast.success(vars.active ? pharmaProd.toastToggledOn : pharmaProd.toastToggledOff);
     },
     onError: (e) => toast.error(messageFromUnknownError(e)),
   });
@@ -205,7 +209,7 @@ export function ProductsScreen() {
     mutationFn: (id: string) => softDeleteProduct(id),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: queryKeys.products(companyId) });
-      toast.success("Produit supprimé");
+      toast.success(pharmaProd.toastDeleted);
     },
     onError: (e) => toast.error(messageFromUnknownError(e)),
   });
@@ -346,8 +350,8 @@ export function ProductsScreen() {
   return (
     <FsPage className="flex flex-col">
       <FsScreenHeader
-        title="Produits"
-        subtitle="Catalogue, catégories et marques"
+        title={isPharmacy ? "Médicaments" : "Produits"}
+        subtitle={isPharmacy ? pharmacySubtitleForScreen("products") : "Catalogue, catégories et marques"}
         className="mb-0"
         titleClassName="min-[900px]:text-2xl min-[900px]:font-bold min-[900px]:tracking-tight"
         subtitleClassName="text-neutral-600 min-[900px]:text-base"
@@ -356,8 +360,7 @@ export function ProductsScreen() {
       {tab === "products" && productsQ.isError ? (
         <div className="mt-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
           <p>
-            {(productsQ.error as Error)?.message ??
-              "Impossible de charger les produits."}
+            {(productsQ.error as Error)?.message ?? pharmaProd.loadListError}
           </p>
           <button
             type="button"
@@ -372,7 +375,7 @@ export function ProductsScreen() {
       <div className="mb-4 mt-3 flex flex-wrap gap-2 sm:mt-4">
         <FsFilterChip
           icon={MdInventory2}
-          label="Produits"
+          label={pharmaProd.filterChipProductsTab}
           selected={tab === "products"}
           onClick={() => setTab("products")}
         />
@@ -785,7 +788,7 @@ export function ProductsScreen() {
       {tab === "products" && canCreateProduct ? (
         <>
           <FsFab
-            ariaLabel="Nouveau produit"
+            ariaLabel={pharmaProd.fabAria}
             onClick={() => {
               setEditing(null);
               setShowForm(true);
@@ -802,7 +805,7 @@ export function ProductsScreen() {
             className="fixed bottom-8 right-8 z-40 hidden items-center gap-2 rounded-2xl bg-[var(--fs-pos-orange)] px-5 py-3.5 text-sm font-semibold text-white shadow-lg min-[900px]:inline-flex"
           >
             <MdAdd className="h-5 w-5 shrink-0" aria-hidden />
-            Nouveau produit
+            {pharmaProd.fabNew}
           </button>
         </>
       ) : null}

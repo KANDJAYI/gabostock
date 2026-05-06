@@ -6,6 +6,9 @@ import { formatCurrency } from "@/lib/utils/currency";
 import { cn } from "@/lib/utils/cn";
 import { useEffect, useState } from "react";
 import { MdClose, MdErrorOutline } from "react-icons/md";
+import { useAppContext } from "@/lib/features/common/app-context";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
+import { pharmacyPurchaseUiLabels } from "@/lib/features/pharmacy/labels";
 
 function statusLabel(s: PurchaseDetail["status"]) {
   switch (s) {
@@ -42,6 +45,9 @@ export function PurchaseDetailDialog({
   onCancelDraft: () => Promise<void> | void;
   onDeleteDraft: () => Promise<void> | void;
 }) {
+  const appCtx = useAppContext();
+  const isPharmacy = isPharmacyBusinessTypeSlug(appCtx.data?.businessTypeSlug);
+  const pu = pharmacyPurchaseUiLabels(isPharmacy);
   const [refInput, setRefInput] = useState("");
   const [savingRef, setSavingRef] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -91,10 +97,14 @@ export function PurchaseDetailDialog({
                   {statusLabel(p.status)}
                 </span>
                 {p.storeName ? (
-                  <span className="text-sm text-neutral-700">Boutique: {p.storeName}</span>
+                  <span className="text-sm text-neutral-700">
+                    {pu.fieldStore}: {p.storeName}
+                  </span>
                 ) : null}
                 {p.supplierName ? (
-                  <span className="text-sm text-neutral-700">Fournisseur: {p.supplierName}</span>
+                  <span className="text-sm text-neutral-700">
+                    {pu.fieldSupplier}: {p.supplierName}
+                  </span>
                 ) : null}
               </div>
 
@@ -121,7 +131,7 @@ export function PurchaseDetailDialog({
 
               {p.items.length > 0 ? (
                 <>
-                  <p className="mt-4 text-sm font-semibold text-fs-text">Articles</p>
+                  <p className="mt-4 text-sm font-semibold text-fs-text">{pu.detailArticlesHeading}</p>
                   <ul className="mt-2 space-y-2">
                     {p.items.map((it) => (
                       <li
@@ -209,7 +219,7 @@ export function PurchaseDetailDialog({
                         busy && "opacity-60",
                       )}
                     >
-                      Annuler l&apos;achat
+                      {pu.cancelPurchaseDraft}
                     </button>
                     <button
                       type="button"

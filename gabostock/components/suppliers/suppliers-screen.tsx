@@ -1,6 +1,7 @@
 "use client";
 
 import { SupplierFormDialog } from "@/components/suppliers/supplier-form-dialog";
+import type { SupplierFormValue } from "@/components/suppliers/supplier-form-dialog";
 import {
   FsCard,
   FsQueryErrorPanel,
@@ -17,6 +18,8 @@ import type { Supplier } from "@/lib/features/suppliers/types";
 import { useAppContext } from "@/lib/features/common/app-context";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
+import { pharmacySubtitleForScreen, pharmacySupplierActionLabels } from "@/lib/features/pharmacy/labels";
 import { suppliersToProSheet } from "@/lib/features/suppliers/csv";
 import { queryKeys } from "@/lib/query/query-keys";
 import { formatUnknownErrorMessage } from "@/lib/utils/format-unknown-error";
@@ -47,12 +50,14 @@ const DESCRIPTION = "Gérer vos fournisseurs";
 function DeleteSupplierDialog({
   open,
   name,
+  deleteTitle,
   onCancel,
   onConfirm,
   busy,
 }: {
   open: boolean;
   name: string;
+  deleteTitle: string;
   onCancel: () => void;
   onConfirm: () => void;
   busy: boolean;
@@ -67,7 +72,7 @@ function DeleteSupplierDialog({
     >
       <FsCard className="w-full max-w-md shadow-xl" padding="p-4 sm:p-5">
         <h2 id="delete-supplier-title" className="text-base font-bold text-fs-text">
-          Supprimer le fournisseur
+          {deleteTitle}
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-neutral-600">
           Supprimer « {name} » ? Cette action est irréversible.
@@ -180,6 +185,8 @@ export function SuppliersScreen() {
   const canManage = hasPermission(P.suppliersManage);
 
   const companyId = appCtx.data?.companyId ?? "";
+  const isPharmacy = isPharmacyBusinessTypeSlug(appCtx.data?.businessTypeSlug);
+  const sPharma = pharmacySupplierActionLabels(isPharmacy);
   const ctxLoading = appCtx.isLoading;
   const ctxError = appCtx.isError;
   const ctxErr = appCtx.error;
@@ -225,14 +232,7 @@ export function SuppliersScreen() {
   const [deleteTarget, setDeleteTarget] = useState<Supplier | null>(null);
 
   const createMut = useMutation({
-    mutationFn: async (payload: {
-      name: string;
-      contact: string;
-      phone: string;
-      email: string;
-      address: string;
-      notes: string;
-    }) =>
+    mutationFn: async (payload: SupplierFormValue) =>
       createSupplier(companyId, {
         name: payload.name,
         contact: payload.contact || null,
@@ -240,24 +240,32 @@ export function SuppliersScreen() {
         email: payload.email || null,
         address: payload.address || null,
         notes: payload.notes || null,
+        pharmacyLicenseNumber: payload.pharmacyLicenseNumber?.trim() || null,
+        pharmacyRegulatoryId: payload.pharmacyRegulatoryId?.trim() || null,
+        pharmacyIsManufacturer:
+          typeof payload.pharmacyIsManufacturer === "boolean"
+            ? payload.pharmacyIsManufacturer
+            : null,
+        pharmacyColdChainSupported:
+          typeof payload.pharmacyColdChainSupported === "boolean"
+            ? payload.pharmacyColdChainSupported
+            : null,
+        pharmacyPaymentTermsDays: (() => {
+          const raw = (payload.pharmacyPaymentTermsDays ?? "").trim();
+          if (!raw) return null;
+          const n = Math.max(0, Math.trunc(Number(raw)));
+          return Number.isFinite(n) ? n : null;
+        })(),
       }),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: queryKeys.suppliers(companyId) });
-      toast.success("Fournisseur créé");
+      toast.success(sPharma.toastCreated);
     },
     onError: (e) => toastMutationError("suppliers", e),
   });
 
   const updateMut = useMutation({
-    mutationFn: async (payload: {
-      id: string;
-      name: string;
-      contact: string;
-      phone: string;
-      email: string;
-      address: string;
-      notes: string;
-    }) =>
+    mutationFn: async (payload: SupplierFormValue & { id: string }) =>
       updateSupplier(payload.id, {
         name: payload.name,
         contact: payload.contact || null,
@@ -265,10 +273,26 @@ export function SuppliersScreen() {
         email: payload.email || null,
         address: payload.address || null,
         notes: payload.notes || null,
+        pharmacyLicenseNumber: payload.pharmacyLicenseNumber?.trim() || null,
+        pharmacyRegulatoryId: payload.pharmacyRegulatoryId?.trim() || null,
+        pharmacyIsManufacturer:
+          typeof payload.pharmacyIsManufacturer === "boolean"
+            ? payload.pharmacyIsManufacturer
+            : null,
+        pharmacyColdChainSupported:
+          typeof payload.pharmacyColdChainSupported === "boolean"
+            ? payload.pharmacyColdChainSupported
+            : null,
+        pharmacyPaymentTermsDays: (() => {
+          const raw = (payload.pharmacyPaymentTermsDays ?? "").trim();
+          if (!raw) return null;
+          const n = Math.max(0, Math.trunc(Number(raw)));
+          return Number.isFinite(n) ? n : null;
+        })(),
       }),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: queryKeys.suppliers(companyId) });
-      toast.success("Fournisseur mis à jour");
+      toast.success(sPharma.toastUpdated);
     },
     onError: (e) => toastMutationError("suppliers", e),
   });
@@ -277,7 +301,7 @@ export function SuppliersScreen() {
     mutationFn: async (id: string) => deleteSupplier(id),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: queryKeys.suppliers(companyId) });
-      toast.success("Fournisseur supprimé");
+      toast.success(sPharma.toastDeleted);
     },
     onError: (e) => toastMutationError("suppliers", e),
   });
@@ -356,9 +380,11 @@ export function SuppliersScreen() {
       {isNarrowHeader ? (
         <div className="mb-6">
           <h1 className="text-[22px] font-bold tracking-tight text-fs-text sm:text-2xl">
-            Fournisseurs
+            {isPharmacy ? "Laboratoires" : "Fournisseurs"}
           </h1>
-          <p className="mt-1 text-sm text-neutral-600">{DESCRIPTION}</p>
+          <p className="mt-1 text-sm text-neutral-600">
+            {isPharmacy ? pharmacySubtitleForScreen("suppliers") : DESCRIPTION}
+          </p>
           {rows.length > 0 && canView ? (
             <button
               type="button"
@@ -376,7 +402,7 @@ export function SuppliersScreen() {
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-[10px] bg-fs-accent px-4 py-3 text-sm font-semibold text-white shadow-sm active:scale-[0.99]"
             >
               <MdAdd className="h-5 w-5" aria-hidden />
-              Nouveau fournisseur
+              {sPharma.newButton}
             </button>
           ) : null}
         </div>
@@ -384,9 +410,11 @@ export function SuppliersScreen() {
         <div className="mb-6 flex flex-row items-start justify-between gap-4">
           <div className="min-w-0">
             <h1 className="text-2xl font-bold tracking-tight text-fs-text min-[900px]:text-[22px]">
-              Fournisseurs
+              {isPharmacy ? "Laboratoires" : "Fournisseurs"}
             </h1>
-            <p className="mt-1 text-sm text-neutral-600">{DESCRIPTION}</p>
+            <p className="mt-1 text-sm text-neutral-600">
+              {isPharmacy ? pharmacySubtitleForScreen("suppliers") : DESCRIPTION}
+            </p>
           </div>
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
             {rows.length > 0 && canView ? (
@@ -406,7 +434,7 @@ export function SuppliersScreen() {
                 className="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-fs-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm active:scale-[0.99]"
               >
                 <MdAdd className="h-5 w-5" aria-hidden />
-                Nouveau fournisseur
+                {sPharma.newButton}
               </button>
             ) : null}
           </div>
@@ -444,7 +472,7 @@ export function SuppliersScreen() {
             >
               <MdBusinessCenter className="h-14 w-14 text-fs-accent" aria-hidden />
             </div>
-            <p className="mt-6 text-base text-neutral-600">Aucun fournisseur.</p>
+            <p className="mt-6 text-base text-neutral-600">{sPharma.emptyList}</p>
           </div>
         </FsCard>
       ) : null}
@@ -598,6 +626,11 @@ export function SuppliersScreen() {
                 email: editing.email ?? "",
                 address: editing.address ?? "",
                 notes: editing.notes ?? "",
+                pharmacy_license_number: editing.pharmacy_license_number ?? "",
+                pharmacy_regulatory_id: editing.pharmacy_regulatory_id ?? "",
+                pharmacy_is_manufacturer: editing.pharmacy_is_manufacturer ?? null,
+                pharmacy_cold_chain_supported: editing.pharmacy_cold_chain_supported ?? null,
+                pharmacy_payment_terms_days: editing.pharmacy_payment_terms_days ?? null,
               }
             : null
         }
@@ -614,6 +647,7 @@ export function SuppliersScreen() {
       <DeleteSupplierDialog
         open={deleteTarget != null}
         name={deleteTarget?.name ?? ""}
+        deleteTitle={sPharma.deleteTitle}
         busy={deleteMut.isPending}
         onCancel={() => {
           if (!deleteMut.isPending) setDeleteTarget(null);
