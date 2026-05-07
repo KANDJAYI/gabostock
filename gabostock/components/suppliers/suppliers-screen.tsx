@@ -626,11 +626,14 @@ export function SuppliersScreen() {
                 email: editing.email ?? "",
                 address: editing.address ?? "",
                 notes: editing.notes ?? "",
-                pharmacy_license_number: editing.pharmacy_license_number ?? "",
-                pharmacy_regulatory_id: editing.pharmacy_regulatory_id ?? "",
-                pharmacy_is_manufacturer: editing.pharmacy_is_manufacturer ?? null,
-                pharmacy_cold_chain_supported: editing.pharmacy_cold_chain_supported ?? null,
-                pharmacy_payment_terms_days: editing.pharmacy_payment_terms_days ?? null,
+                pharmacyLicenseNumber: editing.pharmacy_license_number ?? "",
+                pharmacyRegulatoryId: editing.pharmacy_regulatory_id ?? "",
+                pharmacyIsManufacturer: editing.pharmacy_is_manufacturer === true,
+                pharmacyColdChainSupported: editing.pharmacy_cold_chain_supported === true,
+                pharmacyPaymentTermsDays:
+                  editing.pharmacy_payment_terms_days != null
+                    ? String(editing.pharmacy_payment_terms_days)
+                    : "",
               }
             : null
         }

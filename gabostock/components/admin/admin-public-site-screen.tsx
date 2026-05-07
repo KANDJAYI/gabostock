@@ -269,15 +269,54 @@ export function AdminPublicSiteScreen() {
 
   async function uploadImage(settingKey: string, file: File) {
     try {
-      setUploading(settingKey);
+      setUploading(`img:${settingKey}`);
       const url = await uploadPublicSiteImage({ key: settingKey, file });
+      await adminSetPlatformSetting(settingKey, url.trim());
       setImages((cur) => {
         if (settingKey === IMG_LOGO_KEY) return { ...cur, logo: url };
         if (settingKey === IMG_DAILY_CHALLENGES_KEY) return { ...cur, dailyChallenges: url };
         if (settingKey === IMG_SOLUTION_KEY) return { ...cur, solution: url };
         return cur;
       });
-      toast.success("Image uploadée");
+      toast.success("Image enregistrée — visible sur la landing.");
+      void qc.invalidateQueries({ queryKey: ["admin-platform-settings"] });
+    } catch (e) {
+      toast.error(messageFromUnknownError(e, "Upload impossible."));
+    } finally {
+      setUploading(null);
+    }
+  }
+
+  async function clearSectionImage(
+    settingKey: string,
+    setValue: (v: string) => void,
+  ) {
+    try {
+      setValue("");
+      await adminSetPlatformSetting(settingKey, "");
+      toast.success("Image retirée de la landing.");
+      void qc.invalidateQueries({ queryKey: ["admin-platform-settings"] });
+    } catch (e) {
+      toast.error(messageFromUnknownError(e, "Mise à jour impossible."));
+    }
+  }
+
+  async function uploadPartnerLogo(idx: number, file: File) {
+    try {
+      setUploading(`partner:${idx}`);
+      const url = await uploadPublicSiteImage({
+        key: `public_site_partner_logo_${idx}`,
+        file,
+      });
+      let payload = "";
+      setPartners((cur) => {
+        const next = cur.map((p, i) => (i === idx ? { ...p, logoSrc: url } : p));
+        payload = serializePartners(next);
+        return next;
+      });
+      await adminSetPlatformSetting(PARTNERS_KEY, payload);
+      toast.success("Logo partenaire enregistré — visible dans le carousel.");
+      void qc.invalidateQueries({ queryKey: ["admin-platform-settings"] });
     } catch (e) {
       toast.error(messageFromUnknownError(e, "Upload impossible."));
     } finally {
@@ -403,6 +442,85 @@ export function AdminPublicSiteScreen() {
       </AdminCard>
 
       <AdminCard>
+        <h3 className="text-base font-bold text-slate-900">Images par section (landing)</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Chaque image est{" "}
+          <strong className="font-semibold text-slate-800">enregistrée tout de suite</strong> après
+          upload (bucket public Supabase). Vous pouvez aussi coller une URL puis cliquer sur « Enregistrer »
+          en bas pour le reste du contenu.
+        </p>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+          {[
+            {
+              key: IMG_LOGO_KEY,
+              label: "Logo — header & maquette hero",
+              hint: "Visible en haut de la landing et dans le mockup portable.",
+              value: images.logo,
+              setValue: (v: string) => setImages((cur) => ({ ...cur, logo: v })),
+            },
+            {
+              key: IMG_DAILY_CHALLENGES_KEY,
+              label: 'Section « Les défis du quotidien »',
+              hint: "Image centrale entre les deux colonnes de cartes problèmes.",
+              value: images.dailyChallenges,
+              setValue: (v: string) => setImages((cur) => ({ ...cur, dailyChallenges: v })),
+            },
+            {
+              key: IMG_SOLUTION_KEY,
+              label: "Section « La solution GaboStock »",
+              hint: "Image centrale avec les avantages gauche/droite.",
+              value: images.solution,
+              setValue: (v: string) => setImages((cur) => ({ ...cur, solution: v })),
+            },
+          ].map((item) => (
+            <div key={item.key} className="rounded-2xl border border-slate-200 bg-white p-4">
+              <p className="text-sm font-bold text-slate-900">{item.label}</p>
+              <p className="mt-1 text-xs text-slate-500">{item.hint}</p>
+              <input
+                className="mt-3 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                value={item.value}
+                onChange={(e) => item.setValue(e.target.value)}
+                placeholder="URL publique (remplie après upload)"
+              />
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <label className="cursor-pointer rounded-xl bg-fs-accent px-4 py-2 text-sm font-semibold text-white">
+                  {uploading === `img:${item.key}` ? "Upload..." : "Uploader"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploading != null}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0] ?? null;
+                      if (!f) return;
+                      void uploadImage(item.key, f);
+                      e.currentTarget.value = "";
+                    }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                  onClick={() => void clearSectionImage(item.key, item.setValue)}
+                >
+                  Effacer URL
+                </button>
+              </div>
+              {item.value?.trim() ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={item.value}
+                  alt=""
+                  className="mt-4 h-32 w-full rounded-xl border border-slate-200 object-contain bg-slate-50"
+                />
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </AdminCard>
+
+      <AdminCard>
         <h3 className="text-base font-bold text-slate-900">CTA final</h3>
         <p className="mt-1 text-sm text-slate-600">
           Bloc juste avant “Nos partenaires”.
@@ -427,78 +545,6 @@ export function AdminPublicSiteScreen() {
             placeholder="Rejoignez Gabostock : créez votre espace..."
           />
         </label>
-      </AdminCard>
-
-      <AdminCard>
-        <h3 className="text-base font-bold text-slate-900">Images (landing)</h3>
-        <p className="mt-1 text-sm text-slate-600">
-          Uploadez une image, puis cliquez sur “Enregistrer” pour l’appliquer.
-        </p>
-
-        <div className="mt-4 grid gap-4 lg:grid-cols-3">
-          {[
-            {
-              key: IMG_LOGO_KEY,
-              label: "Logo (header/sections landing)",
-              value: images.logo,
-              setValue: (v: string) => setImages((cur) => ({ ...cur, logo: v })),
-            },
-            {
-              key: IMG_DAILY_CHALLENGES_KEY,
-              label: "Image (Défis quotidiens)",
-              value: images.dailyChallenges,
-              setValue: (v: string) => setImages((cur) => ({ ...cur, dailyChallenges: v })),
-            },
-            {
-              key: IMG_SOLUTION_KEY,
-              label: "Image (Solution)",
-              value: images.solution,
-              setValue: (v: string) => setImages((cur) => ({ ...cur, solution: v })),
-            },
-          ].map((item) => (
-            <div key={item.key} className="rounded-2xl border border-slate-200 bg-white p-4">
-              <p className="text-sm font-bold text-slate-900">{item.label}</p>
-              <input
-                className="mt-3 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                value={item.value}
-                onChange={(e) => item.setValue(e.target.value)}
-                placeholder="URL publique (auto après upload)"
-              />
-              <div className="mt-3 flex items-center gap-3">
-                <label className="rounded-xl bg-fs-accent px-4 py-2 text-sm font-semibold text-white">
-                  {uploading === item.key ? "Upload..." : "Uploader"}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    disabled={uploading != null}
-                    onChange={(e) => {
-                      const f = e.target.files?.[0] ?? null;
-                      if (!f) return;
-                      void uploadImage(item.key, f);
-                      e.currentTarget.value = "";
-                    }}
-                  />
-                </label>
-                <button
-                  type="button"
-                  className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-                  onClick={() => item.setValue("")}
-                >
-                  Reset
-                </button>
-              </div>
-              {item.value?.trim() ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={item.value}
-                  alt=""
-                  className="mt-4 h-32 w-full rounded-xl border border-slate-200 object-contain bg-slate-50"
-                />
-              ) : null}
-            </div>
-          ))}
-        </div>
       </AdminCard>
 
       <AdminCard>
@@ -837,13 +883,30 @@ export function AdminPublicSiteScreen() {
                   />
                 </label>
                 <label className="block flex-1 text-sm font-medium text-slate-700">
-                  Logo (URL ou chemin public)
+                  Logo (URL ou upload)
                   <input
                     className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
                     value={p.logoSrc}
                     onChange={(e) => setPartner(idx, { logoSrc: e.target.value })}
                     placeholder="/landing/partners/ramadan.png ou https://..."
                   />
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <label className="cursor-pointer rounded-xl bg-fs-accent px-3 py-1.5 text-xs font-semibold text-white">
+                      {uploading === `partner:${idx}` ? "Upload…" : "Uploader le logo"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={uploading != null}
+                        onChange={(e) => {
+                          const f = e.target.files?.[0] ?? null;
+                          if (!f) return;
+                          void uploadPartnerLogo(idx, f);
+                          e.currentTarget.value = "";
+                        }}
+                      />
+                    </label>
+                  </div>
                 </label>
 
                 <div className="flex gap-2 sm:pl-2">
