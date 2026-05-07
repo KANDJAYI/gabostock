@@ -1,9 +1,9 @@
 "use client";
 
-import { AdminCard, AdminPageHeader } from "@/components/admin/admin-page-header";
-import { adminGetPlatformSettings, adminSetPlatformSetting } from "@/lib/features/admin/api";
-import { uploadPublicSiteImage } from "@/lib/features/admin/public-site-assets";
-import { messageFromUnknownError, toast } from "@/lib/toast";
+import { AdminCard, AdminPageHeader } from "./admin-page-header";
+import { adminGetPlatformSettings, adminSetPlatformSetting } from "../../lib/features/admin/api";
+import { uploadPublicSiteImage } from "../../lib/features/admin/public-site-assets";
+import { messageFromUnknownError, toast } from "../../lib/toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
