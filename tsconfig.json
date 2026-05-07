@@ -39,6 +39,8 @@
   "exclude": [
     ".next",
     "node_modules",
-    "supabase/functions"
+    "supabase/functions",
+    "gabostock",
+    "gabostockmapp"
   ]
 }
