@@ -447,6 +447,23 @@ export async function GabostockLanding() {
             </div>
           </div>
           </div>
+          <a
+            href="https://wa.me/24174768044?text=Bonjour%20Gabostock%20%F0%9F%91%8B%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20votre%20logiciel%20de%20gestion%20de%20stock%20et%20de%20caisse.%20Pouvez-vous%20me%20donner%20plus%20d%E2%80%99informations%20%3F"
+            target="_blank"
+            rel="noreferrer"
+            className="absolute bottom-4 right-4 z-[4] inline-flex items-center gap-2 rounded-full border border-[#34C759]/45 bg-[#34C759] px-4 py-3 text-sm font-bold text-white shadow-[0_20px_48px_-18px_rgba(52,199,89,0.85)] transition hover:brightness-105 active:brightness-95 sm:bottom-6 sm:right-6 lg:right-12"
+            aria-label="Contacter Gabostock sur WhatsApp"
+          >
+            <svg
+              viewBox="0 0 32 32"
+              className="h-5 w-5 shrink-0"
+              fill="currentColor"
+              aria-hidden
+            >
+              <path d="M16.04 3.2c-7.06 0-12.8 5.74-12.8 12.8 0 2.26.6 4.46 1.73 6.4L3.2 28.8l6.59-1.72a12.78 12.78 0 0 0 6.25 1.6h.01c7.06 0 12.8-5.74 12.8-12.8 0-3.42-1.33-6.63-3.75-9.05a12.7 12.7 0 0 0-9.05-3.63Zm0 23.36h-.01a10.6 10.6 0 0 1-5.41-1.48l-.39-.23-3.91 1.02 1.04-3.81-.25-.4a10.62 10.62 0 1 1 19.7-5.66c0 5.86-4.77 10.56-10.77 10.56Zm5.78-7.92c-.32-.16-1.87-.92-2.16-1.03-.29-.11-.5-.16-.71.16-.21.32-.81 1.02-.99 1.23-.18.21-.37.24-.69.08-.32-.16-1.34-.49-2.55-1.57a9.55 9.55 0 0 1-1.77-2.2c-.18-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.18.21-.32.32-.53.11-.21.05-.4-.03-.55-.08-.16-.71-1.71-.97-2.34-.26-.62-.52-.54-.71-.54l-.6-.01c-.21 0-.55.08-.84.4-.29.32-1.1 1.08-1.1 2.63 0 1.55 1.13 3.05 1.29 3.27.16.21 2.22 3.4 5.39 4.77.75.32 1.34.51 1.8.66.76.24 1.45.21 2 .13.61-.09 1.87-.76 2.13-1.5.27-.74.27-1.37.19-1.5-.08-.13-.29-.21-.61-.37Z"/>
+            </svg>
+            <span>WhatsApp</span>
+          </a>
         </section>
 
         <GabostockDailyChallengesSection imageSrc={dailyChallengesImageSrc ?? "/landing/probleme.png"} />
