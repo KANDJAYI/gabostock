@@ -103,19 +103,21 @@ export function ProductFormDialog({
   const [barcode, setBarcode] = useState(initial?.barcode ?? "");
   const [unit, setUnit] = useState(initial?.unit ?? "pce");
   const [purchasePrice, setPurchasePrice] = useState(
-    String(initial?.purchase_price ?? 0),
+    initial != null ? String(initial.purchase_price ?? 0) : "",
   );
-  const [salePrice, setSalePrice] = useState(String(initial?.sale_price ?? 0));
+  const [salePrice, setSalePrice] = useState(
+    initial != null ? String(initial.sale_price ?? 0) : "",
+  );
   const [wholesalePrice, setWholesalePrice] = useState(
-    String(initial?.wholesale_price ?? 0),
+    initial != null ? String(initial.wholesale_price ?? 0) : "",
   );
   const [wholesaleQty, setWholesaleQty] = useState(
-    String(initial?.wholesale_qty ?? 0),
+    initial != null ? String(initial.wholesale_qty ?? 0) : "",
   );
   const [stockMin, setStockMin] = useState(
     String(initial != null ? initial.stock_min ?? 0 : 5),
   );
-  const [initialStock, setInitialStock] = useState("0");
+  const [initialStock, setInitialStock] = useState(initial != null ? "0" : "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [categoryId, setCategoryId] = useState(initial?.category_id ?? "");
   const [brandId, setBrandId] = useState(initial?.brand_id ?? "");
@@ -155,6 +157,31 @@ export function ProductFormDialog({
     const imgs = initial?.product_images ?? [];
     return imgs.filter((img) => !removedImageIds.includes(img.id));
   }, [initial?.product_images, removedImageIds]);
+
+  useEffect(() => {
+    // Important: le dialog peut être réutilisé entre "éditer" et "ajouter".
+    // En mode création, on veut des champs prix/quantité/stock entrant vides.
+    setName(initial?.name ?? "");
+    setSku(initial?.sku ?? "");
+    setBarcode(initial?.barcode ?? "");
+    setUnit(initial?.unit ?? "pce");
+    setPurchasePrice(initial != null ? String(initial.purchase_price ?? 0) : "");
+    setSalePrice(initial != null ? String(initial.sale_price ?? 0) : "");
+    setWholesalePrice(initial != null ? String(initial.wholesale_price ?? 0) : "");
+    setWholesaleQty(initial != null ? String(initial.wholesale_qty ?? 0) : "");
+    setStockMin(String(initial != null ? initial.stock_min ?? 0 : 5));
+    setInitialStock(initial != null ? "0" : "");
+    setDescription(initial?.description ?? "");
+    setCategoryId(initial?.category_id ?? "");
+    setBrandId(initial?.brand_id ?? "");
+    setProductScope(parseScope(initial?.product_scope));
+    setIsActive(initial?.is_active ?? true);
+
+    setPendingFiles([]);
+    setRemovedImageIds([]);
+    setPreviewUrl(null);
+    setErrorMsg(null);
+  }, [initial]);
 
   useEffect(() => {
     return () => {
@@ -239,6 +266,7 @@ export function ProductFormDialog({
   function validate(): string | null {
     const nm = name.trim();
     if (nm.length < 2) return "Nom requis (2 caractères minimum).";
+    if (!salePrice.trim()) return "Prix de vente requis.";
     const pp = toNumber(purchasePrice);
     if (pp < 0) return "Prix d'achat doit être ≥ 0.";
     const sp = toNumber(salePrice);
