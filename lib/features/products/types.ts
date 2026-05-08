@@ -47,6 +47,16 @@ export type ProductItem = {
   brand?: { id: string; name: string } | null;
   /** Tri par `position` asc. — première = miniature liste (comme Flutter). */
   product_images?: ProductImageRow[] | null;
+
+  /** ===== Pharmacie (optionnel) ===== */
+  pharmacy_lot_number?: string | null;
+  /** Date (YYYY-MM-DD) côté Postgres */
+  pharmacy_expiration_date?: string | null;
+  pharmacy_laboratory?: string | null;
+  pharmacy_drug_category?: string | null;
+  pharmacy_prescription_required?: boolean | null;
+  pharmacy_dosage?: string | null;
+  pharmacy_form?: string | null;
 };
 
 export type ProductFormInput = {
@@ -64,6 +74,16 @@ export type ProductFormInput = {
   brandId: string;
   productScope: ProductScope;
   isActive: boolean;
+
+  /** ===== Pharmacie (optionnel) ===== */
+  pharmacyLotNumber?: string;
+  /** Date (YYYY-MM-DD) */
+  pharmacyExpirationDate?: string;
+  pharmacyLaboratory?: string;
+  pharmacyDrugCategory?: string;
+  pharmacyPrescriptionRequired?: boolean;
+  pharmacyDosage?: string;
+  pharmacyForm?: string;
 };
 
 /** Soumission formulaire produit — aligné `ProductFormDialog` Flutter. */

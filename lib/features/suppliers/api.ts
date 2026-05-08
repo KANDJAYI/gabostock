@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Supplier, SupplierFormInput } from "./types";
 
 const FIELDS =
-  "id, company_id, name, contact, phone, email, address, notes, created_at, updated_at";
+  "id, company_id, name, contact, phone, email, address, notes, pharmacy_license_number, pharmacy_regulatory_id, pharmacy_is_manufacturer, pharmacy_cold_chain_supported, pharmacy_payment_terms_days, created_at, updated_at";
 
 export async function listSuppliers(companyId: string): Promise<Supplier[]> {
   const supabase = createClient();
@@ -30,6 +30,22 @@ export async function createSupplier(
     email: input.email?.trim() || null,
     address: input.address?.trim() || null,
     notes: input.notes?.trim() || null,
+
+    // Pharmacie (optionnel)
+    pharmacy_license_number: input.pharmacyLicenseNumber?.trim() || null,
+    pharmacy_regulatory_id: input.pharmacyRegulatoryId?.trim() || null,
+    pharmacy_is_manufacturer:
+      typeof input.pharmacyIsManufacturer === "boolean"
+        ? input.pharmacyIsManufacturer
+        : null,
+    pharmacy_cold_chain_supported:
+      typeof input.pharmacyColdChainSupported === "boolean"
+        ? input.pharmacyColdChainSupported
+        : null,
+    pharmacy_payment_terms_days:
+      typeof input.pharmacyPaymentTermsDays === "number"
+        ? Math.max(0, Math.trunc(input.pharmacyPaymentTermsDays))
+        : null,
   };
 
   const supabase = createClient();
@@ -52,6 +68,22 @@ export async function updateSupplier(
     email: input.email?.trim() || null,
     address: input.address?.trim() || null,
     notes: input.notes?.trim() || null,
+
+    // Pharmacie (optionnel)
+    pharmacy_license_number: input.pharmacyLicenseNumber?.trim() || null,
+    pharmacy_regulatory_id: input.pharmacyRegulatoryId?.trim() || null,
+    pharmacy_is_manufacturer:
+      typeof input.pharmacyIsManufacturer === "boolean"
+        ? input.pharmacyIsManufacturer
+        : null,
+    pharmacy_cold_chain_supported:
+      typeof input.pharmacyColdChainSupported === "boolean"
+        ? input.pharmacyColdChainSupported
+        : null,
+    pharmacy_payment_terms_days:
+      typeof input.pharmacyPaymentTermsDays === "number"
+        ? Math.max(0, Math.trunc(input.pharmacyPaymentTermsDays))
+        : null,
   };
 
   const supabase = createClient();

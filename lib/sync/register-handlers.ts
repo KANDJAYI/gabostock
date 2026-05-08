@@ -218,6 +218,7 @@ export function registerOutboxHandlers(): void {
       productId: string;
       quantity: number;
       unitPrice: number;
+      batchId?: string | null;
     }>;
     const payments = (p.payments ?? []) as Array<{
       method: string;
@@ -233,6 +234,7 @@ export function registerOutboxHandlers(): void {
       p_created_by: uid,
       p_items: items.map((i) => ({
         product_id: i.productId,
+        batch_id: i.batchId ?? null,
         quantity: Math.trunc(i.quantity),
         unit_price: i.unitPrice,
         discount: 0,

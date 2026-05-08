@@ -8,6 +8,7 @@ import { reportHandledClientError } from "@/lib/monitoring/remote-error-logger";
 import { createClient } from "@/lib/supabase/client";
 import { mapSupabaseError } from "@/lib/supabase/map-error";
 import { queryKeys } from "@/lib/query/query-keys";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
 
 export type { AppContextData };
 
@@ -200,6 +201,8 @@ async function fetchAppContext(): Promise<AppContextData | null> {
   const warehouseFeatureEnabled = cr.warehouse_feature_enabled !== false;
   const storeQuotaIncreaseEnabled = cr.store_quota_increase_enabled !== false;
   const aiPredictionsEnabled = cr.ai_predictions_enabled === true;
+  const effectiveWarehouseFeatureEnabled =
+    isPharmacyBusinessTypeSlug(businessTypeSlug) ? false : warehouseFeatureEnabled;
 
   if (isSuperAdmin) {
     const { data: stores } = await supabase
@@ -223,7 +226,7 @@ async function fetchAppContext(): Promise<AppContextData | null> {
       isSuperAdmin: true,
       permissionKeys: [...PERMISSIONS_ALL],
       roleSlug: "super_admin",
-      warehouseFeatureEnabled,
+      warehouseFeatureEnabled: effectiveWarehouseFeatureEnabled,
       storeQuotaIncreaseEnabled,
       aiPredictionsEnabled,
     };
@@ -271,7 +274,7 @@ async function fetchAppContext(): Promise<AppContextData | null> {
     isSuperAdmin: false,
     permissionKeys,
     roleSlug,
-    warehouseFeatureEnabled,
+    warehouseFeatureEnabled: effectiveWarehouseFeatureEnabled,
     storeQuotaIncreaseEnabled,
     aiPredictionsEnabled,
   };

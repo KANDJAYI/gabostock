@@ -24,6 +24,11 @@ export type InventoryRow = {
   reservedQuantity: number;
   availableQuantity: number;
   status: InventoryStatus;
+
+  /** ===== Pharmacie (optionnel) ===== */
+  earliestExpiresOn?: string | null;
+  expiredBatchCount?: number;
+  expiringSoonBatchCount?: number;
 };
 
 export type StockMovementRow = {

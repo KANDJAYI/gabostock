@@ -5,6 +5,7 @@ import { listCategories, listProducts, listStoreInventory } from "@/lib/features
 import { firstProductImageUrl } from "@/lib/features/products/product-images";
 import { createClient } from "@/lib/supabase/client";
 import type { InventoryRow, InventoryScreenData, InventoryStatus, StockMovementRow } from "./types";
+import { listStorePharmacyExpirySummary } from "@/lib/features/pharmacy/batches/api";
 
 function toNum(v: unknown): number {
   const n = typeof v === "number" ? v : Number(v);
@@ -78,15 +79,19 @@ async function fetchStockMinOverrides(
 export async function fetchInventoryScreenData(params: {
   companyId: string;
   storeId: string | null;
+  pharmacyEnabled?: boolean;
 }): Promise<InventoryScreenData> {
   const supabase = createClient();
-  const [products, categories, stockMap, defaultThreshold] = await Promise.all([
+  const [products, categories, stockMap, defaultThreshold, expirySummary] = await Promise.all([
     listProducts(params.companyId),
     listCategories(params.companyId),
     listStoreInventory(params.storeId),
     params.companyId
       ? fetchDefaultStockAlertThreshold(supabase, params.companyId)
       : Promise.resolve(5),
+    params.pharmacyEnabled && params.storeId
+      ? listStorePharmacyExpirySummary({ storeId: params.storeId, soonDays: 30 })
+      : Promise.resolve(null),
   ]);
 
   const categoryById = new Map<string, string>();
@@ -107,6 +112,7 @@ export async function fetchInventoryScreenData(params: {
     const override = overrideMap.get(p.id);
     const alertThreshold = effectiveMin(stockMin, override ?? null, defaultThreshold);
     const status = computeStatus(availableQuantity, alertThreshold);
+    const exp = expirySummary?.get(p.id);
 
     return {
       productId: p.id,
@@ -127,6 +133,14 @@ export async function fetchInventoryScreenData(params: {
       reservedQuantity,
       availableQuantity,
       status,
+
+      ...(exp
+        ? {
+            earliestExpiresOn: exp.earliestExpiresOn,
+            expiredBatchCount: exp.expiredCount,
+            expiringSoonBatchCount: exp.expiringSoonCount,
+          }
+        : {}),
     };
   });
 

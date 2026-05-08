@@ -17,6 +17,7 @@ import {
   listStockMovements,
   setDefaultStockAlertThreshold,
 } from "@/lib/features/inventory/api";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
 import { inventoryToProSheet } from "@/lib/features/inventory/csv";
 import type { InventoryRow, StockMovementRow } from "@/lib/features/inventory/types";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
@@ -27,6 +28,7 @@ import { messageFromUnknownError, toast, toastMutationError } from "@/lib/toast"
 import { downloadProXlsx } from "@/lib/utils/excel-pro-export";
 import { formatCurrency } from "@/lib/utils/currency";
 import { cn } from "@/lib/utils/cn";
+import { pharmacySubtitleForScreen } from "@/lib/features/pharmacy/labels";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -49,12 +51,21 @@ const INVENTORY_PAGE_SIZE = 20;
 const MOVEMENTS_PAGE_SIZE = 20;
 
 type StockFilter = "all" | "low" | "out";
+type ExpiryFilter = "all" | "soon" | "expired";
 
 /** Filtre statut aligné Flutter `_filteredItems`. */
 function matchesStockFilter(r: InventoryRow, status: StockFilter): boolean {
   if (status === "all") return true;
   if (status === "out") return r.availableQuantity <= 0;
   return r.alertThreshold > 0 && r.availableQuantity <= r.alertThreshold;
+}
+
+function matchesExpiryFilter(r: InventoryRow, f: ExpiryFilter): boolean {
+  if (f === "all") return true;
+  const expired = (r.expiredBatchCount ?? 0) > 0;
+  const soon = (r.expiringSoonBatchCount ?? 0) > 0;
+  if (f === "expired") return expired;
+  return soon && !expired;
 }
 
 function MovementTypeLabel(t: string): string {
@@ -197,6 +208,7 @@ export function InventoryScreen() {
   const companyId = ctx?.companyId ?? "";
   const storeId = ctx?.storeId ?? null;
   const storeName = ctx?.stores?.find((s) => s.id === storeId)?.name ?? null;
+  const isPharmacy = isPharmacyBusinessTypeSlug(ctx?.businessTypeSlug);
 
   const isWide = useMediaQuery("(min-width: 900px)");
   const narrowHeader = useMediaQuery("(max-width: 559px)");
@@ -211,6 +223,7 @@ export function InventoryScreen() {
   const [q, setQ] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [status, setStatus] = useState<StockFilter>("all");
+  const [expiry, setExpiry] = useState<ExpiryFilter>("all");
   const [invPage, setInvPage] = useState(0);
   const [movPage, setMovPage] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
@@ -219,7 +232,7 @@ export function InventoryScreen() {
 
   const dataQ = useQuery({
     queryKey: queryKeys.productInventory(storeId),
-    queryFn: () => fetchInventoryScreenData({ companyId, storeId }),
+    queryFn: () => fetchInventoryScreenData({ companyId, storeId, pharmacyEnabled: isPharmacy }),
     enabled: Boolean(companyId) && Boolean(storeId) && canAccessStock,
     staleTime: 20_000,
   });
@@ -291,8 +304,11 @@ export function InventoryScreen() {
   }, [itemsSearchCategory]);
 
   const filteredForTable = useMemo(
-    () => itemsSearchCategory.filter((r) => matchesStockFilter(r, status)),
-    [itemsSearchCategory, status],
+    () =>
+      itemsSearchCategory
+        .filter((r) => matchesStockFilter(r, status))
+        .filter((r) => (!isPharmacy ? true : matchesExpiryFilter(r, expiry))),
+    [itemsSearchCategory, status, isPharmacy, expiry],
   );
 
   const invPageCount =
@@ -306,7 +322,7 @@ export function InventoryScreen() {
 
   useEffect(() => {
     setInvPage(0);
-  }, [q, categoryId, status]);
+  }, [q, categoryId, status, expiry]);
 
   useEffect(() => {
     if (invPageCount > 0 && invPage >= invPageCount) setInvPage(invPageCount - 1);
@@ -370,7 +386,9 @@ export function InventoryScreen() {
   if (ctxIsError) {
     return (
       <FsPage className={cn(isWide && "px-8 pt-7")}>
-        <h1 className="text-[22px] font-bold text-fs-text min-[900px]:text-2xl">Stock</h1>
+        <h1 className="text-[22px] font-bold text-fs-text min-[900px]:text-2xl">
+          {isPharmacy ? "Stock (pharma)" : "Stock"}
+        </h1>
         <FsCard className="mt-4" padding="p-4">
           <FsQueryErrorPanel
             error={ctxError ?? new Error("Impossible de charger le profil ou l’entreprise.")}
@@ -384,7 +402,9 @@ export function InventoryScreen() {
   if (ctx == null) {
     return (
       <FsPage className={cn(isWide && "px-8 pt-7")}>
-        <h1 className="text-[22px] font-bold text-fs-text min-[900px]:text-2xl">Stock</h1>
+        <h1 className="text-[22px] font-bold text-fs-text min-[900px]:text-2xl">
+          {isPharmacy ? "Stock (pharma)" : "Stock"}
+        </h1>
         <p className="mt-2 text-sm text-neutral-600">
           Session indisponible. Reconnectez-vous ou réessayez.
         </p>
@@ -415,7 +435,9 @@ export function InventoryScreen() {
   if (companyId && !storeId) {
     return (
       <FsPage className={cn(isWide && "px-8 pt-7")}>
-        <h1 className="text-[22px] font-bold text-fs-text min-[900px]:text-2xl">Stock</h1>
+        <h1 className="text-[22px] font-bold text-fs-text min-[900px]:text-2xl">
+          {isPharmacy ? "Stock (pharma)" : "Stock"}
+        </h1>
         <p className="mt-2 text-sm text-neutral-600">
           Sélectionnez une boutique dans le menu pour voir le stock et les mouvements.
         </p>
@@ -445,10 +467,14 @@ export function InventoryScreen() {
             <MdInventory2 className="mt-0.5 h-[22px] w-[22px] shrink-0 text-fs-accent sm:h-7 sm:w-7" aria-hidden />
             <div className="min-w-0">
               <h1 className="text-[22px] font-bold leading-tight tracking-tight text-fs-text min-[900px]:text-2xl">
-                Stock
+                {isPharmacy ? "Stock (pharma)" : "Stock"}
               </h1>
               <p className="mt-0.5 text-sm text-neutral-600 sm:mt-1">
-                {storeName != null ? `Stock — ${storeName}` : "Stock"}
+                {isPharmacy
+                  ? pharmacySubtitleForScreen("inventory")
+                  : storeName != null
+                    ? `Stock — ${storeName}`
+                    : "Stock"}
               </p>
             </div>
           </div>
@@ -614,6 +640,20 @@ export function InventoryScreen() {
                     <option value="out">Rupture</option>
                   </select>
                 </div>
+                {isPharmacy ? (
+                  <div className="mt-3">
+                    <select
+                      className={fsInputClass()}
+                      value={expiry}
+                      onChange={(e) => setExpiry(e.target.value as ExpiryFilter)}
+                      aria-label="Péremption"
+                    >
+                      <option value="all">Péremption (tous)</option>
+                      <option value="soon">Expire bientôt</option>
+                      <option value="expired">Expirés</option>
+                    </select>
+                  </div>
+                ) : null}
               </>
             ) : (
               <div className="flex flex-wrap items-start gap-3">
@@ -649,6 +689,18 @@ export function InventoryScreen() {
                   <option value="low">Sous minimum</option>
                   <option value="out">Rupture</option>
                 </select>
+                {isPharmacy ? (
+                  <select
+                    className={cn(fsInputClass(), "w-[180px] shrink-0")}
+                    value={expiry}
+                    onChange={(e) => setExpiry(e.target.value as ExpiryFilter)}
+                    aria-label="Péremption"
+                  >
+                    <option value="all">Péremption (tous)</option>
+                    <option value="soon">Expire bientôt</option>
+                    <option value="expired">Expirés</option>
+                  </select>
+                ) : null}
               </div>
             )}
 
@@ -705,6 +757,9 @@ export function InventoryScreen() {
                         <tr className="border-b border-black/[0.06] bg-fs-surface-container/80">
                           <th className="px-4 py-3 font-semibold text-fs-text">Produit</th>
                           <th className="px-3 py-3 font-semibold text-fs-text">SKU</th>
+                          {isPharmacy ? (
+                            <th className="px-3 py-3 font-semibold text-fs-text">Péremption</th>
+                          ) : null}
                           <th className="px-3 py-3 text-right font-semibold tabular-nums text-fs-text">Qté</th>
                           <th className="px-3 py-3 text-right font-semibold tabular-nums text-fs-text">Réservé</th>
                           <th className="px-3 py-3 text-right font-semibold tabular-nums text-fs-text">Min</th>
@@ -726,6 +781,21 @@ export function InventoryScreen() {
                                 </div>
                               </td>
                               <td className="px-3 py-2 text-neutral-700">{r.sku ?? "—"}</td>
+                              {isPharmacy ? (
+                                <td className="px-3 py-2">
+                                  {(r.expiredBatchCount ?? 0) > 0 ? (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700">
+                                      Expiré
+                                    </span>
+                                  ) : (r.expiringSoonBatchCount ?? 0) > 0 ? (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800">
+                                      Bientôt {r.earliestExpiresOn ? `· ${r.earliestExpiresOn}` : ""}
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs text-neutral-500">—</span>
+                                  )}
+                                </td>
+                              ) : null}
                               <td className="px-3 py-2 text-right tabular-nums font-medium">{r.availableQuantity}</td>
                               <td className="px-3 py-2 text-right tabular-nums text-neutral-600">
                                 {r.reservedQuantity}

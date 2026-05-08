@@ -99,6 +99,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const toastLayer =
     active && mounted ? (
       <div
+        data-fs-portal-layer
         className="pointer-events-none fixed inset-x-0 flex justify-center px-4 max-md:bottom-[calc(5rem+var(--fs-safe-bottom))] md:bottom-8"
         style={{ zIndex: Z.toast }}
         aria-live={live}

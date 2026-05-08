@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils/cn";
 import { messageFromUnknownError, toast, toastMutationError } from "@/lib/toast";
 import { X } from "lucide-react";
 import { MdPictureAsPdf } from "react-icons/md";
+import { pharmacyStoreModalLabels } from "@/lib/features/pharmacy/labels";
 
 function trimOrNull(v: string): string | null {
   const t = v.trim();
@@ -45,11 +46,14 @@ export function CreateStoreModal({
   companyId,
   onClose,
   onCreated,
+  isPharmacy = false,
 }: {
   open: boolean;
   companyId: string;
   onClose: () => void;
   onCreated: () => void;
+  /** Terminologie « point de vente » pour les pharmacies. */
+  isPharmacy?: boolean;
 }) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -60,6 +64,7 @@ export function CreateStoreModal({
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const pv = pharmacyStoreModalLabels(isPharmacy);
 
   useEffect(() => {
     if (!open) {
@@ -97,7 +102,7 @@ export function CreateStoreModal({
         logoFile,
       };
       await createStore(input);
-      toast.success("Boutique créée");
+      toast.success(pv.toastCreated);
       onCreated();
       onClose();
     } catch (e) {
@@ -128,7 +133,7 @@ export function CreateStoreModal({
       >
         <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-3">
           <h2 id="create-store-title" className="text-lg font-bold text-neutral-900">
-            Nouvelle boutique
+            {pv.createTitle}
           </h2>
           <button
             type="button"
@@ -221,7 +226,7 @@ export function CreateStoreModal({
             onClick={() => void submit()}
             className="flex-1 rounded-xl bg-fs-accent py-3 text-sm font-semibold text-white disabled:opacity-60"
           >
-            {loading ? "Création…" : "Créer"}
+            {loading ? "Création…" : pv.createSubmit}
           </button>
         </div>
       </div>
@@ -234,11 +239,13 @@ export function EditStoreModal({
   store,
   onClose,
   onUpdated,
+  isPharmacy = false,
 }: {
   open: boolean;
   store: Store | null;
   onClose: () => void;
   onUpdated: () => void;
+  isPharmacy?: boolean;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -279,6 +286,7 @@ export function EditStoreModal({
   );
   const [previewLoading, setPreviewLoading] = useState(false);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
+  const pv = pharmacyStoreModalLabels(isPharmacy);
 
   useEffect(() => {
     if (!logoFile) {
@@ -453,7 +461,7 @@ export function EditStoreModal({
       };
       if (logoUrl != null) patch.logo_url = logoUrl;
       await updateStore(store.id, patch);
-      toast.success("Boutique mise à jour");
+      toast.success(pv.toastUpdated);
       onUpdated();
       onClose();
     } catch (e) {
@@ -485,7 +493,7 @@ export function EditStoreModal({
         >
         <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-3">
           <h2 id="edit-store-title" className="text-lg font-bold text-neutral-900">
-            Modifier la boutique
+            {pv.editTitle}
           </h2>
           <button
             type="button"

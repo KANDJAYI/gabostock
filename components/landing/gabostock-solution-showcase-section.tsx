@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { CSSProperties } from "react";
 import Image from "next/image";
+import { ScrollReveal } from "./scroll-reveal";
 
 const LEFT_SOLUTIONS = [
   {
@@ -179,7 +180,13 @@ function SolutionCircuitBackdrop({ className }: { className?: string }) {
 }
 
 /** Section solution complète — placée après « défis / problèmes des commerçants ». */
-export function GabostockSolutionShowcaseSection() {
+export function GabostockSolutionShowcaseSection({
+  imageSrc = "/landing/solution-commerce.png",
+  logoSrc = "/logogabostock.png",
+}: {
+  imageSrc?: string;
+  logoSrc?: string;
+}) {
   return (
     <section
       id="solution"
@@ -201,44 +208,49 @@ export function GabostockSolutionShowcaseSection() {
       />
 
       <div className="relative z-[1] mx-auto max-w-[90rem] px-4 sm:px-6 xl:px-12">
-        <header className="mb-10 max-w-3xl sm:mb-12 lg:mb-14">
-          <div className="mb-6 inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-2 rounded-full border border-[#007AFF]/45 bg-black/40 px-4 py-2 text-[11px] font-extrabold uppercase leading-snug tracking-[0.08em] text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm sm:text-[12px]">
-            <Star
-              className="h-[15px] w-[15px] min-h-[15px] shrink-0 fill-[#007AFF] text-[#007AFF]"
-              aria-hidden
-            />
-            <span className="text-[#cce3ff]/95">LA SOLUTION </span>
-            <span className="text-white">GABOSTOCK</span>
-          </div>
-          <h2
-            className="text-balance text-[1.6rem] font-extrabold leading-[1.1] tracking-[-0.03em] text-white sm:text-4xl lg:text-[2.4rem] xl:max-w-[40rem] xl:text-[2.5rem]"
-          >
-            Une solution complète pour gérer{" "}
-            <span className="text-[#3b8bff]">votre commerce</span> en toute{" "}
-            <span className="text-[#34C759]">simplicité</span>
-            <span className="text-white">.</span>
-          </h2>
-          <p className="mt-5 max-w-2xl text-[1.02rem] leading-relaxed text-neutral-400 sm:mt-6 sm:text-[1.0625rem]">
-            GaboStock centralise toutes les opérations de votre activité dans une seule plateforme. Plus de{" "}
-            <strong className="font-semibold text-[#3b8bff]">visibilité</strong>, plus de{" "}
-            <strong className="font-semibold text-[#34C759]">contrôle</strong>, plus de{" "}
-            <strong className="font-semibold text-[#4ade80]">performance</strong>
-            <span className="text-neutral-400">.</span>
-          </p>
-        </header>
+        <ScrollReveal>
+          <header className="mb-10 max-w-3xl sm:mb-12 lg:mb-14">
+            <div className="mb-6 inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-2 rounded-full border border-[#007AFF]/45 bg-black/40 px-4 py-2 text-[11px] font-extrabold uppercase leading-snug tracking-[0.08em] text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm sm:text-[12px]">
+              <Star
+                className="h-[15px] w-[15px] min-h-[15px] shrink-0 fill-[#007AFF] text-[#007AFF]"
+                aria-hidden
+              />
+              <span className="text-[#cce3ff]/95">LA SOLUTION </span>
+              <span className="text-white">GABOSTOCK</span>
+            </div>
+            <h2
+              className="text-balance text-[1.6rem] font-extrabold leading-[1.1] tracking-[-0.03em] text-white sm:text-4xl lg:text-[2.4rem] xl:max-w-[40rem] xl:text-[2.5rem]"
+            >
+              Une solution complète pour gérer{" "}
+              <span className="text-[#3b8bff]">votre commerce</span> en toute{" "}
+              <span className="text-[#34C759]">simplicité</span>
+              <span className="text-white">.</span>
+            </h2>
+            <p className="mt-5 max-w-2xl text-[1.02rem] leading-relaxed text-neutral-400 sm:mt-6 sm:text-[1.0625rem]">
+              GaboStock centralise toutes les opérations de votre activité dans une seule plateforme. Plus de{" "}
+              <strong className="font-semibold text-[#3b8bff]">visibilité</strong>, plus de{" "}
+              <strong className="font-semibold text-[#34C759]">contrôle</strong>, plus de{" "}
+              <strong className="font-semibold text-[#4ade80]">performance</strong>
+              <span className="text-neutral-400">.</span>
+            </p>
+          </header>
+        </ScrollReveal>
 
         <div className="relative">
           <SolutionCircuitBackdrop className="hidden min-[1024px]:block" />
 
           <div className="relative z-[1] grid grid-cols-1 gap-8 min-[1024px]:grid-cols-[1fr_minmax(260px,0.9fr)_1fr] min-[1024px]:items-center min-[1024px]:gap-6 min-[1200px]:gap-8 xl:gap-10">
             <div className="order-2 flex min-w-0 flex-col gap-4 min-[1024px]:order-1 min-[1024px]:gap-4 xl:gap-5">
-              {LEFT_SOLUTIONS.map((item) => (
-                <SolutionFeatureCard key={item.title} {...item} />
+              {LEFT_SOLUTIONS.map((item, idx) => (
+                <ScrollReveal key={item.title} delayMs={idx * 80}>
+                  <SolutionFeatureCard {...item} />
+                </ScrollReveal>
               ))}
             </div>
 
             <div className="order-1 mx-auto w-full max-w-[min(400px,92vw)] min-[1024px]:order-2 min-[1024px]:max-w-[min(420px,36vw)]">
-              <div className="group relative">
+              <ScrollReveal delayMs={120}>
+                <div className="group relative">
                 <div
                   className="pointer-events-none absolute -inset-3 rounded-[1.5rem] opacity-50 blur-2xl transition group-hover:opacity-70"
                   style={{
@@ -250,7 +262,7 @@ export function GabostockSolutionShowcaseSection() {
                   className="relative z-[1] aspect-[3/3.4] w-full overflow-hidden rounded-[1.15rem] border border-white/10 bg-[#0a1224] shadow-[0_32px_80px_-32px_rgba(0,60,200,0.5)] transition duration-500 ease-out group-hover:-translate-y-1"
                 >
                   <Image
-                    src="/landing/solution-commerce.png"
+                    src={imageSrc}
                     alt="Commerçant tenant le téléphone avec le tableau de bord GaboStock"
                     fill
                     className="object-cover object-[50%_15%]"
@@ -258,24 +270,28 @@ export function GabostockSolutionShowcaseSection() {
                     priority={false}
                   />
                 </figure>
-              </div>
+                </div>
+              </ScrollReveal>
             </div>
 
             <div className="order-3 flex min-w-0 flex-col gap-4 min-[1024px]:gap-4 xl:gap-5">
-              {RIGHT_SOLUTIONS.map((item) => (
-                <SolutionFeatureCard key={item.title} {...item} />
+              {RIGHT_SOLUTIONS.map((item, idx) => (
+                <ScrollReveal key={item.title} delayMs={idx * 80}>
+                  <SolutionFeatureCard {...item} />
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </div>
 
         <div className="relative z-[1] mt-12 sm:mt-14 lg:mt-16">
-          <div className="overflow-hidden rounded-[1.1rem] border border-[#007AFF]/30 bg-gradient-to-b from-[#0a1020]/95 to-[#080f1c]/95 p-[1.15rem] shadow-[0_24px_64px_-40px_rgba(0,100,255,0.25)] backdrop-blur-md sm:rounded-2xl sm:p-6 lg:p-8">
+          <ScrollReveal delayMs={160}>
+            <div className="overflow-hidden rounded-[1.1rem] border border-[#007AFF]/30 bg-gradient-to-b from-[#0a1020]/95 to-[#080f1c]/95 p-[1.15rem] shadow-[0_24px_64px_-40px_rgba(0,100,255,0.25)] backdrop-blur-md sm:rounded-2xl sm:p-6 lg:p-8">
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-8 xl:gap-10">
               <div className="flex shrink-0 items-start gap-3 sm:items-center sm:gap-4 lg:max-w-[22rem] xl:max-w-[24rem]">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center sm:h-16 sm:w-16">
                   <Image
-                    src="/logogabostock.png"
+                    src={logoSrc}
                     alt=""
                     width={64}
                     height={64}
@@ -294,11 +310,9 @@ export function GabostockSolutionShowcaseSection() {
               <div className="h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent lg:hidden" />
 
               <div className="grid w-full min-w-0 flex-1 gap-3 sm:grid-cols-2 sm:gap-3 lg:grid-cols-5 lg:gap-2 xl:gap-3">
-                {BOTTOM_PILLS.map(({ title, body, icon: Ico, tint }) => (
-                  <div
-                    key={title}
-                    className="flex min-w-0 flex-col items-center gap-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2 py-3 text-center sm:px-2.5"
-                  >
+                {BOTTOM_PILLS.map(({ title, body, icon: Ico, tint }, idx) => (
+                  <ScrollReveal key={title} delayMs={idx * 70}>
+                    <div className="flex min-w-0 flex-col items-center gap-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2 py-3 text-center sm:px-2.5">
                     <span
                       className="flex h-8 w-8 items-center justify-center rounded-lg"
                       style={{ color: tint, backgroundColor: `${tint}18` } as CSSProperties}
@@ -307,11 +321,13 @@ export function GabostockSolutionShowcaseSection() {
                     </span>
                     <p className="w-full min-w-0 text-[0.7rem] font-bold leading-tight text-white sm:text-xs">{title}</p>
                     <p className="w-full text-[0.64rem] leading-snug text-neutral-500 sm:text-[0.68rem]">{body}</p>
-                  </div>
+                    </div>
+                  </ScrollReveal>
                 ))}
               </div>
             </div>
-          </div>
+            </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

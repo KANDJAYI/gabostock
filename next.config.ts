@@ -6,6 +6,26 @@ const supabaseAnonForClient =
   process.env.SUPABASE_ANON_KEY?.trim() ||
   "";
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || "";
+function supabaseStorageImageRemotePatterns(): NonNullable<
+  NextConfig["images"]
+>["remotePatterns"] {
+  try {
+    if (!supabaseUrl) return [];
+    const host = new URL(supabaseUrl).hostname;
+    if (!host) return [];
+    return [
+      {
+        protocol: "https",
+        hostname: host,
+        pathname: "/storage/v1/object/public/**",
+      },
+    ];
+  } catch {
+    return [];
+  }
+}
+
 const nextConfig: NextConfig = {
   env: {
     ...(supabaseAnonForClient
@@ -24,6 +44,10 @@ const nextConfig: NextConfig = {
   /** Build Vercel : échouer si le typage bloque (détection précoce). */
   typescript: {
     ignoreBuildErrors: false,
+  },
+  /** Landing : images hébergées sur le bucket public Supabase (`store-logos` / public-site). */
+  images: {
+    remotePatterns: supabaseStorageImageRemotePatterns(),
   },
 };
 

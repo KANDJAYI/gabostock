@@ -4,6 +4,7 @@ import { ProductListThumbnail } from "@/components/products/product-list-thumbna
 import { FsCard, fsInputClass } from "@/components/ui/fs-screen-primitives";
 import { formatCurrency } from "@/lib/utils/currency";
 import { cn } from "@/lib/utils/cn";
+import { pharmacyPurchaseUiLabels } from "@/lib/features/pharmacy/labels";
 import { useEffect, useMemo, useState } from "react";
 import {
   MdAdd,
@@ -73,6 +74,7 @@ export type CreatePurchasePayload = {
 export function CreatePurchaseDialog({
   open,
   onClose,
+  isPharmacy = false,
   stores,
   initialStoreId,
   suppliers,
@@ -83,6 +85,7 @@ export function CreatePurchaseDialog({
 }: {
   open: boolean;
   onClose: () => void;
+  isPharmacy?: boolean;
   stores: { id: string; name: string }[];
   initialStoreId: string | null;
   suppliers: SupplierLite[];
@@ -102,6 +105,7 @@ export function CreatePurchaseDialog({
   const [paymentSheetOpen, setPaymentSheetOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const pu = pharmacyPurchaseUiLabels(isPharmacy);
 
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
@@ -196,7 +200,7 @@ export function CreatePurchaseDialog({
                 className="flex items-center gap-2.5 text-lg font-semibold text-fs-text"
               >
                 <MdAddShoppingCart className="h-6 w-6 shrink-0 text-fs-accent" aria-hidden />
-                Nouvel achat
+                {pu.dialogTitle}
               </h2>
               <button
                 type="button"
@@ -212,7 +216,7 @@ export function CreatePurchaseDialog({
               {productsError ? (
                 <div className="mb-3 flex gap-2 rounded-lg border border-red-200/80 bg-red-50/90 p-3 text-sm text-red-800">
                   <MdErrorOutline className="mt-0.5 h-5 shrink-0" aria-hidden />
-                  <span>Erreur chargement produits</span>
+                  <span>{pu.productsLoadError}</span>
                 </div>
               ) : null}
 
@@ -220,7 +224,9 @@ export function CreatePurchaseDialog({
                 className={cn("flex gap-3", isNarrow ? "flex-col" : "flex-row")}
               >
                 <div className="min-w-0 flex-1">
-                  <label className="mb-1 block text-xs font-medium text-neutral-600">Boutique *</label>
+                  <label className="mb-1 block text-xs font-medium text-neutral-600">
+                    {pu.fieldStore} *
+                  </label>
                   <select
                     className={fsInputClass("rounded-[10px] border border-black/8")}
                     value={effectiveStoreId ?? ""}
@@ -235,7 +241,9 @@ export function CreatePurchaseDialog({
                   </select>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <label className="mb-1 block text-xs font-medium text-neutral-600">Fournisseur *</label>
+                  <label className="mb-1 block text-xs font-medium text-neutral-600">
+                    {pu.fieldSupplier} *
+                  </label>
                   <select
                     className={fsInputClass("rounded-[10px] border border-black/8")}
                     value={effectiveSupplierId ?? ""}
@@ -301,7 +309,7 @@ export function CreatePurchaseDialog({
                           value={line.productId || ""}
                           onChange={(e) => setLineProduct(i, e.target.value || null)}
                         >
-                          <option value="">Produit</option>
+                          <option value="">{pu.productSelectPlaceholder}</option>
                           {products.map((p) => (
                             <option key={p.id} value={p.id}>
                               {p.name}
@@ -399,7 +407,7 @@ export function CreatePurchaseDialog({
                 onClick={async () => {
                   setError(null);
                   if (!effectiveStoreId || !effectiveSupplierId) {
-                    setError("Sélectionnez une boutique et un fournisseur.");
+                    setError(pu.selectStoreSupplierError);
                     return;
                   }
                   const items = lines
@@ -443,7 +451,7 @@ export function CreatePurchaseDialog({
                 {busy ? (
                   <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
                 ) : (
-                  "Créer (brouillon)"
+                  pu.createDraftSubmit
                 )}
               </button>
             </div>

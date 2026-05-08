@@ -37,7 +37,7 @@ export async function createPosSale(params: {
   companyId: string;
   storeId: string;
   customerId: string | null;
-  items: Array<{ productId: string; quantity: number; unitPrice: number }>;
+  items: Array<{ productId: string; quantity: number; unitPrice: number; batchId?: string | null }>;
   discount: number;
   payments: Array<{ method: "cash" | "mobile_money" | "card" | "other"; amount: number; reference?: string | null }>;
   saleMode: "quick_pos" | "invoice_pos";
@@ -78,6 +78,7 @@ export async function createPosSale(params: {
     p_created_by: user.id,
     p_items: params.items.map((i) => ({
       product_id: i.productId,
+      batch_id: i.batchId ?? null,
       quantity: Math.trunc(i.quantity),
       unit_price: i.unitPrice,
       discount: 0,

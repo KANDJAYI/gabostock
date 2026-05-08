@@ -28,6 +28,10 @@ import { GabostockDailyChallengesSection } from "./gabostock-daily-challenges-se
 import { GabostockSolutionShowcaseSection } from "./gabostock-solution-showcase-section";
 import { LandingHeroMockupsComposition } from "./landing-hero-mockups";
 import { LandingHeader } from "./landing-header";
+import { LandingScrollEffects } from "./landing-scroll-effects";
+import { LandingPartnersSection, type LandingPartner } from "./landing-partners-section";
+import { createClient } from "@/lib/supabase/server";
+import { ScrollReveal } from "./scroll-reveal";
 
 /** Maquette fonctionnalités (7 colonnes × cartes navy + pastilles couleur façon keynote). */
 const SHOWCASE_FEATURES = [
@@ -134,7 +138,112 @@ const FAQ_ITEMS = [
   },
 ] as const;
 
-export function GabostockLanding() {
+function parsePartners(raw: string | null | undefined): LandingPartner[] {
+  const txt = (raw ?? "").trim();
+  if (!txt) return [];
+  try {
+    const parsed = JSON.parse(txt) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((p) => {
+        if (!p || typeof p !== "object") return null;
+        const r = p as Record<string, unknown>;
+        const name = String(r.name ?? "").trim();
+        const logoSrc = String(r.logoSrc ?? "").trim();
+        if (!name) return null;
+        return { name, logoSrc: logoSrc || null };
+      })
+      .filter(Boolean) as LandingPartner[];
+  } catch {
+    return [];
+  }
+}
+
+const FALLBACK_PARTNERS: LandingPartner[] = [
+  { name: "Ramadan Telecom" },
+  { name: "ELOF Multi Services" },
+  { name: "Partenaire 3" },
+];
+
+export async function GabostockLanding() {
+  let partners: LandingPartner[] = FALLBACK_PARTNERS;
+  let landingLogoSrc: string | null = null;
+  let dailyChallengesImageSrc: string | null = null;
+  let solutionImageSrc: string | null = null;
+  let heroBadgeLeft: string | null = null;
+  let heroBadgeRight: string | null = null;
+  let heroTitleLine1: string | null = null;
+  let heroTitleLine2: string | null = null;
+  let heroDescription: string | null = null;
+  let heroPrimaryCtaLabel: string | null = null;
+  let heroPrimaryCtaHref: string | null = null;
+  let heroSecondaryCtaLabel: string | null = null;
+  let heroSecondaryCtaHref: string | null = null;
+  let finalCtaTitle: string | null = null;
+  let finalCtaDescription: string | null = null;
+  let partnersTitle: string | null = null;
+  let partnersSubtitle: string | null = null;
+  try {
+    const supabase = await createClient();
+    const { data: partnersRow } = await supabase
+      .from("platform_settings")
+      .select("value")
+      .eq("key", "public_site_partners")
+      .maybeSingle();
+    const v = (partnersRow as { value?: string | null } | null)?.value ?? null;
+    const parsed = parsePartners(v);
+    if (parsed.length) partners = parsed;
+
+    const { data: rows } = await supabase
+      .from("platform_settings")
+      .select("key, value")
+      .in("key", [
+        "public_site_hero_badge_left",
+        "public_site_hero_badge_right",
+        "public_site_hero_title_line1",
+        "public_site_hero_title_line2",
+        "public_site_hero_description",
+        "public_site_hero_primary_cta_label",
+        "public_site_hero_primary_cta_href",
+        "public_site_hero_secondary_cta_label",
+        "public_site_hero_secondary_cta_href",
+        "public_site_final_cta_title",
+        "public_site_final_cta_description",
+        "public_site_partners_title",
+        "public_site_partners_subtitle",
+        "public_site_image_logo",
+        "public_site_image_daily_challenges",
+        "public_site_image_solution",
+      ]);
+    const map = new Map<string, string>();
+    for (const r of (rows ?? []) as unknown[]) {
+      const row = r as { key?: string; value?: string | null };
+      if (row.key) map.set(row.key, String(row.value ?? ""));
+    }
+    const get = (k: string) => {
+      const s = map.get(k);
+      return s && s.trim() ? s.trim() : null;
+    };
+    heroBadgeLeft = get("public_site_hero_badge_left");
+    heroBadgeRight = get("public_site_hero_badge_right");
+    heroTitleLine1 = get("public_site_hero_title_line1");
+    heroTitleLine2 = get("public_site_hero_title_line2");
+    heroDescription = get("public_site_hero_description");
+    heroPrimaryCtaLabel = get("public_site_hero_primary_cta_label");
+    heroPrimaryCtaHref = get("public_site_hero_primary_cta_href");
+    heroSecondaryCtaLabel = get("public_site_hero_secondary_cta_label");
+    heroSecondaryCtaHref = get("public_site_hero_secondary_cta_href");
+    finalCtaTitle = get("public_site_final_cta_title");
+    finalCtaDescription = get("public_site_final_cta_description");
+    partnersTitle = get("public_site_partners_title");
+    partnersSubtitle = get("public_site_partners_subtitle");
+    landingLogoSrc = get("public_site_image_logo");
+    dailyChallengesImageSrc = get("public_site_image_daily_challenges");
+    solutionImageSrc = get("public_site_image_solution");
+  } catch {
+    // fallback to hardcoded list when settings are unavailable
+  }
+
   return (
     <div
       id="top"
@@ -144,7 +253,7 @@ export function GabostockLanding() {
         "min-h-dvh bg-fs-surface text-fs-text antialiased",
       )}
     >
-      <LandingHeader variant="heroDark" />
+      <LandingHeader variant="heroDark" logoSrc={landingLogoSrc ?? "/logogabostock.png"} />
 
       <main>
         {/* Bannière : fond + contenu + maquettes */}
@@ -163,56 +272,70 @@ export function GabostockLanding() {
                 radial-gradient(ellipse 520px 480px at 88% 38%, rgba(45, 212, 191, 0.14), transparent 58%)`,
             }}
           />
+          <LandingScrollEffects />
 
           <div className="relative mx-auto max-w-[90rem] px-4 pt-6 sm:px-6 sm:pt-8 lg:px-12 lg:pt-10">
             <div className="grid max-w-7xl items-center gap-12 pb-10 sm:gap-16 sm:pb-14 lg:mx-auto lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start lg:gap-12 lg:pb-[5.5rem] xl:max-w-none xl:gap-16">
             <div className="relative z-[2] max-w-xl lg:mx-0 lg:max-w-none xl:max-w-[min(38rem,calc(100%-1rem))]">
-              <div className="mb-8 inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-2 rounded-full border border-[#007AFF]/45 bg-black/40 px-4 py-2 text-[11px] font-extrabold uppercase leading-snug tracking-[0.07em] text-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm sm:text-[12px] sm:tracking-[0.065em]">
-                <Star
-                  className="h-[15px] w-[15px] min-h-[15px] shrink-0 fill-[#007AFF] text-[#007AFF]"
-                  aria-hidden
-                />
-                <span className="tracking-[0.038em] text-[#cce3ff]/[0.94]">
-                  LA SOLUTION TOUT-EN-UN POUR{" "}
-                </span>
-                <span className="font-black tracking-[0.04em] text-[#34C759] drop-shadow-[0_0_20px_rgba(52,199,89,0.35)]">
-                  VOTRE COMMERCE
-                </span>
-              </div>
-
-              <h1 className="text-balance font-extrabold leading-[1.06] tracking-[-0.02em]">
-                <span className="block text-[clamp(2.25rem,5.5vw,3.75rem)] text-white">
-                  Gérez mieux.
-                </span>
-                <span className="mt-1 block bg-gradient-to-r from-[#34C759] to-[#007AFF] bg-clip-text text-[clamp(2.5rem,6vw,4.25rem)] text-transparent">
-                  Gagnez plus.
-                </span>
-              </h1>
-
-              <p className="mt-7 max-w-[28.5rem] text-[1.0625rem] leading-[1.65] text-[#94a3b8] sm:text-[1.0625rem] xl:text-[1.09375rem]">
-                GaboStock vous aide à suivre vos <strong className="font-semibold text-white">ventes</strong>,
-                gérer vos stocks, maîtriser vos dépenses et fidéliser vos clients. Tout ce dont vous
-                avez besoin pour développer votre activité, en un seul endroit.
-              </p>
-
-              <div className="mt-10 flex flex-col gap-[0.9rem] sm:flex-row sm:flex-wrap sm:items-center">
-                <Link
-                  href={ROUTES.registerSelectActivity}
-                  className="inline-flex min-h-[3.375rem] w-full max-w-[17.85rem] items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[#34C759] to-[#007AFF] px-[1.85rem] py-[0.89rem] text-[1.0625rem] font-bold text-white shadow-[0_26px_64px_-14px_rgba(0,122,255,0.38)] transition hover:brightness-[1.03] active:brightness-[0.99] sm:w-auto"
-                >
-                  Essayer gratuitement
-                  <ArrowRight className="h-5 w-5 shrink-0" aria-hidden />
-                </Link>
-                <a
-                  href="#fonctionnalites"
-                  className="inline-flex min-h-[3.375rem] w-full max-w-[15.25rem] items-center gap-3 rounded-full border border-white/22 bg-black/52 px-[1.35rem] py-[0.75rem] text-[1.0625rem] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md transition hover:border-white/34 hover:bg-black/62 sm:w-auto"
-                >
-                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#007AFF] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]">
-                    <Play className="relative left-[3px] h-6 w-6 shrink-0 stroke-white text-white" strokeWidth={2.4} aria-hidden />
+              <ScrollReveal>
+                <div className="mb-8 inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-2 rounded-full border border-[#007AFF]/45 bg-black/40 px-4 py-2 text-[11px] font-extrabold uppercase leading-snug tracking-[0.07em] text-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm sm:text-[12px] sm:tracking-[0.065em]">
+                  <Star
+                    className="h-[15px] w-[15px] min-h-[15px] shrink-0 fill-[#007AFF] text-[#007AFF]"
+                    aria-hidden
+                  />
+                  <span className="tracking-[0.038em] text-[#cce3ff]/[0.94]">
+                    {(heroBadgeLeft ?? "LA SOLUTION TOUT-EN-UN POUR") + " "}
                   </span>
-                  Voir la démo
-                </a>
-              </div>
+                  <span className="font-black tracking-[0.04em] text-[#34C759] drop-shadow-[0_0_20px_rgba(52,199,89,0.35)]">
+                    {heroBadgeRight ?? "VOTRE COMMERCE"}
+                  </span>
+                </div>
+              </ScrollReveal>
+
+              <ScrollReveal delayMs={90}>
+                <h1 className="text-balance font-extrabold leading-[1.06] tracking-[-0.02em]">
+                  <span className="block text-[clamp(2.25rem,5.5vw,3.75rem)] text-white">
+                    {heroTitleLine1 ?? "Gérez mieux."}
+                  </span>
+                  <span className="mt-1 block bg-gradient-to-r from-[#34C759] to-[#007AFF] bg-clip-text text-[clamp(2.5rem,6vw,4.25rem)] text-transparent">
+                    {heroTitleLine2 ?? "Gagnez plus."}
+                  </span>
+                </h1>
+              </ScrollReveal>
+
+              <ScrollReveal delayMs={160}>
+                <p className="mt-7 max-w-[28.5rem] text-[1.0625rem] leading-[1.65] text-[#94a3b8] sm:text-[1.0625rem] xl:text-[1.09375rem]">
+                  {heroDescription ?? (
+                    <>
+                      GaboStock vous aide à suivre vos{" "}
+                      <strong className="font-semibold text-white">ventes</strong>, gérer vos stocks,
+                      maîtriser vos dépenses et fidéliser vos clients. Tout ce dont vous avez besoin
+                      pour développer votre activité, en un seul endroit.
+                    </>
+                  )}
+                </p>
+              </ScrollReveal>
+
+              <ScrollReveal delayMs={230}>
+                <div className="mt-10 flex flex-col gap-[0.9rem] sm:flex-row sm:flex-wrap sm:items-center">
+                  <Link
+                    href={heroPrimaryCtaHref ?? ROUTES.registerSelectActivity}
+                    className="inline-flex min-h-[3.375rem] w-full max-w-[17.85rem] items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[#34C759] to-[#007AFF] px-[1.85rem] py-[0.89rem] text-[1.0625rem] font-bold text-white shadow-[0_26px_64px_-14px_rgba(0,122,255,0.38)] transition hover:brightness-[1.03] active:brightness-[0.99] sm:w-auto"
+                  >
+                    {heroPrimaryCtaLabel ?? "Essayer gratuitement"}
+                    <ArrowRight className="h-5 w-5 shrink-0" aria-hidden />
+                  </Link>
+                  <a
+                    href={heroSecondaryCtaHref ?? "#fonctionnalites"}
+                    className="inline-flex min-h-[3.375rem] w-full max-w-[15.25rem] items-center gap-3 rounded-full border border-white/22 bg-black/52 px-[1.35rem] py-[0.75rem] text-[1.0625rem] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md transition hover:border-white/34 hover:bg-black/62 sm:w-auto"
+                  >
+                    <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#007AFF] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]">
+                      <Play className="relative left-[3px] h-6 w-6 shrink-0 stroke-white text-white" strokeWidth={2.4} aria-hidden />
+                    </span>
+                    {heroSecondaryCtaLabel ?? "Voir la démo"}
+                  </a>
+                </div>
+              </ScrollReveal>
 
               <ul className="mt-12 grid gap-5 sm:grid-cols-3 sm:gap-5 lg:mt-14 lg:gap-6">
                 {([
@@ -238,37 +361,43 @@ export function GabostockLanding() {
                     ringClass: "border-[#007AFF]/52",
                   },
                 ] as const).map(({ icon: Ico, title, sub, iconClass, ringClass }) => (
-                  <li
-                    key={title}
-                    className="rounded-[14px] border border-white/[0.12] bg-white/[0.055] px-5 py-[1.125rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.048)] backdrop-blur-md"
-                  >
-                    <div className="flex items-start gap-[0.9rem]">
-                      <span
-                        className={cn(
-                          "mt-px inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.9375rem] border bg-transparent",
-                          ringClass,
-                        )}
-                      >
-                        <Ico className={cn(iconClass, "h-[1.3rem] w-[1.3rem]")} aria-hidden />
-                      </span>
-                      <div>
-                        <p className="font-bold leading-snug tracking-tight text-white">{title}</p>
-                        <p className="mt-[0.425rem] text-[0.86rem] leading-snug text-neutral-400">
-                          {sub}
-                        </p>
+                  <ScrollReveal key={title} delayMs={260}>
+                    <li className="rounded-[14px] border border-white/[0.12] bg-white/[0.055] px-5 py-[1.125rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.048)] backdrop-blur-md">
+                      <div className="flex items-start gap-[0.9rem]">
+                        <span
+                          className={cn(
+                            "mt-px inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.9375rem] border bg-transparent",
+                            ringClass,
+                          )}
+                        >
+                          <Ico className={cn(iconClass, "h-[1.3rem] w-[1.3rem]")} aria-hidden />
+                        </span>
+                        <div>
+                          <p className="font-bold leading-snug tracking-tight text-white">{title}</p>
+                          <p className="mt-[0.425rem] text-[0.86rem] leading-snug text-neutral-400">
+                            {sub}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
+                    </li>
+                  </ScrollReveal>
                 ))}
               </ul>
             </div>
 
             <div className="relative z-[1] min-w-0 lg:flex lg:justify-end lg:pl-2">
-              <LandingHeroMockupsComposition />
+              <LandingHeroMockupsComposition logoSrc={landingLogoSrc ?? "/logogabostock.png"} />
             </div>
             </div>
           </div>
         </section>
+
+        <GabostockDailyChallengesSection imageSrc={dailyChallengesImageSrc ?? "/landing/defis-commerce.png"} />
+
+        <GabostockSolutionShowcaseSection
+          imageSrc={solutionImageSrc ?? "/landing/solution-commerce.png"}
+          logoSrc={landingLogoSrc ?? "/logogabostock.png"}
+        />
 
         {/* Fonctionnalités — même fond navy, grille 7 cartes façon keynote */}
         <section
@@ -315,35 +444,65 @@ export function GabostockLanding() {
           </div>
         </section>
 
-        <GabostockDailyChallengesSection />
-
-        <GabostockSolutionShowcaseSection />
-
         {/* How it works */}
         <section
           id="parcours"
           className="scroll-mt-20 border-b border-neutral-200/80 bg-fs-surface-container/40 py-16 dark:border-neutral-700/80 sm:py-20"
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Comment ça marche</h2>
-              <p className="mt-4 text-lg text-fs-on-surface-variant">
-                Trois étapes pour sortir du chaos des fichiers dispersés et retrouver une vision
-                unique de votre activité.
-              </p>
-            </div>
-            <ol className="mt-12 grid gap-8 lg:grid-cols-3">
-              {STEPS.map((s) => (
-                <li
-                  key={s.step}
-                  className="relative rounded-2xl border border-neutral-200 bg-fs-card p-8 dark:border-neutral-700"
-                >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fs-accent text-base font-bold text-white">
-                    {s.step}
+            <ScrollReveal>
+              <div className="mx-auto max-w-2xl text-center">
+                <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-fs-accent/25 bg-fs-accent/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-fs-accent">
+                  Parcours
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--fs-brand-stock)]" aria-hidden />
+                  Simple
+                </div>
+                <h2 className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-fs-text sm:text-4xl">
+                  Comment{" "}
+                  <span className="bg-gradient-to-r from-fs-accent to-[var(--fs-brand-stock)] bg-clip-text text-transparent">
+                    ça marche
                   </span>
-                  <h3 className="mt-5 text-xl font-semibold">{s.title}</h3>
-                  <p className="mt-3 text-fs-on-surface-variant">{s.body}</p>
-                </li>
+                </h2>
+                <p className="mx-auto mt-4 max-w-2xl text-[1.03rem] leading-relaxed text-fs-on-surface-variant">
+                  Trois étapes pour sortir du chaos des fichiers dispersés et retrouver une vision unique de votre activité.
+                </p>
+              </div>
+            </ScrollReveal>
+
+            <ol className="mt-12 grid gap-6 lg:grid-cols-3 lg:gap-8">
+              {STEPS.map((s, idx) => (
+                <ScrollReveal key={s.step} delayMs={idx * 90}>
+                  <li className="group relative overflow-hidden rounded-2xl border border-neutral-200 bg-fs-card p-8 shadow-sm transition hover:border-fs-accent/30 hover:shadow-md dark:border-neutral-700">
+                    <div
+                      className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-[0.12] blur-2xl"
+                      style={{
+                        background:
+                          "radial-gradient(circle at 30% 30%, var(--fs-accent), transparent 62%)",
+                      }}
+                      aria-hidden
+                    />
+                    <div className="flex items-center gap-4">
+                      <span
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl text-base font-extrabold text-white shadow-sm"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, var(--fs-accent), var(--fs-brand-stock))",
+                        }}
+                      >
+                        {s.step}
+                      </span>
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-bold leading-snug text-fs-text">{s.title}</h3>
+                        <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-fs-on-surface-variant">
+                          Étape {s.step}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-[0.98rem] leading-relaxed text-fs-on-surface-variant">
+                      {s.body}
+                    </p>
+                  </li>
+                </ScrollReveal>
               ))}
             </ol>
           </div>
@@ -433,30 +592,63 @@ export function GabostockLanding() {
         {/* FAQ */}
         <section
           id="faq"
-          className="scroll-mt-20 py-16 sm:py-20"
+          className="scroll-mt-20 border-t border-neutral-200/80 bg-fs-surface-container/50 py-16 dark:border-neutral-700/80 sm:py-20"
         >
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
-              Questions fréquentes
-            </h2>
-            <p className="mt-4 text-center text-lg text-fs-on-surface-variant">
-              Réponses synthétiques aux demandes les plus courantes avant de créer votre compte.
-            </p>
+            <div className="text-center">
+              <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-fs-accent/25 bg-fs-accent/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-fs-accent">
+                FAQ
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--fs-brand-stock)]" aria-hidden />
+                Support
+              </div>
+              <h2 className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-fs-text sm:text-4xl">
+                Questions{" "}
+                <span className="bg-gradient-to-r from-fs-accent to-[var(--fs-brand-stock)] bg-clip-text text-transparent">
+                  fréquentes
+                </span>
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-[1.03rem] leading-relaxed text-fs-on-surface-variant">
+                Les réponses aux questions les plus courantes avant de créer votre compte.
+              </p>
+            </div>
+
             <div className="mt-10 space-y-3">
               {FAQ_ITEMS.map((item) => (
                 <details
                   key={item.q}
-                  className="group rounded-2xl border border-neutral-200 bg-fs-card px-5 py-1 dark:border-neutral-700 [&_summary::-webkit-details-marker]:hidden"
+                  className="group overflow-hidden rounded-2xl border border-neutral-200 bg-fs-card shadow-sm transition hover:border-fs-accent/30 hover:shadow-md dark:border-neutral-700 [&_summary::-webkit-details-marker]:hidden"
                 >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-4 text-left font-semibold text-fs-text hover:text-fs-accent">
-                    <span>{item.q}</span>
-                    <span className="text-fs-on-surface-variant transition group-open:rotate-45">
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-4 px-5 py-4 text-left">
+                    <span className="flex min-w-0 items-start gap-3">
+                      <span
+                        className="mt-0.5 h-6 w-1 rounded-full"
+                        style={{
+                          background:
+                            "linear-gradient(180deg, var(--fs-accent), var(--fs-brand-stock))",
+                        }}
+                        aria-hidden
+                      />
+                      <span className="min-w-0">
+                        <span className="block font-semibold leading-snug text-fs-text transition group-hover:text-fs-accent">
+                          {item.q}
+                        </span>
+                        <span className="mt-1 block text-xs text-fs-on-surface-variant">
+                          Cliquez pour afficher la réponse
+                        </span>
+                      </span>
+                    </span>
+
+                    <span
+                      className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-fs-surface text-fs-accent transition group-open:rotate-45 dark:border-neutral-600"
+                      aria-hidden
+                      title="Ouvrir"
+                    >
                       +
                     </span>
                   </summary>
-                  <p className="border-t border-neutral-200 pb-5 pt-0 text-sm leading-relaxed text-fs-on-surface-variant dark:border-neutral-600">
+                  <div className="border-t border-neutral-200 px-5 pb-5 pt-4 text-sm leading-relaxed text-fs-on-surface-variant dark:border-neutral-600">
                     {item.a}
-                  </p>
+                  </div>
                 </details>
               ))}
             </div>
@@ -467,10 +659,11 @@ export function GabostockLanding() {
         <section className="border-t border-neutral-200/80 bg-gradient-to-br from-fs-accent/[0.12] via-fs-surface to-[color-mix(in_oklab,var(--fs-brand-stock)_14%,var(--fs-surface))] py-16 dark:border-neutral-700/80 dark:from-fs-accent/[0.18] sm:py-20">
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Prêt à structurer votre activité&nbsp;?
+              {finalCtaTitle ?? <>Prêt à structurer votre activité&nbsp;?</>}
             </h2>
             <p className="mt-4 text-lg text-fs-on-surface-variant">
-              Rejoignez Gabostock : créez votre espace ou connectez-vous pour retrouver vos données.
+              {finalCtaDescription ??
+                "Rejoignez Gabostock : créez votre espace ou connectez-vous pour retrouver vos données."}
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
@@ -489,37 +682,110 @@ export function GabostockLanding() {
             </div>
           </div>
         </section>
+
+        <LandingPartnersSection partners={partners} title={partnersTitle} subtitle={partnersSubtitle} />
       </main>
 
-      <footer className="border-t border-neutral-200/80 bg-fs-surface-container/60 py-10 dark:border-neutral-700/80">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <Image
-              src="/logogabostock.png"
-              alt=""
-              width={36}
-              height={36}
-              className="h-9 w-9 rounded-lg object-contain"
-            />
-            <span className="text-lg font-semibold">
-              <span className="text-fs-text">Gabo</span>
-              <span className="text-[var(--fs-brand-stock)]">Stock</span>
-            </span>
+      <footer className="border-t border-neutral-200/80 bg-fs-surface-container/60 dark:border-neutral-700/80">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Image
+                  src={landingLogoSrc ?? "/logogabostock.png"}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 rounded-xl object-contain"
+                />
+                <div className="min-w-0">
+                  <p className="text-lg font-extrabold tracking-tight text-fs-text">
+                    <span>Gabo</span>
+                    <span className="text-[var(--fs-brand-stock)]">Stock</span>
+                  </p>
+                  <p className="text-sm text-fs-on-surface-variant">
+                    Stock, ventes & dépôt — simple, rapide, fiable.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href={ROUTES.registerSelectActivity}
+                  className="inline-flex items-center justify-center rounded-xl bg-fs-accent px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-fs-accent/20 hover:opacity-95"
+                >
+                  Créer un compte
+                </Link>
+                <Link
+                  href={ROUTES.login}
+                  className="inline-flex items-center justify-center rounded-xl border border-neutral-300 bg-fs-card px-4 py-2 text-sm font-semibold text-fs-text hover:bg-fs-surface-low dark:border-neutral-600"
+                >
+                  Connexion
+                </Link>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-fs-text">Produit</p>
+              <ul className="mt-4 space-y-2 text-sm">
+                {[
+                  { href: "#fonctionnalites", label: "Fonctionnalités" },
+                  { href: "#parcours", label: "Comment ça marche" },
+                  { href: "#metiers", label: "Métiers" },
+                  { href: "#faq", label: "FAQ" },
+                ].map((l) => (
+                  <li key={l.href}>
+                    <a className="text-fs-on-surface-variant hover:text-fs-accent" href={l.href}>
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-fs-text">Ressources</p>
+              <ul className="mt-4 space-y-2 text-sm">
+                {[
+                  { href: "/login", label: "Accéder à mon compte" },
+                  { href: "/register/select-activity", label: "Créer un espace" },
+                  { href: "/setup", label: "Configuration" },
+                ].map((l) => (
+                  <li key={l.href}>
+                    <Link className="text-fs-on-surface-variant hover:text-fs-accent" href={l.href}>
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-fs-text">Contact</p>
+              <div className="mt-4 space-y-2 text-sm text-fs-on-surface-variant">
+                <p>Support & démo</p>
+                <p className="text-xs">
+                  Un besoin spécifique (multi-magasins, dépôt, impression) ? Écrivez-nous et on vous
+                  guide.
+                </p>
+              </div>
+            </div>
           </div>
-          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
-            <Link href={ROUTES.login} className="text-fs-on-surface-variant hover:text-fs-accent">
-              Connexion
-            </Link>
-            <Link
-              href={ROUTES.registerSelectActivity}
-              className="text-fs-on-surface-variant hover:text-fs-accent"
-            >
-              Inscription
-            </Link>
-          </nav>
-          <p className="max-w-xs text-center text-xs text-fs-on-surface-variant sm:max-w-none sm:text-right">
-            Gabostock — gestion de stock, ventes et dépôt. © {new Date().getFullYear()}.
-          </p>
+
+          <div className="mt-10 flex flex-col gap-3 border-t border-neutral-200/80 pt-6 text-xs text-fs-on-surface-variant dark:border-neutral-700/80 sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              © {new Date().getFullYear()} Gabostock. Tous droits réservés.
+            </p>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <a href="#top" className="hover:text-fs-accent">
+                Retour en haut
+              </a>
+              <span className="hidden sm:inline">•</span>
+              <span className="text-[color-mix(in_oklab,var(--fs-on-surface-variant)_88%,transparent)]">
+                Construit pour le terrain.
+              </span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

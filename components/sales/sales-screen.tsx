@@ -24,6 +24,8 @@ import { ROUTES, storeFactureTabPath } from "@/lib/config/routes";
 import { messageFromUnknownError, toast } from "@/lib/toast";
 import { cn } from "@/lib/utils/cn";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
+import { pharmacySalesActionLabels, pharmacySubtitleForScreen } from "@/lib/features/pharmacy/labels";
 import { SaleDetailModal } from "./sale-detail-modal";
 import { FsPage, FsCard, fsInputClass } from "@/components/ui/fs-screen-primitives";
 import {
@@ -140,6 +142,8 @@ export function SalesScreen() {
   const companyId = ctx.data?.companyId ?? "";
   const stores = ctx.data?.stores ?? [];
   const currentStoreId = ctx.data?.storeId ?? null;
+  const isPharmacy = isPharmacyBusinessTypeSlug(ctx.data?.businessTypeSlug);
+  const salePh = pharmacySalesActionLabels(isPharmacy);
 
   const peekInvoiceTable =
     companyId.length > 0 ? peekInvoiceTablePosEnabled(companyId) : undefined;
@@ -359,10 +363,10 @@ export function SalesScreen() {
         <div className="flex flex-col gap-4 min-[560px]:flex-row min-[560px]:items-start min-[560px]:justify-between min-[560px]:gap-6">
           <div className="min-w-0">
             <h1 className="text-[22px] font-bold leading-tight tracking-[-0.4px] text-fs-text min-[900px]:text-2xl">
-              Ventes
+              {isPharmacy ? "Ventes (pharma)" : "Ventes"}
             </h1>
             <p className="mt-1 text-sm leading-relaxed text-neutral-600 min-[900px]:text-base">
-              {headerDescription}
+              {isPharmacy ? pharmacySubtitleForScreen("sales") : headerDescription}
             </p>
           </div>
           <div className="flex w-full flex-col gap-2 min-[400px]:flex-row min-[400px]:flex-wrap min-[560px]:w-auto min-[560px]:max-w-none min-[560px]:justify-end">
@@ -391,7 +395,7 @@ export function SalesScreen() {
             {canCreateSale && currentStoreId ? (
               <Link href={`${ROUTES.stores}/${currentStoreId}/pos-quick`} className={btnPrimary}>
                 <MdAdd className="h-5 w-5 shrink-0" aria-hidden />
-                Nouvelle vente
+                {salePh.newSale}
               </Link>
             ) : null}
           </div>

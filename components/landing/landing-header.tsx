@@ -17,7 +17,13 @@ const NAV = [
 
 export type LandingHeaderVariant = "surface" | "heroDark";
 
-export function LandingHeader({ variant = "surface" }: { variant?: LandingHeaderVariant }) {
+export function LandingHeader({
+  variant = "surface",
+  logoSrc = "/logogabostock.png",
+}: {
+  variant?: LandingHeaderVariant;
+  logoSrc?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -47,22 +53,22 @@ export function LandingHeader({ variant = "surface" }: { variant?: LandingHeader
     mounted &&
     open &&
     createPortal(
-      <>
-        {/* Démarre sous le header sticky pour éviter le décal blanc/coupé */}
+      <div data-fs-portal-layer className="fixed inset-0 z-[200]">
+        {/* Sous la barre sticky (h-16 / sm:h-[72px]) */}
         <button
           type="button"
           aria-hidden
           tabIndex={-1}
-          className="fixed inset-x-0 bottom-0 top-14 z-[100] cursor-default bg-neutral-950/45 backdrop-blur-[3px] sm:top-16 dark:bg-neutral-950/60"
+          className="absolute inset-x-0 bottom-0 top-16 z-0 cursor-default bg-neutral-950/45 backdrop-blur-[3px] sm:top-[72px] dark:bg-neutral-950/60"
           onClick={() => setOpen(false)}
         />
 
         <div
           id="landing-mobile-menu"
           className={cn(
-            "fixed bottom-0 right-0 top-14 z-[110] flex w-[min(20rem,calc(100vw-0.75rem))] flex-col rounded-l-[1.375rem]",
+            "absolute bottom-0 right-0 top-16 z-[1] flex w-[min(20rem,calc(100vw-0.75rem))] flex-col rounded-l-[1.375rem]",
             "border-l border-neutral-200 bg-fs-card shadow-[0_25px_50px_-12px_rgba(0,0,0,0.28)] dark:border-neutral-600 dark:bg-fs-surface-container",
-            "sm:top-16",
+            "sm:top-[72px]",
           )}
           style={{
             paddingBottom: `max(1rem, env(safe-area-inset-bottom))`,
@@ -128,7 +134,7 @@ export function LandingHeader({ variant = "surface" }: { variant?: LandingHeader
             </Link>
           </div>
         </div>
-      </>,
+      </div>,
       document.body,
     );
 
@@ -142,7 +148,7 @@ export function LandingHeader({ variant = "surface" }: { variant?: LandingHeader
             : "border-b border-neutral-200/80 bg-fs-surface/90 dark:border-neutral-700/80",
         )}
       >
-        <div className="mx-auto flex h-14 max-w-6xl min-w-0 items-center gap-2 px-3 sm:h-16 sm:gap-3 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 max-w-6xl min-w-0 items-center gap-2 px-3 sm:h-[72px] sm:gap-3 sm:px-6 lg:px-10 xl:px-12">
           <a
             href="#top"
             className={cn(
@@ -152,7 +158,7 @@ export function LandingHeader({ variant = "surface" }: { variant?: LandingHeader
             onClick={() => setOpen(false)}
           >
             <Image
-              src="/logogabostock.png"
+              src={logoSrc}
               alt=""
               width={36}
               height={36}
@@ -211,21 +217,28 @@ export function LandingHeader({ variant = "surface" }: { variant?: LandingHeader
               <span className="md:hidden">Compte</span>
               <span className="hidden md:inline">Créer un compte</span>
             </Link>
-            <button
-              type="button"
-              className={cn(
-                "fs-touch-target ml-0.5 flex shrink-0 items-center justify-center rounded-lg border p-2 md:hidden",
-                heroDark
-                  ? "border-white/30 bg-white/10 text-white hover:bg-white/15"
-                  : "border-neutral-200 bg-fs-card text-fs-text dark:border-neutral-600",
-              )}
-              aria-expanded={open}
-              aria-controls="landing-mobile-menu"
-              aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-              onClick={() => setOpen((v) => !v)}
-            >
-              {open ? <X className="h-5 w-5 shrink-0" aria-hidden /> : <Menu className="h-5 w-5 shrink-0" aria-hidden />}
-            </button>
+            {/* Keep 48x48 hit-area, smaller visual circle */}
+            <div className="fs-touch-target ml-0.5 flex shrink-0 items-center justify-center md:hidden">
+              <button
+                type="button"
+                className={cn(
+                  "flex h-9 w-9 items-center justify-center rounded-full border",
+                  heroDark
+                    ? "border-white/30 bg-white/10 text-white hover:bg-white/15"
+                    : "border-neutral-200 bg-fs-card text-fs-text hover:bg-fs-surface-container dark:border-neutral-600",
+                )}
+                aria-expanded={open}
+                aria-controls="landing-mobile-menu"
+                aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+                onClick={() => setOpen((v) => !v)}
+              >
+                {open ? (
+                  <X className="h-[18px] w-[18px] shrink-0" aria-hidden />
+                ) : (
+                  <Menu className="h-[18px] w-[18px] shrink-0" aria-hidden />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </header>

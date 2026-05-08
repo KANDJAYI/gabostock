@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { cn } from "@/lib/utils/cn";
 
@@ -24,10 +24,30 @@ export function PosBarcodeScannerDialog({
   const reactId = useId().replace(/:/g, "");
   const regionId = `pos-scan-${reactId}`;
   const scannerRef = useRef<import("html5-qrcode").Html5Qrcode | null>(null);
+  /** Keeps `#regionId` in the document until the scanner stops, so `video.play()` is not aborted by unmounting. */
+  const [preserveScanRegion, setPreserveScanRegion] = useState(open);
   const onDecodedRef = useRef(onDecoded);
   onDecodedRef.current = onDecoded;
   const onErrorRef = useRef(onError);
   onErrorRef.current = onError;
+
+  useEffect(() => {
+    if (open) setPreserveScanRegion(true);
+  }, [open]);
+
+  async function disposeScanner(html5: import("html5-qrcode").Html5Qrcode | null) {
+    if (!html5) return;
+    try {
+      if (html5.isScanning) await html5.stop();
+    } catch {
+      /* */
+    }
+    try {
+      html5.clear();
+    } catch {
+      /* */
+    }
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -38,17 +58,9 @@ export function PosBarcodeScannerDialog({
       html5: import("html5-qrcode").Html5Qrcode,
       decodedText: string,
     ) {
-      try {
-        await html5.stop();
-      } catch {
-        /* */
-      }
-      try {
-        html5.clear();
-      } catch {
-        /* */
-      }
+      await disposeScanner(html5);
       scannerRef.current = null;
+      setPreserveScanRegion(false);
       const t = decodedText.replace(/\r|\n/g, "").trim();
       if (t) onDecodedRef.current(t);
       onClose();
@@ -115,12 +127,9 @@ export function PosBarcodeScannerDialog({
               ? e.message
               : "Impossible d’ouvrir la caméra.";
         onErrorRef.current?.(msg);
-        try {
-          html5.clear();
-        } catch {
-          /* */
-        }
+        await disposeScanner(html5);
         scannerRef.current = null;
+        setPreserveScanRegion(false);
       }
     };
 
@@ -130,45 +139,57 @@ export function PosBarcodeScannerDialog({
       cancelled = true;
       const s = scannerRef.current;
       scannerRef.current = null;
-      if (s?.isScanning) {
-        void s.stop().catch(() => {});
-      }
+      void disposeScanner(s).finally(() => {
+        setPreserveScanRegion(false);
+      });
     };
   }, [open, regionId, onClose]);
 
-  if (!open) return null;
+  if (!open && !preserveScanRegion) return null;
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex flex-col items-center justify-end bg-black/50 p-4 sm:justify-center"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Scannez un code-barres"
+      className={cn(
+        "fixed z-[200]",
+        open
+          ? "inset-0 flex flex-col items-center justify-end bg-black/50 p-4 sm:justify-center"
+          : "left-[-9999px] top-0 h-[380px] w-[420px] overflow-hidden opacity-0 pointer-events-none",
+      )}
+      role={open ? "dialog" : undefined}
+      aria-modal={open ? true : undefined}
+      aria-hidden={!open}
+      aria-label={open ? "Scannez un code-barres" : undefined}
     >
       <div
         className={cn(
           "relative w-full max-w-md overflow-hidden rounded-2xl bg-[#1F2937] shadow-xl",
+          !open && "shadow-none",
         )}
       >
-        <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-          <p className="text-base font-semibold text-white">Scannez un code-barres</p>
-          <button
-            type="button"
-            onClick={() => onClose()}
-            className="rounded-full p-2 text-white hover:bg-white/10"
-            aria-label="Fermer"
-          >
-            <MdClose className="h-6 w-6" aria-hidden />
-          </button>
-        </div>
-        <div className="p-3">
+        {open ? (
+          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+            <p className="text-base font-semibold text-white">Scannez un code-barres</p>
+            <button
+              type="button"
+              onClick={() => onClose()}
+              className="rounded-full p-2 text-white hover:bg-white/10"
+              aria-label="Fermer"
+            >
+              <MdClose className="h-6 w-6" aria-hidden />
+            </button>
+          </div>
+        ) : null}
+        <div className={cn("p-3", !open && "p-0")}>
+          {/* Same wrapper depth whenever open changes so `#regionId` is not remounted mid-scan. */}
           <div
             id={regionId}
             className="mx-auto min-h-[220px] w-full max-w-[360px] overflow-hidden rounded-xl bg-black"
           />
-          <p className="mt-3 text-center text-xs text-white/70">
-            Cadrez le code-barres ou le QR code. La lecture se fait automatiquement.
-          </p>
+          {open ? (
+            <p className="mt-3 text-center text-xs text-white/70">
+              Cadrez le code-barres ou le QR code. La lecture se fait automatiquement.
+            </p>
+          ) : null}
         </div>
       </div>
     </div>

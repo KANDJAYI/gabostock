@@ -18,6 +18,8 @@ import {
 } from "@/lib/features/purchases/api";
 import type { PurchaseDetail, PurchaseListItem, PurchaseStatus } from "@/lib/features/purchases/types";
 import { usePermissions } from "@/lib/features/permissions/use-permissions";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
+import { pharmacyPurchaseUiLabels } from "@/lib/features/pharmacy/labels";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { queryKeys } from "@/lib/query/query-keys";
 import { purchasesToProSheet } from "@/lib/features/purchases/csv";
@@ -178,6 +180,8 @@ export function PurchasesScreen() {
   const companyId = ctx?.companyId ?? "";
   const ctxStoreId = ctx?.storeId ?? null;
   const stores = ctx?.stores ?? [];
+  const isPharmacy = isPharmacyBusinessTypeSlug(ctx?.businessTypeSlug);
+  const pu = pharmacyPurchaseUiLabels(isPharmacy);
 
   /** Aligné `PurchasesPage` Flutter (l.216–219) — pas de cas super-admin séparé. */
   const canAccess =
@@ -338,7 +342,7 @@ export function PurchasesScreen() {
 
   const openCreate = () => {
     if (stores.length === 0) {
-      toast.info("Aucune boutique.");
+      toast.info(pu.toastNoStore);
       return;
     }
     if (!canCreate) {
@@ -426,7 +430,7 @@ export function PurchasesScreen() {
                 className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center gap-2 rounded-[10px] bg-fs-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm active:scale-[0.99] min-[420px]:w-auto"
               >
                 <MdAdd className="h-[18px] w-[18px]" aria-hidden />
-                Nouveau achat
+                {pu.listNewButton}
               </button>
             ) : null}
           </div>
@@ -438,10 +442,10 @@ export function PurchasesScreen() {
 
       <div className="mb-6 flex flex-wrap gap-x-3 gap-y-2">
         <div className="w-full min-[480px]:min-w-[11rem] min-[480px]:max-w-[min(100%,14rem)] min-[480px]:flex-1">
-          <label className="mb-1 block text-xs font-medium text-neutral-600">Boutique</label>
+          <label className="mb-1 block text-xs font-medium text-neutral-600">{pu.fieldStore}</label>
           <select
             className={fsInputClass("min-h-[44px] rounded-[10px]")}
-            aria-label="Boutique"
+            aria-label={pu.fieldStore}
             value={filterStoreId ?? ""}
             onChange={(e) => setFilterStoreId(e.target.value === "" ? null : e.target.value)}
           >
@@ -454,10 +458,10 @@ export function PurchasesScreen() {
           </select>
         </div>
         <div className="w-full min-[480px]:min-w-[11rem] min-[480px]:max-w-[min(100%,14rem)] min-[480px]:flex-1">
-          <label className="mb-1 block text-xs font-medium text-neutral-600">Fournisseur</label>
+          <label className="mb-1 block text-xs font-medium text-neutral-600">{pu.fieldSupplier}</label>
           <select
             className={fsInputClass("min-h-[44px] rounded-[10px]")}
-            aria-label="Fournisseur"
+            aria-label={pu.fieldSupplier}
             value={filterSupplierId ?? ""}
             onChange={(e) => setFilterSupplierId(e.target.value === "" ? null : e.target.value)}
           >
@@ -518,8 +522,8 @@ export function PurchasesScreen() {
                     <tr className="border-b border-black/6 bg-fs-surface-container/80">
                       <th className="whitespace-nowrap px-4 py-3 font-semibold">Réf.</th>
                       <th className="whitespace-nowrap px-4 py-3 font-semibold">Date</th>
-                      <th className="whitespace-nowrap px-4 py-3 font-semibold">Boutique</th>
-                      <th className="whitespace-nowrap px-4 py-3 font-semibold">Fournisseur</th>
+                      <th className="whitespace-nowrap px-4 py-3 font-semibold">{pu.tableStore}</th>
+                      <th className="whitespace-nowrap px-4 py-3 font-semibold">{pu.tableSupplier}</th>
                       <th className="whitespace-nowrap px-4 py-3 font-semibold">Total</th>
                       <th className="whitespace-nowrap px-4 py-3 font-semibold">Statut</th>
                       <th className="whitespace-nowrap px-4 py-3 font-semibold">Actions</th>
@@ -653,6 +657,7 @@ export function PurchasesScreen() {
       <CreatePurchaseDialog
         open={createOpen}
         onClose={() => setCreateOpen(false)}
+        isPharmacy={isPharmacy}
         stores={stores}
         initialStoreId={ctxStoreId}
         suppliers={suppliersQ.data ?? []}

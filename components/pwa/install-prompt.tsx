@@ -110,6 +110,7 @@ export function InstallPrompt() {
 
   const layer = (
     <div
+      data-fs-portal-layer
       className="pointer-events-none fixed inset-x-0 top-0 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6"
       style={{ zIndex: Z.toast + 1, bottom: "auto" }}
     >

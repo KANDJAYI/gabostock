@@ -14,6 +14,9 @@ import { cn } from "@/lib/utils/cn";
 import { toNumber } from "@/lib/utils/currency";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MdAdd, MdAddPhotoAlternate, MdClose } from "react-icons/md";
+import { usePermissions } from "@/lib/features/permissions/use-permissions";
+import { isPharmacyBusinessTypeSlug } from "@/lib/features/pharmacy/is-pharmacy";
+import { pharmacyProductActionLabels } from "@/lib/features/pharmacy/labels";
 
 const UNIT_OPTIONS: string[] = [
   "pce",
@@ -80,6 +83,18 @@ export function ProductFormDialog({
   onCategoriesChanged,
   onBrandsChanged,
 }: Props) {
+  const { data: ctx } = usePermissions();
+  const isPharmacy = isPharmacyBusinessTypeSlug(ctx?.businessTypeSlug);
+  const p = pharmacyProductActionLabels(isPharmacy);
+  const scopeOptions = useMemo(() => {
+    const pl = pharmacyProductActionLabels(isPharmacy);
+    if (!isPharmacy) return SCOPE_OPTIONS;
+    return SCOPE_OPTIONS.map((o) => {
+      if (o.value === "both") return { ...o, label: pl.scopeBoth };
+      if (o.value === "boutique_only") return { ...o, label: pl.scopeBoutiqueOnly };
+      return o;
+    });
+  }, [isPharmacy]);
   const isEdit = initial != null;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -116,6 +131,25 @@ export function ProductFormDialog({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [inlineBusy, setInlineBusy] = useState(false);
+
+  // Pharmacie (optionnel)
+  const [pharmacyLotNumber, setPharmacyLotNumber] = useState(
+    initial?.pharmacy_lot_number ?? "",
+  );
+  const [pharmacyExpirationDate, setPharmacyExpirationDate] = useState(
+    initial?.pharmacy_expiration_date ?? "",
+  );
+  const [pharmacyLaboratory, setPharmacyLaboratory] = useState(
+    initial?.pharmacy_laboratory ?? "",
+  );
+  const [pharmacyDrugCategory, setPharmacyDrugCategory] = useState(
+    initial?.pharmacy_drug_category ?? "",
+  );
+  const [pharmacyPrescriptionRequired, setPharmacyPrescriptionRequired] = useState<boolean>(
+    initial?.pharmacy_prescription_required === true,
+  );
+  const [pharmacyDosage, setPharmacyDosage] = useState(initial?.pharmacy_dosage ?? "");
+  const [pharmacyForm, setPharmacyForm] = useState(initial?.pharmacy_form ?? "");
 
   const existingImages = useMemo(() => {
     const imgs = initial?.product_images ?? [];
@@ -237,6 +271,18 @@ export function ProductFormDialog({
       brandId,
       productScope,
       isActive,
+
+      ...(isPharmacy
+        ? {
+            pharmacyLotNumber,
+            pharmacyExpirationDate,
+            pharmacyLaboratory,
+            pharmacyDrugCategory,
+            pharmacyPrescriptionRequired,
+            pharmacyDosage,
+            pharmacyForm,
+          }
+        : {}),
     };
     return {
       input,
@@ -291,7 +337,7 @@ export function ProductFormDialog({
       >
         <div className="shrink-0 border-b border-black/[0.06] px-4 py-4 sm:px-6">
           <h2 id="product-form-title" className="text-lg font-bold text-fs-text">
-            {isEdit ? "Modifier le produit" : "Nouveau produit"}
+            {isEdit ? p.dialogEditTitle : p.dialogNewTitle}
           </h2>
         </div>
 
@@ -437,9 +483,104 @@ export function ProductFormDialog({
               </select>
             </label>
 
+            {isPharmacy ? (
+              <div className="rounded-xl border border-[color-mix(in_srgb,var(--fs-accent)_18%,transparent)] bg-[color-mix(in_srgb,var(--fs-accent)_6%,transparent)] p-3">
+                <p className="text-sm font-semibold text-fs-text">Pharmacie (optionnel)</p>
+                <p className="mt-1 text-xs text-neutral-600">
+                  Ces champs n&apos;impactent pas les autres domaines et peuvent rester vides.
+                </p>
+
+                <div className="mt-3 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-medium text-neutral-600">
+                      Numéro de lot
+                    </span>
+                    <input
+                      value={pharmacyLotNumber}
+                      onChange={(e) => setPharmacyLotNumber(e.target.value)}
+                      className={fsInputClass()}
+                      placeholder="Ex: LOT-2026-001"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-medium text-neutral-600">
+                      Date d&apos;expiration
+                    </span>
+                    <input
+                      type="date"
+                      value={pharmacyExpirationDate}
+                      onChange={(e) => setPharmacyExpirationDate(e.target.value)}
+                      className={fsInputClass()}
+                    />
+                  </label>
+                </div>
+
+                <div className="mt-3 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-medium text-neutral-600">
+                      Laboratoire / fabricant
+                    </span>
+                    <input
+                      value={pharmacyLaboratory}
+                      onChange={(e) => setPharmacyLaboratory(e.target.value)}
+                      className={fsInputClass()}
+                      placeholder="Ex: Sanofi"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-medium text-neutral-600">
+                      Catégorie médicament
+                    </span>
+                    <input
+                      value={pharmacyDrugCategory}
+                      onChange={(e) => setPharmacyDrugCategory(e.target.value)}
+                      className={fsInputClass()}
+                      placeholder="Ex: Antibiotique"
+                    />
+                  </label>
+                </div>
+
+                <div className="mt-3 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-medium text-neutral-600">
+                      Dosage
+                    </span>
+                    <input
+                      value={pharmacyDosage}
+                      onChange={(e) => setPharmacyDosage(e.target.value)}
+                      className={fsInputClass()}
+                      placeholder="Ex: 500 mg"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-medium text-neutral-600">
+                      Forme pharmaceutique
+                    </span>
+                    <input
+                      value={pharmacyForm}
+                      onChange={(e) => setPharmacyForm(e.target.value)}
+                      className={fsInputClass()}
+                      placeholder="Ex: Comprimé"
+                    />
+                  </label>
+                </div>
+
+                <label className="mt-3 flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={pharmacyPrescriptionRequired}
+                    onChange={(e) => setPharmacyPrescriptionRequired(e.target.checked)}
+                    className="h-4 w-4 rounded border-black/[0.2] text-fs-accent focus:ring-fs-accent"
+                  />
+                  <span className="text-sm text-fs-text">Prescription obligatoire</span>
+                </label>
+              </div>
+            ) : null}
+
             <label className="block">
               <span className="mb-1 block text-xs font-medium text-neutral-600">
-                Portée du produit
+                {p.scopeLabel}
               </span>
               <select
                 value={productScope}
@@ -448,7 +589,7 @@ export function ProductFormDialog({
                 }
                 className={fsInputClass()}
               >
-                {SCOPE_OPTIONS.map((o) => (
+                {scopeOptions.map((o) => (
                   <option key={o.value} value={o.value}>
                     {o.label}
                   </option>
@@ -542,9 +683,7 @@ export function ProductFormDialog({
                     onChange={(e) => setInitialStock(e.target.value)}
                     inputMode="numeric"
                     placeholder={
-                      storeId
-                        ? "Quantité pour la boutique"
-                        : "Choisir une boutique"
+                      storeId ? p.initialStockPlaceholderBoutique : p.initialStockPlaceholderNoStore
                     }
                     className={fsInputClass()}
                     disabled={!storeId}
@@ -657,7 +796,7 @@ export function ProductFormDialog({
                 onChange={(e) => setIsActive(e.target.checked)}
                 className="h-4 w-4 rounded border-black/[0.2] text-fs-accent focus:ring-fs-accent"
               />
-              <span className="text-sm text-fs-text">Produit actif</span>
+              <span className="text-sm text-fs-text">{p.activeCheckbox}</span>
             </label>
 
             {errorMsg ? (
@@ -686,9 +825,9 @@ export function ProductFormDialog({
             {loading ? (
               <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
             ) : isEdit ? (
-              "Mettre à jour"
+              p.updateSubmit
             ) : (
-              "Créer"
+              p.createSubmit
             )}
           </button>
         </div>

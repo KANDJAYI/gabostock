@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ES2017",
     "lib": [
       "dom",
@@ -39,8 +40,6 @@
   "exclude": [
     ".next",
     "node_modules",
-    "supabase/functions",
-    "gabostock",
-    "gabostockmapp"
+    "supabase/functions"
   ]
 }
