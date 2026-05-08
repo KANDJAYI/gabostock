@@ -26,7 +26,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { GabostockDailyChallengesSection } from "./gabostock-daily-challenges-section";
 import { GabostockSolutionShowcaseSection } from "./gabostock-solution-showcase-section";
-import { LandingHeroMockupsComposition } from "./landing-hero-mockups";
 import { LandingHeader } from "./landing-header";
 import { LandingPricingSection } from "./landing-pricing-section";
 import { LandingScrollEffects } from "./landing-scroll-effects";
@@ -297,21 +296,38 @@ export async function GabostockLanding() {
           className="relative overflow-x-clip overflow-y-visible border-b border-white/[0.06] text-white"
           style={{ backgroundColor: LAN.bg }}
         >
+          <Image
+            src="/landing/banner.png"
+            alt=""
+            fill
+            priority
+            className="pointer-events-none select-none object-cover object-center"
+            sizes="100vw"
+            aria-hidden
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(5,10,24,0.42) 0%, rgba(5,10,24,0.24) 42%, rgba(5,10,24,0.12) 62%, rgba(5,10,24,0.30) 100%)",
+            }}
+          />
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0"
             style={{
               background: `
-                radial-gradient(ellipse 720px 520px at 8% 100%, color-mix(in srgb, ${LAN.blue} 40%, transparent), transparent 54%),
-                radial-gradient(ellipse 640px 440px at 94% -4%, color-mix(in srgb, ${LAN.green} 36%, transparent), transparent 56%),
-                radial-gradient(ellipse 820px 360px at 92% 100%, color-mix(in srgb, ${LAN.blue} 14%, transparent), transparent 58%),
-                radial-gradient(ellipse 520px 480px at 88% 38%, rgba(45, 212, 191, 0.14), transparent 58%)`,
+                radial-gradient(ellipse 720px 520px at 8% 100%, color-mix(in srgb, ${LAN.blue} 12%, transparent), transparent 58%),
+                radial-gradient(ellipse 640px 440px at 94% -4%, color-mix(in srgb, ${LAN.green} 10%, transparent), transparent 60%),
+                radial-gradient(ellipse 820px 360px at 92% 100%, color-mix(in srgb, ${LAN.blue} 5%, transparent), transparent 62%),
+                radial-gradient(ellipse 520px 480px at 88% 38%, rgba(45, 212, 191, 0.04), transparent 62%)`,
             }}
           />
           <LandingScrollEffects />
 
           <div className="relative mx-auto max-w-[90rem] px-4 pt-6 sm:px-6 sm:pt-8 lg:px-12 lg:pt-10">
-            <div className="grid max-w-7xl items-center gap-12 pb-10 sm:gap-16 sm:pb-14 lg:mx-auto lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start lg:gap-12 lg:pb-[5.5rem] xl:max-w-none xl:gap-16">
+            <div className="mx-auto max-w-7xl pb-10 sm:pb-14 lg:pb-[5.5rem]">
             <div className="relative z-[2] max-w-xl lg:mx-0 lg:max-w-none xl:max-w-[min(38rem,calc(100%-1rem))]">
               <ScrollReveal>
                 <div className="mb-8 inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-2 rounded-full border border-[#007AFF]/45 bg-black/40 px-4 py-2 text-[11px] font-extrabold uppercase leading-snug tracking-[0.07em] text-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm sm:text-[12px] sm:tracking-[0.065em]">
@@ -346,15 +362,15 @@ export async function GabostockLanding() {
               </ScrollReveal>
 
               <ScrollReveal delayMs={160}>
-                <p className="mt-7 max-w-[28.5rem] text-[1.0625rem] leading-[1.65] text-[#94a3b8] sm:text-[1.0625rem] xl:text-[1.09375rem]">
+                <p className="mt-7 max-w-[28.5rem] text-[1.0625rem] leading-[1.65] text-white sm:text-[1.0625rem] xl:text-[1.09375rem]">
                   {heroDescription ?? (
                     <>
-                      <strong className="font-semibold text-white">Gabostock</strong> est le logiciel
+                      <strong className="font-semibold text-[#34C759]">Gabostock</strong> est le logiciel
                       tout-en-un des commerces{" "}
-                      <strong className="font-semibold text-white">au Gabon</strong> : suivez vos{" "}
-                      <strong className="font-semibold text-white">ventes</strong>, gérez votre{" "}
-                      <strong className="font-semibold text-white">stock</strong>, vos{" "}
-                      <strong className="font-semibold text-white">factures en FCFA</strong> et vos
+                      <strong className="font-semibold text-[#34C759]">au Gabon</strong> : suivez vos{" "}
+                      <strong className="font-semibold text-[#34C759]">ventes</strong>, gérez votre{" "}
+                      <strong className="font-semibold text-[#34C759]">stock</strong>, vos{" "}
+                      <strong className="font-semibold text-[#34C759]">factures en FCFA</strong> et vos
                       crédits clients — à Libreville, Port-Gentil, Franceville et partout au Gabon.
                     </>
                   )}
@@ -429,18 +445,14 @@ export async function GabostockLanding() {
                 ))}
               </ul>
             </div>
-
-            <div className="relative z-[1] min-w-0 lg:flex lg:justify-end lg:pl-2">
-              <LandingHeroMockupsComposition logoSrc={landingLogoSrc ?? "/logogabostock.png"} />
-            </div>
-            </div>
+          </div>
           </div>
         </section>
 
-        <GabostockDailyChallengesSection imageSrc={dailyChallengesImageSrc ?? "/landing/defis-commerce.png"} />
+        <GabostockDailyChallengesSection imageSrc={dailyChallengesImageSrc ?? "/landing/probleme.png"} />
 
         <GabostockSolutionShowcaseSection
-          imageSrc={solutionImageSrc ?? "/landing/solution-commerce.png"}
+          imageSrc={solutionImageSrc ?? "/landing/solution.png"}
           logoSrc={landingLogoSrc ?? "/logogabostock.png"}
         />
 
@@ -492,9 +504,25 @@ export async function GabostockLanding() {
         {/* How it works */}
         <section
           id="parcours"
-          className="scroll-mt-20 border-b border-white/[0.08] bg-[#050A18] py-16 sm:py-20"
+          className="relative scroll-mt-20 overflow-hidden border-b border-white/[0.08] bg-[#050A18] py-16 sm:py-20"
         >
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <Image
+            src="/fonctionenement.png"
+            alt=""
+            fill
+            sizes="100vw"
+            className="pointer-events-none select-none object-cover object-center opacity-[0.72]"
+            aria-hidden
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(5,10,24,0.42) 0%, rgba(5,10,24,0.24) 50%, rgba(5,10,24,0.52) 100%)",
+            }}
+          />
+          <div className="relative z-[1] mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
               <div className="mx-auto max-w-2xl text-center">
                 <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-fs-accent/25 bg-fs-accent/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-fs-accent">
@@ -558,9 +586,25 @@ export async function GabostockLanding() {
         {/* Métiers */}
         <section
           id="metiers"
-          className="scroll-mt-20 border-b border-white/[0.08] bg-[#050A18] py-16 sm:py-20"
+          className="relative scroll-mt-20 overflow-hidden border-b border-white/[0.08] bg-[#050A18] py-16 sm:py-20"
         >
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <Image
+            src="/adcommerce.png"
+            alt=""
+            fill
+            sizes="100vw"
+            className="pointer-events-none select-none object-cover object-center"
+            aria-hidden
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(5,10,24,0.22) 0%, rgba(5,10,24,0.08) 48%, rgba(5,10,24,0.32) 100%)",
+            }}
+          />
+          <div className="relative z-[1] mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Adapté à votre façon de vendre
@@ -620,42 +664,42 @@ export async function GabostockLanding() {
 
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
-                <h3 className="text-lg font-bold text-white">Boutiques & supermarchés</h3>
+                <h3 className="text-lg font-bold text-[#34C759]">Boutiques & supermarchés</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/70">
                   Caisse rapide, codes-barres, tickets thermiques et suivi des stocks pour les
                   commerces à Libreville (Mont-Bouët, Akébé, Nzeng-Ayong) et Port-Gentil.
                 </p>
               </article>
               <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
-                <h3 className="text-lg font-bold text-white">Pharmacies au Gabon</h3>
+                <h3 className="text-lg font-bold text-[#34C759]">Pharmacies au Gabon</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/70">
                   Module dédié : lots, dates de péremption, alertes et traçabilité — adapté aux
                   officines de Libreville, Port-Gentil et Franceville.
                 </p>
               </article>
               <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
-                <h3 className="text-lg font-bold text-white">Grossistes & dépôts</h3>
+                <h3 className="text-lg font-bold text-[#34C759]">Grossistes & dépôts</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/70">
                   Entrepôt central, transferts vers les points de vente, factures A4 en FCFA — pensé
                   pour les grossistes du Gabon.
                 </p>
               </article>
               <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
-                <h3 className="text-lg font-bold text-white">Multi-magasins</h3>
+                <h3 className="text-lg font-bold text-[#34C759]">Multi-magasins</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/70">
                   Pilotez vos magasins de Libreville, Owendo, Akanda et Port-Gentil depuis un seul
                   compte, avec rôles par utilisateur (caissier, gestionnaire, admin).
                 </p>
               </article>
               <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
-                <h3 className="text-lg font-bold text-white">Hors ligne & coupures</h3>
+                <h3 className="text-lg font-bold text-[#34C759]">Hors ligne & coupures</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/70">
                   Conçu pour les réalités du Gabon : coupures de réseau ou d’électricité, votre caisse
                   continue de vendre et synchronise dès que la connexion revient.
                 </p>
               </article>
               <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
-                <h3 className="text-lg font-bold text-white">FCFA & impressions</h3>
+                <h3 className="text-lg font-bold text-[#34C759]">FCFA & impressions</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/70">
                   Devise XAF par défaut, tickets thermiques 58/80 mm et factures A4
                   professionnelles — prêts à imprimer sur le matériel courant au Gabon.

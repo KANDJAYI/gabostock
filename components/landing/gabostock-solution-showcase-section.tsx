@@ -181,7 +181,7 @@ function SolutionCircuitBackdrop({ className }: { className?: string }) {
 
 /** Section solution complète — placée après « défis / problèmes des commerçants ». */
 export function GabostockSolutionShowcaseSection({
-  imageSrc = "/landing/solution-commerce.png",
+  imageSrc = "/landing/solution.png",
   logoSrc = "/logogabostock.png",
 }: {
   imageSrc?: string;
@@ -209,8 +209,8 @@ export function GabostockSolutionShowcaseSection({
 
       <div className="relative z-[1] mx-auto max-w-[90rem] px-4 sm:px-6 xl:px-12">
         <ScrollReveal>
-          <header className="mb-10 max-w-3xl sm:mb-12 lg:mb-14">
-            <div className="mb-6 inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-2 rounded-full border border-[#007AFF]/45 bg-black/40 px-4 py-2 text-[11px] font-extrabold uppercase leading-snug tracking-[0.08em] text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm sm:text-[12px]">
+          <header className="mx-auto mb-10 flex max-w-3xl flex-col items-center text-center sm:mb-12 lg:mb-14">
+            <div className="mb-6 inline-flex max-w-full flex-wrap items-center justify-center gap-x-2.5 gap-y-2 rounded-full border border-[#007AFF]/45 bg-black/40 px-4 py-2 text-[11px] font-extrabold uppercase leading-snug tracking-[0.08em] text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm sm:text-[12px]">
               <Star
                 className="h-[15px] w-[15px] min-h-[15px] shrink-0 fill-[#007AFF] text-[#007AFF]"
                 aria-hidden
@@ -219,14 +219,14 @@ export function GabostockSolutionShowcaseSection({
               <span className="text-white">GABOSTOCK</span>
             </div>
             <h2
-              className="text-balance text-[1.6rem] font-extrabold leading-[1.1] tracking-[-0.03em] text-white sm:text-4xl lg:text-[2.4rem] xl:max-w-[40rem] xl:text-[2.5rem]"
+              className="mx-auto text-balance text-[1.6rem] font-extrabold leading-[1.1] tracking-[-0.03em] text-white sm:text-4xl lg:text-[2.4rem] xl:max-w-[40rem] xl:text-[2.5rem]"
             >
               Une solution complète pour gérer{" "}
               <span className="text-[#3b8bff]">votre commerce</span> en toute{" "}
               <span className="text-[#34C759]">simplicité</span>
               <span className="text-white">.</span>
             </h2>
-            <p className="mt-5 max-w-2xl text-[1.02rem] leading-relaxed text-neutral-400 sm:mt-6 sm:text-[1.0625rem]">
+            <p className="mx-auto mt-5 max-w-2xl text-[1.02rem] leading-relaxed text-neutral-400 sm:mt-6 sm:text-[1.0625rem]">
               GaboStock centralise toutes les opérations de votre activité dans une seule plateforme. Plus de{" "}
               <strong className="font-semibold text-[#3b8bff]">visibilité</strong>, plus de{" "}
               <strong className="font-semibold text-[#34C759]">contrôle</strong>, plus de{" "}

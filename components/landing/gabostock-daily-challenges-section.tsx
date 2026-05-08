@@ -124,7 +124,7 @@ function FloatingPainTag({
 
 /** Section « défis quotidiens » — après Fonctionnalités. */
 export function GabostockDailyChallengesSection({
-  imageSrc = "/landing/defis-commerce.png",
+  imageSrc = "/landing/probleme.png",
 }: {
   imageSrc?: string;
 }) {

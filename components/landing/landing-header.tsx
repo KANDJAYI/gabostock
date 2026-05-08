@@ -4,17 +4,19 @@ import { ROUTES } from "@/lib/config/routes";
 import { cn } from "@/lib/utils/cn";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 const NAV = [
   { href: "#fonctionnalites", label: "Fonctionnalités" },
-  { href: "#parcours", label: "Comment ça marche" },
   { href: "#abonnement", label: "Abonnement" },
   { href: "#metiers", label: "Métiers" },
   { href: "#faq", label: "FAQ" },
 ];
+
+const CONTACT_PHONE_DISPLAY = "+241 62 57 37 48";
+const CONTACT_PHONE_HREF = "tel:+24162573748";
 
 export type LandingHeaderVariant = "surface" | "heroDark";
 
@@ -116,6 +118,15 @@ export function LandingHeader({
 
             <hr className="my-4 shrink-0 border-neutral-200 dark:border-neutral-600" />
 
+            <a
+              href={CONTACT_PHONE_HREF}
+              className="flex items-center gap-3 rounded-xl px-3 py-3 text-[1.0625rem] font-semibold text-fs-text hover:bg-fs-surface-container"
+              onClick={() => setOpen(false)}
+            >
+              <Phone className="h-5 w-5 shrink-0 text-fs-accent" aria-hidden />
+              <span className="tabular-nums">{CONTACT_PHONE_DISPLAY}</span>
+            </a>
+
             <Link
               href={ROUTES.login}
               className="rounded-xl px-3 py-3 text-[1.0625rem] font-semibold text-fs-accent hover:bg-fs-accent/10"
@@ -193,6 +204,25 @@ export function LandingHeader({
           </nav>
 
           <div className="ml-auto flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2">
+            <a
+              href={CONTACT_PHONE_HREF}
+              aria-label={`Appeler Gabostock au ${CONTACT_PHONE_DISPLAY}`}
+              className={cn(
+                "hidden shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold tabular-nums lg:inline-flex",
+                heroDark
+                  ? "text-white/90 hover:bg-white/10 hover:text-white"
+                  : "text-fs-text hover:bg-fs-surface-container",
+              )}
+            >
+              <Phone
+                className={cn(
+                  "h-4 w-4 shrink-0",
+                  heroDark ? "text-[#34C759]" : "text-fs-accent",
+                )}
+                aria-hidden
+              />
+              {CONTACT_PHONE_DISPLAY}
+            </a>
             <Link
               href={ROUTES.login}
               className={cn(

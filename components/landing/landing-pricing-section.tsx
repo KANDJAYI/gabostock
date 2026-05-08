@@ -108,7 +108,7 @@ export function LandingPricingSection() {
                   Annuel
                 </h3>
                 <div className="text-center">
-                  <p className="mt-5 text-xs font-extrabold uppercase tracking-[0.18em] text-white/60">
+                  <p className="mt-5 text-xs font-extrabold uppercase tracking-[0.18em] text-red-500">
                     À partir de
                   </p>
                   <Price value="300 000" suffix="FCFA / an" />
@@ -145,7 +145,7 @@ export function LandingPricingSection() {
               </p>
               <h3 className="mt-4 text-xl font-extrabold tracking-tight text-white">Mensuel</h3>
               <div className="text-center">
-                <p className="mt-5 text-xs font-extrabold uppercase tracking-[0.18em] text-white/60">
+                <p className="mt-5 text-xs font-extrabold uppercase tracking-[0.18em] text-red-500">
                   À partir de
                 </p>
                 <Price value="40 000" suffix="FCFA / mois" />
