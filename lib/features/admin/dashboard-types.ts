@@ -98,7 +98,7 @@ export interface AdminPlatformDashboard {
     salesCount: number;
     /** Somme « total » des ventes merchants (≠ revenus Gabostock) */
     merchantCaTotal: number;
-    /** Revenus plateforme : part récurrente du mois (estimation plan) — pas les encaissements Stripe */
+    /** Revenus plateforme : part récurrente du mois (estimation plan) — encaissements non suivis dans l'app */
     gasoStockRecurringEstimate: number;
     /** Ratio d’entreprises ayant eu au moins une vente / entreprises actives */
     activityRate: number;
@@ -108,7 +108,7 @@ export interface AdminPlatformDashboard {
   gasoStock: {
     mrrEstimate: number;
     arrEstimate: number;
-    /** Pas de paiement Stripe côté app — placeholders honnêtes */
+    /** Paiements non suivis côté app — placeholders honnêtes */
     collectedEstimate: number;
     expectedFromPlansEstimate: number;
     overdueCompanies: number;

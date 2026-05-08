@@ -6,16 +6,18 @@ const ICON = "/logogabostock.png";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "Gabostock",
+    name: "Gabostock — Gestion de stock & caisse au Gabon",
     short_name: "Gabostock",
-    description: "Gestion de stock et ventes — mode hors ligne",
+    description:
+      "Gabostock : logiciel de gestion de stock, caisse et facturation FCFA pour les commerces au Gabon. Mode hors ligne, multi-magasins.",
     start_url: "/",
     scope: "/",
     display: "standalone",
     background_color: "#EBE4D9",
     theme_color: "#0066ff",
     orientation: "portrait-primary",
-    lang: "fr",
+    lang: "fr-GA",
+    categories: ["business", "productivity", "finance"],
     icons: [
       {
         src: ICON,

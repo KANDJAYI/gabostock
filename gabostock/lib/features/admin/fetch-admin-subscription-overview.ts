@@ -31,8 +31,6 @@ function mapSub(row: Record<string, unknown>): CompanySubscriptionDto {
     currentPeriodStart: row.current_period_start != null ? String(row.current_period_start) : null,
     currentPeriodEnd: row.current_period_end != null ? String(row.current_period_end) : null,
     cancelAtPeriodEnd: row.cancel_at_period_end === true,
-    stripeCustomerId: row.stripe_customer_id != null ? String(row.stripe_customer_id) : null,
-    stripeSubscriptionId: row.stripe_subscription_id != null ? String(row.stripe_subscription_id) : null,
   };
 }
 
@@ -60,7 +58,7 @@ export async function fetchAdminSubscriptionOverview(): Promise<AdminSubscriptio
     supabase
       .from("company_subscriptions")
       .select(
-        "id, company_id, status, plan_id, current_period_start, current_period_end, cancel_at_period_end, stripe_customer_id, stripe_subscription_id",
+        "id, company_id, status, plan_id, current_period_start, current_period_end, cancel_at_period_end",
       ),
     supabase.from("companies").select("id, name, is_active").order("name", { ascending: true }),
   ]);

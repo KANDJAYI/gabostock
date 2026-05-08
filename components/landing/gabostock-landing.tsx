@@ -28,10 +28,32 @@ import { GabostockDailyChallengesSection } from "./gabostock-daily-challenges-se
 import { GabostockSolutionShowcaseSection } from "./gabostock-solution-showcase-section";
 import { LandingHeroMockupsComposition } from "./landing-hero-mockups";
 import { LandingHeader } from "./landing-header";
+import { LandingPricingSection } from "./landing-pricing-section";
 import { LandingScrollEffects } from "./landing-scroll-effects";
 import { LandingPartnersSection, type LandingPartner } from "./landing-partners-section";
+import { LandingStructuredData } from "./landing-structured-data";
 import { createClient } from "@/lib/supabase/server";
 import { ScrollReveal } from "./scroll-reveal";
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
+/** Villes du Gabon ciblées pour le SEO local — visible + JSON-LD `areaServed`. */
+const GABON_CITIES = [
+  "Libreville",
+  "Port-Gentil",
+  "Franceville",
+  "Owendo",
+  "Akanda",
+  "Oyem",
+  "Lambaréné",
+  "Mouila",
+  "Tchibanga",
+  "Koulamoutou",
+  "Makokou",
+  "Bitam",
+] as const;
 
 /** Maquette fonctionnalités (7 colonnes × cartes navy + pastilles couleur façon keynote). */
 const SHOWCASE_FEATURES = [
@@ -118,23 +140,31 @@ const METIERS = [
 const FAQ_ITEMS = [
   {
     q: "Qu’est-ce que Gabostock ?",
-    a: "Gabostock est une solution web de gestion de stock, de ventes et de dépôt. Elle remplace ou complète vos tableurs et vos carnets papier avec un outil unifié, accessible depuis un navigateur et installable comme application (PWA).",
+    a: "Gabostock est un logiciel de gestion de stock, de point de vente (caisse / POS) et de facturation FCFA conçu pour les commerces, boutiques, supermarchés, quincailleries et pharmacies au Gabon. C’est une application web et mobile (PWA), accessible à Libreville, Port-Gentil, Franceville et partout ailleurs au Gabon, qui remplace les cahiers papier et les fichiers Excel par un outil unique.",
   },
   {
-    q: "Fonctionne-t-il sans connexion Internet ?",
-    a: "L’application est conçue pour une utilisation hors ligne dans la mesure des capacités techniques du navigateur (PWA). Les données peuvent être mises à jour ensuite lorsque le réseau revient.",
+    q: "Gabostock fonctionne-t-il sans Internet au Gabon ?",
+    a: "Oui. Gabostock est conçu pour une utilisation hors ligne (PWA) — pratique en cas de coupure d’électricité ou de connexion instable au Gabon. Vos ventes et entrées de stock sont enregistrées localement sur l’appareil, puis synchronisées automatiquement quand le réseau revient.",
   },
   {
-    q: "Puis-je gérer plusieurs magasins ?",
-    a: "Oui. Gabostock prend en charge plusieurs points de vente et des transferts pour répartir le stock là où vous en avez besoin.",
+    q: "Puis-je gérer plusieurs magasins et un dépôt à Libreville et Port-Gentil ?",
+    a: "Oui. Gabostock prend en charge plusieurs points de vente et un entrepôt central, avec transferts de stock entre les magasins. Vous pouvez piloter une boutique à Libreville, un magasin à Port-Gentil et un dépôt à Owendo depuis le même compte.",
   },
   {
-    q: "Comment accéder à mon compte ?",
-    a: "Créez un compte ou connectez-vous depuis les pages prévues à cet effet. Un accès administrateur distinct existe pour l’administration plateforme selon votre profil.",
+    q: "Le logiciel gère-t-il les ventes en FCFA et les tickets de caisse ?",
+    a: "Oui. Gabostock est entièrement adapté à la devise FCFA (XAF) : tickets de caisse, factures A4, créances clients, dépenses et rapports sont calculés et imprimés en francs CFA. Les imprimantes thermiques courantes au Gabon sont prises en charge.",
+  },
+  {
+    q: "Existe-t-il un module spécifique pour les pharmacies au Gabon ?",
+    a: "Oui. Le module Pharmacie permet de gérer les lots, les dates de péremption, les seuils d’alerte et la traçabilité des médicaments — adapté aux officines au Gabon.",
+  },
+  {
+    q: "Comment créer un compte Gabostock ?",
+    a: "Cliquez sur « Essayer gratuitement », choisissez votre type d’activité (commerce général, supermarché, pharmacie, grossiste…) et créez votre espace en quelques minutes. Vous pouvez ensuite ajouter vos magasins, importer vos produits et commencer à vendre.",
   },
   {
     q: "Où sont hébergées mes données ?",
-    a: "Les données sont gérées via l’infrastructure projet (par ex. Supabase côté opérateur). Contactez votre responsable système ou l’éditeur pour le détail du déploiement et des engagements de disponibilité.",
+    a: "Les données sont hébergées sur une infrastructure cloud sécurisée. Elles sont chiffrées en transit et en stockage, avec des sauvegardes régulières. L’accès est protégé par utilisateur et par rôle (admin, caissier, gestionnaire de stock).",
   },
 ] as const;
 
@@ -250,9 +280,15 @@ export async function GabostockLanding() {
       className={cn(
         landingInter.variable,
         landingInter.className,
-        "min-h-dvh bg-fs-surface text-fs-text antialiased",
+        "min-h-dvh bg-[#050A18] text-white antialiased",
       )}
     >
+      <LandingStructuredData
+        siteUrl={SITE_URL}
+        faqItems={FAQ_ITEMS}
+        logoUrl={landingLogoSrc ?? "/logogabostock.png"}
+      />
+
       <LandingHeader variant="heroDark" logoSrc={landingLogoSrc ?? "/logogabostock.png"} />
 
       <main>
@@ -294,10 +330,16 @@ export async function GabostockLanding() {
 
               <ScrollReveal delayMs={90}>
                 <h1 className="text-balance font-extrabold leading-[1.06] tracking-[-0.02em]">
-                  <span className="block text-[clamp(2.25rem,5.5vw,3.75rem)] text-white">
+                  <span className="sr-only">
+                    Gabostock — logiciel de gestion de stock, caisse et facturation FCFA pour les commerces au Gabon (Libreville, Port-Gentil, Franceville).{" "}
+                  </span>
+                  <span aria-hidden className="block text-[clamp(2.25rem,5.5vw,3.75rem)] text-white">
                     {heroTitleLine1 ?? "Gérez mieux."}
                   </span>
-                  <span className="mt-1 block bg-gradient-to-r from-[#34C759] to-[#007AFF] bg-clip-text text-[clamp(2.5rem,6vw,4.25rem)] text-transparent">
+                  <span
+                    aria-hidden
+                    className="mt-1 block bg-gradient-to-r from-[#34C759] to-[#007AFF] bg-clip-text text-[clamp(2.5rem,6vw,4.25rem)] text-transparent"
+                  >
                     {heroTitleLine2 ?? "Gagnez plus."}
                   </span>
                 </h1>
@@ -307,10 +349,13 @@ export async function GabostockLanding() {
                 <p className="mt-7 max-w-[28.5rem] text-[1.0625rem] leading-[1.65] text-[#94a3b8] sm:text-[1.0625rem] xl:text-[1.09375rem]">
                   {heroDescription ?? (
                     <>
-                      GaboStock vous aide à suivre vos{" "}
-                      <strong className="font-semibold text-white">ventes</strong>, gérer vos stocks,
-                      maîtriser vos dépenses et fidéliser vos clients. Tout ce dont vous avez besoin
-                      pour développer votre activité, en un seul endroit.
+                      <strong className="font-semibold text-white">Gabostock</strong> est le logiciel
+                      tout-en-un des commerces{" "}
+                      <strong className="font-semibold text-white">au Gabon</strong> : suivez vos{" "}
+                      <strong className="font-semibold text-white">ventes</strong>, gérez votre{" "}
+                      <strong className="font-semibold text-white">stock</strong>, vos{" "}
+                      <strong className="font-semibold text-white">factures en FCFA</strong> et vos
+                      crédits clients — à Libreville, Port-Gentil, Franceville et partout au Gabon.
                     </>
                   )}
                 </p>
@@ -447,7 +492,7 @@ export async function GabostockLanding() {
         {/* How it works */}
         <section
           id="parcours"
-          className="scroll-mt-20 border-b border-neutral-200/80 bg-fs-surface-container/40 py-16 dark:border-neutral-700/80 sm:py-20"
+          className="scroll-mt-20 border-b border-white/[0.08] bg-[#050A18] py-16 sm:py-20"
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
@@ -457,13 +502,13 @@ export async function GabostockLanding() {
                   <span className="h-1.5 w-1.5 rounded-full bg-[var(--fs-brand-stock)]" aria-hidden />
                   Simple
                 </div>
-                <h2 className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-fs-text sm:text-4xl">
+                <h2 className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
                   Comment{" "}
                   <span className="bg-gradient-to-r from-fs-accent to-[var(--fs-brand-stock)] bg-clip-text text-transparent">
                     ça marche
                   </span>
                 </h2>
-                <p className="mx-auto mt-4 max-w-2xl text-[1.03rem] leading-relaxed text-fs-on-surface-variant">
+                <p className="mx-auto mt-4 max-w-2xl text-[1.03rem] leading-relaxed text-white/70">
                   Trois étapes pour sortir du chaos des fichiers dispersés et retrouver une vision unique de votre activité.
                 </p>
               </div>
@@ -472,7 +517,7 @@ export async function GabostockLanding() {
             <ol className="mt-12 grid gap-6 lg:grid-cols-3 lg:gap-8">
               {STEPS.map((s, idx) => (
                 <ScrollReveal key={s.step} delayMs={idx * 90}>
-                  <li className="group relative overflow-hidden rounded-2xl border border-neutral-200 bg-fs-card p-8 shadow-sm transition hover:border-fs-accent/30 hover:shadow-md dark:border-neutral-700">
+                  <li className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a101f] p-8 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)] transition hover:border-white/20">
                     <div
                       className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-[0.12] blur-2xl"
                       style={{
@@ -492,13 +537,13 @@ export async function GabostockLanding() {
                         {s.step}
                       </span>
                       <div className="min-w-0">
-                        <h3 className="text-lg font-bold leading-snug text-fs-text">{s.title}</h3>
-                        <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-fs-on-surface-variant">
+                        <h3 className="text-lg font-bold leading-snug text-white">{s.title}</h3>
+                        <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-white/60">
                           Étape {s.step}
                         </p>
                       </div>
                     </div>
-                    <p className="mt-4 text-[0.98rem] leading-relaxed text-fs-on-surface-variant">
+                    <p className="mt-4 text-[0.98rem] leading-relaxed text-white/70">
                       {s.body}
                     </p>
                   </li>
@@ -508,17 +553,19 @@ export async function GabostockLanding() {
           </div>
         </section>
 
+        <LandingPricingSection />
+
         {/* Métiers */}
         <section
           id="metiers"
-          className="scroll-mt-20 border-b border-neutral-200/80 py-16 dark:border-neutral-700/80 sm:py-20"
+          className="scroll-mt-20 border-b border-white/[0.08] bg-[#050A18] py-16 sm:py-20"
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Adapté à votre façon de vendre
               </h2>
-              <p className="mt-4 text-lg text-fs-on-surface-variant">
+              <p className="mt-4 text-lg text-white/70">
                 Détaillants, réseaux de points de vente ou activité avec dépôt : les mêmes bases,
                 scalées selon votre organisation.
               </p>
@@ -527,28 +574,124 @@ export async function GabostockLanding() {
               {METIERS.map((m) => (
                 <article
                   key={m.title}
-                  className="rounded-2xl border border-neutral-200 bg-gradient-to-b from-fs-card to-fs-surface-low p-8 dark:border-neutral-700 dark:from-fs-card dark:to-fs-surface-container"
+                  className="rounded-2xl border border-white/10 bg-gradient-to-b from-[#0a101f] to-[#070d1a] p-8"
                 >
                   <m.icon className="h-10 w-10 text-fs-accent" aria-hidden />
-                  <h3 className="mt-5 text-xl font-semibold">{m.title}</h3>
-                  <p className="mt-3 text-fs-on-surface-variant">{m.body}</p>
+                  <h3 className="mt-5 text-xl font-semibold text-white">{m.title}</h3>
+                  <p className="mt-3 text-white/70">{m.body}</p>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
+        {/* Gabon — SEO local : villes & cas d’usage */}
+        <section
+          id="gabon"
+          aria-labelledby="gabon-title"
+          className="scroll-mt-20 border-b border-white/[0.08] bg-[#050A18] py-16 sm:py-20"
+        >
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <ScrollReveal>
+              <div className="mx-auto max-w-3xl text-center">
+                <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-fs-accent/25 bg-fs-accent/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-fs-accent">
+                  <span aria-hidden>🇬🇦</span>
+                  Pensé pour le Gabon
+                </div>
+                <h2
+                  id="gabon-title"
+                  className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-4xl"
+                >
+                  Le logiciel de gestion de stock & caisse{" "}
+                  <span className="bg-gradient-to-r from-fs-accent to-[var(--fs-brand-stock)] bg-clip-text text-transparent">
+                    des commerces au Gabon
+                  </span>
+                </h2>
+                <p className="mx-auto mt-4 max-w-3xl text-[1.03rem] leading-relaxed text-white/70">
+                  Gabostock est utilisé par des boutiques, supermarchés, quincailleries, grossistes et
+                  pharmacies à <strong>Libreville</strong>, <strong>Port-Gentil</strong>,{" "}
+                  <strong>Franceville</strong>, <strong>Owendo</strong>, <strong>Akanda</strong>,{" "}
+                  <strong>Oyem</strong> et partout ailleurs au Gabon. Factures en{" "}
+                  <strong>francs CFA (FCFA)</strong>, tickets de caisse, créances, multi-magasins et
+                  fonctionnement <strong>hors ligne</strong> pour s’adapter au terrain.
+                </p>
+              </div>
+            </ScrollReveal>
+
+            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
+                <h3 className="text-lg font-bold text-white">Boutiques & supermarchés</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/70">
+                  Caisse rapide, codes-barres, tickets thermiques et suivi des stocks pour les
+                  commerces à Libreville (Mont-Bouët, Akébé, Nzeng-Ayong) et Port-Gentil.
+                </p>
+              </article>
+              <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
+                <h3 className="text-lg font-bold text-white">Pharmacies au Gabon</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/70">
+                  Module dédié : lots, dates de péremption, alertes et traçabilité — adapté aux
+                  officines de Libreville, Port-Gentil et Franceville.
+                </p>
+              </article>
+              <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
+                <h3 className="text-lg font-bold text-white">Grossistes & dépôts</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/70">
+                  Entrepôt central, transferts vers les points de vente, factures A4 en FCFA — pensé
+                  pour les grossistes du Gabon.
+                </p>
+              </article>
+              <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
+                <h3 className="text-lg font-bold text-white">Multi-magasins</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/70">
+                  Pilotez vos magasins de Libreville, Owendo, Akanda et Port-Gentil depuis un seul
+                  compte, avec rôles par utilisateur (caissier, gestionnaire, admin).
+                </p>
+              </article>
+              <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
+                <h3 className="text-lg font-bold text-white">Hors ligne & coupures</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/70">
+                  Conçu pour les réalités du Gabon : coupures de réseau ou d’électricité, votre caisse
+                  continue de vendre et synchronise dès que la connexion revient.
+                </p>
+              </article>
+              <article className="rounded-2xl border border-white/10 bg-[#0a101f] p-6 shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)]">
+                <h3 className="text-lg font-bold text-white">FCFA & impressions</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/70">
+                  Devise XAF par défaut, tickets thermiques 58/80 mm et factures A4
+                  professionnelles — prêts à imprimer sur le matériel courant au Gabon.
+                </p>
+              </article>
+            </div>
+
+            <div className="mt-10 rounded-2xl border border-white/10 bg-[#0a101f]/70 p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-white/60">
+                Disponible partout au Gabon
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-2 text-sm text-white">
+                {GABON_CITIES.map((city) => (
+                  <li
+                    key={city}
+                    className="rounded-full border border-white/10 bg-[#0b1222] px-3 py-1"
+                  >
+                    Gabostock {city}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
         {/* Compliance / assurance */}
-        <section className="border-b border-neutral-200/80 bg-fs-surface-container/40 py-16 dark:border-neutral-700/80 sm:py-20">
+        <section className="border-b border-white/[0.08] bg-[#050A18] py-16 sm:py-20">
           <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
             <div>
               <div className="inline-flex rounded-full border border-fs-accent/30 bg-fs-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-fs-accent dark:bg-fs-accent/15">
                 Fiabilité
               </div>
-              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Une architecture pensée pour le terrain
               </h2>
-              <p className="mt-4 text-lg text-fs-on-surface-variant">
+              <p className="mt-4 text-lg text-white/70">
                 Sessions sécurisées, sauvegardes et synchronisation lorsque vous étiez coupé du
                 réseau — pour que vos opérations de caisse et de stock restent votre priorité.
               </p>
@@ -558,29 +701,29 @@ export async function GabostockLanding() {
                   "PWA pour retrouver l’app comme une application native",
                   "Documentation d’aide intégrée à l’espace application",
                 ].map((line) => (
-                  <li key={line} className="flex gap-3 text-fs-on-surface-variant">
+                  <li key={line} className="flex gap-3 text-white/70">
                     <ShieldCheck className="h-6 w-6 shrink-0 text-[var(--fs-brand-stock)]" aria-hidden />
                     <span>{line}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="rounded-3xl border border-neutral-200 bg-fs-card p-8 shadow-xl dark:border-neutral-700">
+            <div className="rounded-3xl border border-white/10 bg-[#0a101f] p-8 shadow-[0_40px_80px_-60px_rgba(0,0,0,0.95)]">
               <div className="flex items-start gap-4">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-fs-accent text-white">
                   <FileText className="h-6 w-6" aria-hidden />
                 </div>
                 <div>
-                  <p className="font-semibold text-fs-text">Facturation & traçabilité</p>
-                  <p className="mt-2 text-sm text-fs-on-surface-variant">
+                  <p className="font-semibold text-white">Facturation & traçabilité</p>
+                  <p className="mt-2 text-sm text-white/70">
                     Prévisualisation des documents et supports d’encaissement pour garder une trace
                     claire entre la vente et le back-office — selon les modules activés dans votre
                     déploiement.
                   </p>
                 </div>
               </div>
-              <hr className="my-6 border-neutral-200 dark:border-neutral-600" />
-              <p className="text-sm leading-relaxed text-fs-on-surface-variant">
+              <hr className="my-6 border-white/10" />
+              <p className="text-sm leading-relaxed text-white/70">
                 Gabostock s’interface avec votre environnement réel : imprimantes, navigateurs récents
                 et mobiles. Notre objectif est de réduire la friction entre votre métier et
                 l’outil.
@@ -592,7 +735,7 @@ export async function GabostockLanding() {
         {/* FAQ */}
         <section
           id="faq"
-          className="scroll-mt-20 border-t border-neutral-200/80 bg-fs-surface-container/50 py-16 dark:border-neutral-700/80 sm:py-20"
+          className="scroll-mt-20 border-t border-white/[0.08] bg-[#050A18] py-16 sm:py-20"
         >
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
@@ -601,13 +744,13 @@ export async function GabostockLanding() {
                 <span className="h-1.5 w-1.5 rounded-full bg-[var(--fs-brand-stock)]" aria-hidden />
                 Support
               </div>
-              <h2 className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-fs-text sm:text-4xl">
+              <h2 className="mt-5 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
                 Questions{" "}
                 <span className="bg-gradient-to-r from-fs-accent to-[var(--fs-brand-stock)] bg-clip-text text-transparent">
                   fréquentes
                 </span>
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-[1.03rem] leading-relaxed text-fs-on-surface-variant">
+              <p className="mx-auto mt-4 max-w-2xl text-[1.03rem] leading-relaxed text-white/70">
                 Les réponses aux questions les plus courantes avant de créer votre compte.
               </p>
             </div>
@@ -616,7 +759,7 @@ export async function GabostockLanding() {
               {FAQ_ITEMS.map((item) => (
                 <details
                   key={item.q}
-                  className="group overflow-hidden rounded-2xl border border-neutral-200 bg-fs-card shadow-sm transition hover:border-fs-accent/30 hover:shadow-md dark:border-neutral-700 [&_summary::-webkit-details-marker]:hidden"
+                  className="group overflow-hidden rounded-2xl border border-white/10 bg-[#0a101f] shadow-[0_30px_60px_-45px_rgba(0,0,0,0.9)] transition hover:border-white/20 [&_summary::-webkit-details-marker]:hidden"
                 >
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-4 px-5 py-4 text-left">
                     <span className="flex min-w-0 items-start gap-3">
@@ -629,24 +772,24 @@ export async function GabostockLanding() {
                         aria-hidden
                       />
                       <span className="min-w-0">
-                        <span className="block font-semibold leading-snug text-fs-text transition group-hover:text-fs-accent">
+                        <span className="block font-semibold leading-snug text-white transition group-hover:text-fs-accent">
                           {item.q}
                         </span>
-                        <span className="mt-1 block text-xs text-fs-on-surface-variant">
+                        <span className="mt-1 block text-xs text-white/55">
                           Cliquez pour afficher la réponse
                         </span>
                       </span>
                     </span>
 
                     <span
-                      className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-fs-surface text-fs-accent transition group-open:rotate-45 dark:border-neutral-600"
+                      className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-[#0b1222] text-fs-accent transition group-open:rotate-45"
                       aria-hidden
                       title="Ouvrir"
                     >
                       +
                     </span>
                   </summary>
-                  <div className="border-t border-neutral-200 px-5 pb-5 pt-4 text-sm leading-relaxed text-fs-on-surface-variant dark:border-neutral-600">
+                  <div className="border-t border-white/10 px-5 pb-5 pt-4 text-sm leading-relaxed text-white/70">
                     {item.a}
                   </div>
                 </details>
@@ -656,12 +799,12 @@ export async function GabostockLanding() {
         </section>
 
         {/* CTA final */}
-        <section className="border-t border-neutral-200/80 bg-gradient-to-br from-fs-accent/[0.12] via-fs-surface to-[color-mix(in_oklab,var(--fs-brand-stock)_14%,var(--fs-surface))] py-16 dark:border-neutral-700/80 dark:from-fs-accent/[0.18] sm:py-20">
+        <section className="border-t border-white/[0.08] bg-[#050A18] py-16 sm:py-20">
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               {finalCtaTitle ?? <>Prêt à structurer votre activité&nbsp;?</>}
             </h2>
-            <p className="mt-4 text-lg text-fs-on-surface-variant">
+            <p className="mt-4 text-lg text-white/70">
               {finalCtaDescription ??
                 "Rejoignez Gabostock : créez votre espace ou connectez-vous pour retrouver vos données."}
             </p>
@@ -675,7 +818,7 @@ export async function GabostockLanding() {
               </Link>
               <Link
                 href={ROUTES.login}
-                className="inline-flex w-full max-w-xs items-center justify-center rounded-2xl border border-neutral-300 bg-fs-card/90 px-8 py-4 text-base font-semibold backdrop-blur dark:border-neutral-600"
+                className="inline-flex w-full max-w-xs items-center justify-center rounded-2xl border border-white/15 bg-[#0a101f] px-8 py-4 text-base font-semibold text-white/95 backdrop-blur hover:bg-[#0d162a]"
               >
                 Connexion
               </Link>
@@ -686,7 +829,7 @@ export async function GabostockLanding() {
         <LandingPartnersSection partners={partners} title={partnersTitle} subtitle={partnersSubtitle} />
       </main>
 
-      <footer className="border-t border-neutral-200/80 bg-fs-surface-container/60 dark:border-neutral-700/80">
+      <footer className="border-t border-white/[0.08] bg-[#050A18]">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-4">
@@ -699,11 +842,11 @@ export async function GabostockLanding() {
                   className="h-10 w-10 rounded-xl object-contain"
                 />
                 <div className="min-w-0">
-                  <p className="text-lg font-extrabold tracking-tight text-fs-text">
+                  <p className="text-lg font-extrabold tracking-tight text-white">
                     <span>Gabo</span>
                     <span className="text-[var(--fs-brand-stock)]">Stock</span>
                   </p>
-                  <p className="text-sm text-fs-on-surface-variant">
+                  <p className="text-sm text-white/70">
                     Stock, ventes & dépôt — simple, rapide, fiable.
                   </p>
                 </div>
@@ -718,7 +861,7 @@ export async function GabostockLanding() {
                 </Link>
                 <Link
                   href={ROUTES.login}
-                  className="inline-flex items-center justify-center rounded-xl border border-neutral-300 bg-fs-card px-4 py-2 text-sm font-semibold text-fs-text hover:bg-fs-surface-low dark:border-neutral-600"
+                  className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-[#0a101f] px-4 py-2 text-sm font-semibold text-white/95 hover:bg-[#0d162a]"
                 >
                   Connexion
                 </Link>
@@ -726,16 +869,18 @@ export async function GabostockLanding() {
             </div>
 
             <div>
-              <p className="text-sm font-bold text-fs-text">Produit</p>
+              <p className="text-sm font-bold text-white">Produit</p>
               <ul className="mt-4 space-y-2 text-sm">
                 {[
                   { href: "#fonctionnalites", label: "Fonctionnalités" },
                   { href: "#parcours", label: "Comment ça marche" },
+                  { href: "#abonnement", label: "Abonnement" },
                   { href: "#metiers", label: "Métiers" },
+                  { href: "#gabon", label: "Gabostock au Gabon" },
                   { href: "#faq", label: "FAQ" },
                 ].map((l) => (
                   <li key={l.href}>
-                    <a className="text-fs-on-surface-variant hover:text-fs-accent" href={l.href}>
+                    <a className="text-white/70 hover:text-fs-accent" href={l.href}>
                       {l.label}
                     </a>
                   </li>
@@ -744,7 +889,7 @@ export async function GabostockLanding() {
             </div>
 
             <div>
-              <p className="text-sm font-bold text-fs-text">Ressources</p>
+              <p className="text-sm font-bold text-white">Ressources</p>
               <ul className="mt-4 space-y-2 text-sm">
                 {[
                   { href: "/login", label: "Accéder à mon compte" },
@@ -752,7 +897,7 @@ export async function GabostockLanding() {
                   { href: "/setup", label: "Configuration" },
                 ].map((l) => (
                   <li key={l.href}>
-                    <Link className="text-fs-on-surface-variant hover:text-fs-accent" href={l.href}>
+                    <Link className="text-white/70 hover:text-fs-accent" href={l.href}>
                       {l.label}
                     </Link>
                   </li>
@@ -761,18 +906,22 @@ export async function GabostockLanding() {
             </div>
 
             <div>
-              <p className="text-sm font-bold text-fs-text">Contact</p>
-              <div className="mt-4 space-y-2 text-sm text-fs-on-surface-variant">
-                <p>Support & démo</p>
-                <p className="text-xs">
-                  Un besoin spécifique (multi-magasins, dépôt, impression) ? Écrivez-nous et on vous
-                  guide.
+              <p className="text-sm font-bold text-white">Contact &amp; localisation</p>
+              <address className="mt-4 space-y-2 text-sm not-italic text-white/70">
+                <p className="font-semibold text-white">Gabostock</p>
+                <p>
+                  <span itemProp="addressLocality">Libreville</span>,{" "}
+                  <span itemProp="addressCountry">Gabon</span> 🇬🇦
                 </p>
-              </div>
+                <p className="text-xs">
+                  Support &amp; démo pour les commerces au Gabon — boutiques, supermarchés,
+                  pharmacies, grossistes. Multi-magasins, FCFA, impression tickets &amp; factures.
+                </p>
+              </address>
             </div>
           </div>
 
-          <div className="mt-10 flex flex-col gap-3 border-t border-neutral-200/80 pt-6 text-xs text-fs-on-surface-variant dark:border-neutral-700/80 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
             <p>
               © {new Date().getFullYear()} Gabostock. Tous droits réservés.
             </p>
@@ -781,7 +930,7 @@ export async function GabostockLanding() {
                 Retour en haut
               </a>
               <span className="hidden sm:inline">•</span>
-              <span className="text-[color-mix(in_oklab,var(--fs-on-surface-variant)_88%,transparent)]">
+              <span className="text-white/50">
                 Construit pour le terrain.
               </span>
             </div>

@@ -820,7 +820,7 @@ export function SettingsScreen() {
             <div className="min-w-0 flex-1">
               <p className="text-base font-semibold text-fs-text">Abonnement &amp; facturation</p>
               <p className="mt-0.5 text-xs text-neutral-600 dark:text-neutral-400">
-                Plan actuel, quotas, comparaison d&apos;offres et portail Stripe
+                Plan actuel, quotas, comparaison d&apos;offres et modalités de paiement
               </p>
             </div>
             <ChevronRight className="h-5 w-5 shrink-0 text-neutral-400" aria-hidden />

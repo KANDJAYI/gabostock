@@ -23,10 +23,10 @@ export function RevenueCard({
   return (
     <AdminCard>
       <h3 className="text-base font-bold text-slate-900 dark:text-white">
-        Revenus Gabostock (estimation SaaS · hors paiements Stripe directs)
+        Revenus Gabostock (estimation SaaS)
       </h3>
       <p className="mt-1 text-xs text-slate-500 dark:text-neutral-400">
-        Séparés du CA commerçants (ventes boutiques). Les encaissements réels suivent vos outils financiers Stripe / banque.
+        Séparés du CA commerçants (ventes boutiques). Les encaissements réels sont suivis hors application (cash / mobile money / banque).
       </p>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MiniStat label="MRR estimé" value={formatCurrency(mrr)} />

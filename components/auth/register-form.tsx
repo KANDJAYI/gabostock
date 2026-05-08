@@ -7,6 +7,7 @@ import { slugFromName } from "@/lib/auth/slug";
 import { ROUTES } from "@/lib/config/routes";
 import { reportHandledClientError } from "@/lib/monitoring/remote-error-logger";
 import { createClient } from "@/lib/supabase/client";
+import { normalizeGabonPhoneInput } from "@/lib/utils/ga-phone";
 import { AlertCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -196,10 +197,11 @@ export function RegisterForm() {
               type="tel"
               value={firstStorePhone}
               onChange={(e) => setFirstStorePhone(e.target.value)}
+              onBlur={() => setFirstStorePhone((v) => normalizeGabonPhoneInput(v))}
               required
               minLength={8}
               autoComplete="tel"
-              placeholder="Téléphone *"
+              placeholder="Téléphone * (ex: +241 06 12 34 56)"
             />
           </div>
 

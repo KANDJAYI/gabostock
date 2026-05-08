@@ -35,7 +35,7 @@ export async function fetchSubscriptionPageData(companyId: string): Promise<Subs
     supabase
       .from("company_subscriptions")
       .select(
-        "id, status, plan_id, current_period_start, current_period_end, cancel_at_period_end, stripe_customer_id, stripe_subscription_id",
+        "id, status, plan_id, current_period_start, current_period_end, cancel_at_period_end",
       )
       .eq("company_id", companyId)
       .maybeSingle(),
@@ -71,8 +71,6 @@ export async function fetchSubscriptionPageData(companyId: string): Promise<Subs
       currentPeriodStart: s.current_period_start != null ? String(s.current_period_start) : null,
       currentPeriodEnd: s.current_period_end != null ? String(s.current_period_end) : null,
       cancelAtPeriodEnd: s.cancel_at_period_end === true,
-      stripeCustomerId: s.stripe_customer_id != null ? String(s.stripe_customer_id) : null,
-      stripeSubscriptionId: s.stripe_subscription_id != null ? String(s.stripe_subscription_id) : null,
     };
   }
 

@@ -2,6 +2,7 @@ import { AppProviders } from "@/components/providers/app-providers";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { RegisterServiceWorker } from "@/components/pwa/register-sw";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 
@@ -19,24 +20,31 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Gabostock",
-    template: "%s · Gabostock",
+    default: "Gabostock — Logiciel de gestion de stock & caisse au Gabon",
+    template: "%s · Gabostock Gabon",
   },
   description:
-    "Gestion de stock, ventes et dépôt — Gabostock Web (offline-first).",
+    "Gabostock — logiciel de gestion de stock, point de vente et facturation FCFA pour les commerces au Gabon (Libreville, Port-Gentil, Franceville). Multi-magasins, hors ligne, essai gratuit.",
   applicationName: "Gabostock",
+  category: "business",
+  creator: "Gabostock",
+  publisher: "Gabostock",
   openGraph: {
     type: "website",
     siteName: "Gabostock",
-    title: "Gabostock",
-    description: "Gestion de stock, ventes et dépôt — Gabostock Web (offline-first).",
+    title: "Gabostock — Gestion de stock, caisse & ventes au Gabon",
+    description:
+      "Logiciel de stock, POS et facturation FCFA pour les commerces au Gabon. Multi-magasins, hors ligne, essai gratuit.",
     url: siteUrl,
-    images: [{ url: "/logogabostock.png" }],
+    locale: "fr_GA",
+    alternateLocale: ["fr_FR"],
+    images: [{ url: "/logogabostock.png", width: 1024, height: 1024, alt: "Gabostock Gabon" }],
   },
   twitter: {
-    card: "summary",
-    title: "Gabostock",
-    description: "Gestion de stock, ventes et dépôt — Gabostock Web (offline-first).",
+    card: "summary_large_image",
+    title: "Gabostock — Gestion de stock & caisse au Gabon",
+    description:
+      "Logiciel de stock, POS et facturation FCFA pour les commerces au Gabon. Multi-magasins, hors ligne, essai gratuit.",
     images: ["/logogabostock.png"],
   },
   /** Favicon & raccourcis : `public/logogabostock.png` */
@@ -68,9 +76,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${roboto.variable} h-full`} suppressHydrationWarning>
+    <html lang="fr-GA" className={`${roboto.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-dvh bg-fs-surface font-sans text-fs-text antialiased">
-        <script
+        <Script
+          id="fs-theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var k='fs_theme_mode';var m=localStorage.getItem(k);var d=document.documentElement;var dark=false;if(m==='dark'){dark=true;}else if(m==='light'){dark=false;}else{if(m==='system'||m===null){dark=window.matchMedia('(prefers-color-scheme: dark)').matches;}else{dark=false;}}if(dark){d.classList.add('dark');}else{d.classList.remove('dark');}d.setAttribute('data-theme',m||'system');d.style.colorScheme=dark?'dark':'light';}catch(e){}})();`,
           }}

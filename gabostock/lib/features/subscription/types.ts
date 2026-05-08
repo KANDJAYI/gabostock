@@ -19,8 +19,6 @@ export type CompanySubscriptionDto = {
   currentPeriodStart: string | null;
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
-  stripeCustomerId: string | null;
-  stripeSubscriptionId: string | null;
 };
 
 export type SubscriptionPageData = {

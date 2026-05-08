@@ -18,6 +18,7 @@ import {
 } from "@/lib/features/stores/api";
 import type { Store } from "@/lib/features/stores/types";
 import { cn } from "@/lib/utils/cn";
+import { normalizeGabonPhoneInput } from "@/lib/utils/ga-phone";
 import { messageFromUnknownError, toast, toastMutationError } from "@/lib/toast";
 import { X } from "lucide-react";
 import { MdPictureAsPdf } from "react-icons/md";
@@ -170,8 +171,10 @@ export function CreateStoreModal({
               <input
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                onBlur={() => setPhone((v) => normalizeGabonPhoneInput(v))}
                 className="mt-1 w-full rounded-lg border border-black/[0.12] px-3 py-2.5 text-base"
                 inputMode="tel"
+                placeholder="+241 …"
               />
             </label>
             <label className="block text-xs font-medium text-neutral-600">
@@ -586,7 +589,7 @@ export function EditStoreModal({
               >
                 <option value="classic">Classique (en-tête actuel)</option>
                 <option value="elof">
-                  ELOF (E L O F, ordre fixe, Orange money en orange)
+                  ELOF (E L O F, ordre fixe, Airtel Money / Moov Money)
                 </option>
               </select>
             </label>
@@ -674,12 +677,14 @@ export function EditStoreModal({
                 />
               </label>
               <label className="block text-xs font-medium text-neutral-600">
-                Mobile money (optionnel)
+                Mobile money (Airtel Money / Moov Money)
                 <input
                   value={mobileMoney}
                   onChange={(e) => setMobileMoney(e.target.value)}
+                  onBlur={() => setMobileMoney((v) => normalizeGabonPhoneInput(v))}
                   inputMode="tel"
                   className="mt-1 w-full rounded-lg border border-black/[0.12] px-3 py-2 text-sm"
+                  placeholder="+241 …"
                 />
               </label>
               <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">

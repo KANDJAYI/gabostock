@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 const NAV = [
   { href: "#fonctionnalites", label: "Fonctionnalités" },
   { href: "#parcours", label: "Comment ça marche" },
+  { href: "#abonnement", label: "Abonnement" },
   { href: "#metiers", label: "Métiers" },
   { href: "#faq", label: "FAQ" },
 ];

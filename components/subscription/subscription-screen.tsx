@@ -132,7 +132,7 @@ function ProgressRing({
 const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Comment fonctionne la facturation ?",
-    a: "Les montants affichés sont ceux des offres publiées dans Gabostock. La facturation réelle peut passer par Stripe — le portail client s’ouvre dès qu’un compte Stripe est lié à votre entreprise.",
+    a: "Les montants affichés sont ceux des offres publiées dans Gabostock. Le paiement se fait en espèces ou via Mobile Money (Airtel Money / Moov Money). Le Super Admin active ensuite l’abonnement.",
   },
   {
     q: "Que se passe-t-il si je dépasse les limites ?",
@@ -140,7 +140,7 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Puis-je annuler à tout moment ?",
-    a: "Selon votre mode de paiement, l’annulation peut être gérée depuis le portail Stripe ou en contactant l’équipe commerciale. Le statut « résiliation en fin de période » est indiqué sur cette page.",
+    a: "Contactez le support ou l’administrateur Gabostock. Le statut « résiliation en fin de période » est indiqué sur cette page.",
   },
   {
     q: "Les prédictions IA sont-elles incluses ?",
@@ -148,7 +148,7 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
   },
   {
     q: "Où télécharger mes factures ?",
-    a: "Dès que la facturation en ligne sera branchée, vos factures apparaîtront ici ou dans le portail Stripe. En attendant, recevez vos justificatifs via le support.",
+    a: "Vos justificatifs peuvent être fournis par le support ou votre administrateur Gabostock selon le mode de paiement.",
   },
 ];
 
@@ -497,52 +497,19 @@ export function SubscriptionScreen() {
           </div>
         </div>
 
-        {/* Portail paiement */}
+        {/* Paiement */}
         <FsCard padding="p-7" className="mt-14 border fs-border">
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div className="min-w-0">
               <h3 className="flex items-center gap-2 text-lg font-black text-fs-text md:text-xl">
                 <CreditCard className="h-6 w-6 text-fs-accent" aria-hidden />
-                Portail paiement Stripe
+                Paiement
               </h3>
               <p className="mt-2 max-w-xl text-sm text-neutral-600 dark:text-neutral-400">
-                Lorsqu&apos;un compte Stripe est associé (&quot;stripe_customer_id&quot;) vous pourrez modifier votre carte, vos factures et l&apos;historique depuis le portail hébergé par Stripe —
-                liaison côté infrastructure Gabostock.
+                Le paiement se fait en <strong>espèces</strong> ou via <strong>Mobile Money</strong> (Airtel Money / Moov Money).
+                Le Super Admin valide/active ensuite l’abonnement.
               </p>
-              <dl className="mt-6 space-y-2 text-[13px]">
-                <div className="flex flex-wrap gap-2">
-                  <dt className="font-bold text-fs-text">Compte Stripe :</dt>
-                  <dd className="rounded-lg bg-fs-surface-container px-2 py-0.5 font-mono text-xs text-neutral-700 dark:text-neutral-300">
-                    {sub?.stripeCustomerId ?? "non lié"}
-                  </dd>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <dt className="font-bold text-fs-text">Abonnement Stripe :</dt>
-                  <dd className="rounded-lg bg-fs-surface-container px-2 py-0.5 font-mono text-xs text-neutral-700 dark:text-neutral-300">
-                    {sub?.stripeSubscriptionId ?? "aucun lien API"}
-                  </dd>
-                </div>
-              </dl>
             </div>
-            <button
-              type="button"
-              disabled={!sub?.stripeCustomerId}
-              title={sub?.stripeCustomerId ? undefined : "Liaison Stripe requise côté plateforme."}
-              className={cn(
-                "inline-flex shrink-0 items-center gap-2 rounded-[14px] px-6 py-3.5 text-sm font-bold shadow-sm",
-                sub?.stripeCustomerId
-                  ? "bg-fs-accent text-white hover:bg-fs-accent/95"
-                  : "cursor-not-allowed bg-neutral-200 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-500",
-              )}
-              onClick={() => {
-                if (sub?.stripeCustomerId) {
-                  alert("Ouverture du portail Stripe : branchez votre Edge Function / Billing pour activer cette action.");
-                }
-              }}
-            >
-              <Sparkles className="h-5 w-5" aria-hidden />
-              Ouvrir le portail
-            </button>
           </div>
         </FsCard>
 

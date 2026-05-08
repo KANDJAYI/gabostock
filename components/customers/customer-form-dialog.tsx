@@ -2,6 +2,7 @@
 
 import { FsCard, fsInputClass } from "@/components/ui/fs-screen-primitives";
 import type { CustomerType } from "@/lib/features/customers/types";
+import { normalizeGabonPhoneInput } from "@/lib/utils/ga-phone";
 import { useEffect, useState } from "react";
 import { MdClose, MdErrorOutline } from "react-icons/md";
 
@@ -140,8 +141,12 @@ export function CustomerFormDialog({
                 className={fsInputClass("rounded-[10px] border border-black/8")}
                 value={v.phone}
                 onChange={(e) => setV((p) => ({ ...p, phone: e.target.value }))}
+                onBlur={() =>
+                  setV((p) => ({ ...p, phone: normalizeGabonPhoneInput(p.phone) }))
+                }
                 inputMode="tel"
                 autoComplete="tel"
+                placeholder="+241 …"
               />
             </div>
 

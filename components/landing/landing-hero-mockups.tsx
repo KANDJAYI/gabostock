@@ -36,22 +36,22 @@ function LineChartSvg() {
 
 function LaptopDashboardInner({ logoSrc }: { logoSrc: string }) {
   return (
-    <div className="flex h-full min-h-[220px] min-w-0 bg-white text-neutral-900 sm:min-h-[260px]">
-      <aside className="flex w-[30%] min-w-0 flex-col gap-3 border-r border-neutral-200/98 bg-[#f7f8fa] p-[7%_5%_6%]">
+    <div className="flex h-full min-h-[220px] min-w-0 bg-[#0b1222] text-white sm:min-h-[260px]">
+      <aside className="flex w-[30%] min-w-0 flex-col gap-3 border-r border-white/10 bg-[#0a101f] p-[7%_5%_6%]">
         <div className="flex items-center gap-[6px] border-b border-neutral-200/95 pb-[8%]">
           <Image
             src={logoSrc}
             alt=""
             width={48}
             height={48}
-            className="h-[22px] w-[22px] rounded-md object-contain ring-1 ring-neutral-200/98"
+            className="h-[22px] w-[22px] rounded-md object-contain ring-1 ring-white/15"
           />
           <span className="text-[clamp(8px,1.5vw,10.75px)] font-bold tracking-tight">
-            <span className="text-neutral-900">Gabo</span>
+            <span className="text-white">Gabo</span>
             <span className="text-[#34C759]">Stock</span>
           </span>
         </div>
-        <div className="space-y-1 text-[clamp(7.5px,1.38vw,9.85px)] font-medium leading-tight text-neutral-600">
+        <div className="space-y-1 text-[clamp(7.5px,1.38vw,9.85px)] font-medium leading-tight text-white/65">
           {[
             ["Tableau de bord", true],
             ["Ventes", false],
@@ -62,7 +62,7 @@ function LaptopDashboardInner({ logoSrc }: { logoSrc: string }) {
               key={String(label)}
               className={cn(
                 "rounded-lg px-[7%] py-[11%]",
-                active ? "bg-[#007AFF]/15 font-semibold text-[#007AFF]" : "",
+                active ? "bg-white/10 font-semibold text-[#60a5fa]" : "",
               )}
             >
               {label}
@@ -71,7 +71,7 @@ function LaptopDashboardInner({ logoSrc }: { logoSrc: string }) {
         </div>
       </aside>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-[7%_6%_5%] sm:p-[6.5%_6%_5.5%]">
-        <p className="text-[clamp(10px,1.92vw,14px)] font-semibold text-neutral-900">
+        <p className="text-[clamp(10px,1.92vw,14px)] font-semibold text-white">
           Bonjour, Admin 👋
         </p>
         <div className="mt-[4.5%] grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-2.5">
@@ -83,17 +83,17 @@ function LaptopDashboardInner({ logoSrc }: { logoSrc: string }) {
           ].map(({ k, v }) => (
             <div
               key={k}
-              className="rounded-[10px] border border-neutral-200/92 bg-neutral-50/95 px-2 py-[7%]"
+              className="rounded-[10px] border border-white/10 bg-white/5 px-2 py-[7%]"
             >
-              <div className="text-[clamp(6.85px,1.15vw,9.25px)] text-neutral-500">{k}</div>
-              <div className="mt-1 font-bold tabular-nums text-neutral-900 text-[clamp(9px,1.72vw,12.85px)]">
+              <div className="text-[clamp(6.85px,1.15vw,9.25px)] text-white/55">{k}</div>
+              <div className="mt-1 font-bold tabular-nums text-white text-[clamp(9px,1.72vw,12.85px)]">
                 {v}
               </div>
             </div>
           ))}
         </div>
-        <div className="mt-[5%] min-h-0 flex-1 rounded-[12px] border border-neutral-200/92 bg-white px-[4.25%] pt-[7%]">
-          <div className="flex items-center justify-between text-[clamp(7px,1.08vw,8.95px)] font-semibold text-neutral-500">
+        <div className="mt-[5%] min-h-0 flex-1 rounded-[12px] border border-white/10 bg-white/5 px-[4.25%] pt-[7%]">
+          <div className="flex items-center justify-between text-[clamp(7px,1.08vw,8.95px)] font-semibold text-white/60">
             <span className="inline-flex items-center gap-2">
               <span className="inline-block h-[6px] w-[22px] rounded-full bg-[#007AFF]" />
               Ventes
@@ -162,7 +162,7 @@ function LandingHeroMockupsPhoneOverlapping() {
       <div
         className="relative z-[1] overflow-hidden rounded-[42px] border-[11px] border-b-[13px] border-[#cdd4df] bg-[#080a0f] shadow-[0_36px_60px_-28px_rgba(0,0,0,0.82),inset_0_1px_0_rgba(255,255,255,0.4)] sm:rounded-[44px]"
       >
-        <div className="rounded-[clamp(24px,4.5vw,30px)] border border-neutral-200/94 bg-[#f4f6f9] pb-0 pt-[9px]">
+        <div className="rounded-[clamp(24px,4.5vw,30px)] border border-white/10 bg-[#0b1222] pb-0 pt-[9px]">
           <div className="flex justify-center pb-1 pt-1">
             <div className="h-[26px] w-[96px] max-w-[41%] rounded-full bg-neutral-950/96" />
           </div>
@@ -176,23 +176,23 @@ function LandingHeroMockupsPhoneOverlapping() {
             </p>
           </div>
 
-          <div className="mx-[6.5%] mt-[11%] grid grid-cols-4 gap-1.5 gap-y-5 rounded-[14px] bg-white px-[4%] py-[13%]">
+          <div className="mx-[6.5%] mt-[11%] grid grid-cols-4 gap-1.5 gap-y-5 rounded-[14px] bg-white/5 px-[4%] py-[13%]">
             {actions.map(({ Icon, label }) => (
               <div key={label} className="flex flex-col items-center gap-[7px]">
-                <span className="inline-flex h-[40px] w-[40px] items-center justify-center rounded-full border-2 border-[#007AFF] bg-white shadow-sm">
+                <span className="inline-flex h-[40px] w-[40px] items-center justify-center rounded-full border-2 border-[#007AFF]/70 bg-[#0a101f] shadow-sm">
                   <Icon className="h-[17px] w-[17px] text-[#007AFF]" strokeWidth={2.2} aria-hidden />
                 </span>
-                <span className="text-[clamp(7.25px,1.92vw,9.85px)] font-bold leading-tight text-neutral-700">
+                <span className="text-[clamp(7.25px,1.92vw,9.85px)] font-bold leading-tight text-white/75">
                   {label}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="mt-[13%] border-t border-neutral-200/93 bg-white px-[3.5%] pb-3 pt-[8%]">
-            <nav className="grid grid-cols-5 gap-px text-center text-[clamp(7px,2vw,9.65px)] font-bold text-neutral-500">
+          <div className="mt-[13%] border-t border-white/10 bg-[#0a101f] px-[3.5%] pb-3 pt-[8%]">
+            <nav className="grid grid-cols-5 gap-px text-center text-[clamp(7px,2vw,9.65px)] font-bold text-white/60">
               {tabs.map(({ label, active }) => (
-                <span key={label} className={cn(active ? "text-[#007AFF]" : "")}>
+                <span key={label} className={cn(active ? "text-[#60a5fa]" : "")}>
                   {label}
                 </span>
               ))}

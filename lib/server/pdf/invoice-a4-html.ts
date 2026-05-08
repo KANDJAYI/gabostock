@@ -47,7 +47,7 @@ function splitLinesSloganElof(s: string): string[] {
   return s.split(/\r\n|\n|\r/).filter((x) => x.length > 0);
 }
 
-/** Orange money ELOF — `PdfColor.fromInt(0xFFE65100)`. */
+/** Couleur ELOF (accent Mobile Money) — `PdfColor.fromInt(0xFFE65100)`. */
 const ELOF_ORANGE_CSS = "rgb(230, 81, 0)";
 
 function storeBlockClassic(
@@ -151,7 +151,7 @@ function storeBlockElof(
     const mm = stripTelPrefix(store.mobile_money);
     if (mm) {
       center.push(
-        `<div class="st-small st-center elof-om">Orange money ${tx(mm)}</div>`,
+        `<div class="st-small st-center elof-om">Airtel Money / Moov Money ${tx(mm)}</div>`,
       );
     }
   }

@@ -62,8 +62,8 @@ export function AdminSubscriptionScreen() {
   const statusOptions = useMemo(() => {
     const m = q.data?.countByStatus;
     if (!m) return [] as { value: string; n: number }[];
-    return [...m.entries()]
-      .map(([value, n]) => ({ value, n }))
+    return Object.entries(m)
+      .map(([value, n]) => ({ value, n: Number(n) }))
       .sort((a, b) => a.value.localeCompare(b.value));
   }, [q.data?.countByStatus]);
 
@@ -235,15 +235,7 @@ export function AdminSubscriptionScreen() {
                     </td>
                     <td className="p-3 tabular-nums text-slate-700">{sub ? endFr : "—"}</td>
                     <td className="p-3 text-slate-600">{sub?.cancelAtPeriodEnd ? "Oui" : "—"}</td>
-                    <td className="p-3 font-mono text-[11px] text-slate-600" title={sub?.stripeCustomerId ?? undefined}>
-                      {shortId(sub?.stripeCustomerId ?? null)}
-                    </td>
-                    <td
-                      className="p-3 font-mono text-[11px] text-slate-600"
-                      title={sub?.stripeSubscriptionId ?? undefined}
-                    >
-                      {shortId(sub?.stripeSubscriptionId ?? null)}
-                    </td>
+                    {/* Stripe supprimé: paiement cash / mobile money */}
                   </tr>
                 );
               })}

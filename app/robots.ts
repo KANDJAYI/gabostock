@@ -5,6 +5,13 @@ const siteUrl =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 export default function robots(): MetadataRoute.Robots {
+  let host: string | undefined;
+  try {
+    host = new URL(siteUrl).host;
+  } catch {
+    host = undefined;
+  }
+
   return {
     rules: [
       {
@@ -33,10 +40,20 @@ export default function robots(): MetadataRoute.Robots {
           "/suppliers",
           "/transfers",
           "/users",
+          "/login",
+          "/register",
+          "/forgot-password",
+          "/reset-password",
+          "/pharmacy",
+          "/subscription",
+          "/help",
+          "/ai",
+          "/stock-c",
         ],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
+    ...(host ? { host } : {}),
   };
 }
 

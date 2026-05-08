@@ -160,6 +160,107 @@ export async function adminGetStats(): Promise<AdminStats> {
   };
 }
 
+export async function adminUpsertCompanySubscription(input: {
+  companyId: string;
+  planId: string;
+  status: "trialing" | "active" | "past_due" | "canceled" | "expired";
+  currentPeriodStart?: string | null;
+  currentPeriodEnd?: string | null;
+  cancelAtPeriodEnd?: boolean;
+}): Promise<void> {
+  const supabase = createClient();
+  const row: Record<string, unknown> = {
+    company_id: input.companyId,
+    plan_id: input.planId,
+    status: input.status,
+    cancel_at_period_end: input.cancelAtPeriodEnd === true,
+    current_period_start: input.currentPeriodStart ?? null,
+    current_period_end: input.currentPeriodEnd ?? null,
+    updated_at: new Date().toISOString(),
+  };
+  const { error } = await supabase
+    .from("company_subscriptions")
+    .upsert(row, { onConflict: "company_id" });
+  if (error) throw mapSupabaseError(error);
+}
+
+export async function adminUpdateSubscriptionPlan(input: {
+  id: string;
+  name?: string;
+  description?: string | null;
+  slug?: string;
+  priceCents?: number;
+  currency?: string;
+  interval?: "month" | "year";
+  maxStores?: number | null;
+  maxUsers?: number | null;
+  isActive?: boolean;
+}): Promise<void> {
+  const supabase = createClient();
+  const row: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (input.name !== undefined) row.name = input.name;
+  if (input.slug !== undefined) row.slug = input.slug;
+  if (input.description !== undefined) row.description = input.description;
+  if (input.priceCents !== undefined) row.price_cents = Math.max(0, Math.round(input.priceCents));
+  if (input.currency !== undefined) row.currency = input.currency;
+  if (input.interval !== undefined) row.interval = input.interval;
+  if (input.maxStores !== undefined) row.max_stores = input.maxStores;
+  if (input.maxUsers !== undefined) row.max_users = input.maxUsers;
+  if (input.isActive !== undefined) row.is_active = input.isActive;
+
+  const { error } = await supabase.from("subscription_plans").update(row).eq("id", input.id);
+  if (error) throw mapSupabaseError(error);
+}
+
+export async function adminDeleteCompanySubscription(companyId: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("company_subscriptions")
+    .delete()
+    .eq("company_id", companyId);
+  if (error) throw mapSupabaseError(error);
+}
+
+export async function adminNotifyCompanyOwners(input: {
+  companyId: string;
+  title: string;
+  body?: string | null;
+  type?: string;
+}): Promise<number> {
+  const supabase = createClient();
+  const { data: ownerRoleRows, error: roleErr } = await supabase
+    .from("roles")
+    .select("id")
+    .eq("slug", "owner")
+    .limit(1);
+  if (roleErr) throw mapSupabaseError(roleErr);
+  const ownerRoleId = (ownerRoleRows?.[0] as { id?: string } | undefined)?.id;
+  if (!ownerRoleId) return 0;
+
+  const { data: ucr, error: ucrErr } = await supabase
+    .from("user_company_roles")
+    .select("user_id")
+    .eq("company_id", input.companyId)
+    .eq("role_id", ownerRoleId);
+  if (ucrErr) throw mapSupabaseError(ucrErr);
+
+  const userIds = (ucr ?? [])
+    .map((r) => (r as { user_id?: string }).user_id)
+    .filter((x): x is string => typeof x === "string" && x.length > 0);
+
+  let sent = 0;
+  for (const userId of [...new Set(userIds)]) {
+    await supabase.rpc("admin_create_notification", {
+      p_user_id: userId,
+      p_title: input.title,
+      p_body: input.body ?? null,
+      p_type: input.type ?? "admin_message",
+    });
+    sent += 1;
+  }
+  return sent;
+}
+
 export async function adminListUsers(): Promise<AdminUser[]> {
   const supabase = createClient();
   const { data, error } = await supabase.rpc("admin_list_users");
