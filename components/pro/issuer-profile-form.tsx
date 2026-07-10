@@ -1,6 +1,6 @@
 "use client";
 
-import { authSimpleFieldClass } from "@/components/auth/auth-page-shell";
+import { Field, fieldInputClass } from "@/components/pro/form-kit";
 import {
   getIssuer,
   uploadIssuerLogo,
@@ -152,86 +152,130 @@ export function IssuerProfileForm() {
           </div>
         </div>
 
-        <Field label="Nom commercial / votre nom">
+        <Field
+          label="Nom commercial (ou votre nom)"
+          required
+          htmlFor="iss-name"
+          hint="Affiché en gros en haut de chaque devis / facture."
+        >
           <input
-            className={authSimpleFieldClass}
+            id="iss-name"
+            className={fieldInputClass}
             value={form.business_name}
             onChange={(e) =>
               setForm({ ...form, business_name: e.target.value })
             }
-            placeholder="Ex : Studio Kofi Design"
+            placeholder="Ex : Atelier Kofi Design"
           />
         </Field>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Téléphone">
+          <Field
+            label="Téléphone"
+            htmlFor="iss-phone"
+            hint="Un moyen de vous joindre, imprimé sur le document."
+          >
             <input
-              className={authSimpleFieldClass}
+              id="iss-phone"
+              className={fieldInputClass}
+              type="tel"
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              placeholder="Ex : +241 06 12 34 56"
             />
           </Field>
-          <Field label="Email">
+          <Field label="Email" htmlFor="iss-email">
             <input
-              className={authSimpleFieldClass}
+              id="iss-email"
+              className={fieldInputClass}
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
+              placeholder="Ex : contact@kofidesign.ga"
             />
           </Field>
         </div>
 
-        <Field label="Adresse">
+        <Field
+          label="Adresse"
+          htmlFor="iss-address"
+          hint="Votre adresse professionnelle (une ligne par retour à la ligne)."
+        >
           <textarea
-            className={cn(authSimpleFieldClass, "min-h-[64px] resize-y")}
+            id="iss-address"
+            className={cn(fieldInputClass, "min-h-16 resize-y")}
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
+            placeholder="Ex : Rue des Cocotiers, Libreville, Gabon"
           />
         </Field>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="N° fiscal / RCCM">
+          <Field
+            label="N° fiscal / RCCM"
+            htmlFor="iss-tax"
+            hint="Votre immatriculation légale."
+          >
             <input
-              className={authSimpleFieldClass}
+              id="iss-tax"
+              className={fieldInputClass}
               value={form.tax_id}
               onChange={(e) => setForm({ ...form, tax_id: e.target.value })}
+              placeholder="Ex : RCCM GA-LBV-2024-B-1234"
             />
           </Field>
-          <Field label="Devise">
+          <Field
+            label="Devise"
+            required
+            htmlFor="iss-currency"
+            hint="Code de la monnaie utilisée par défaut."
+          >
             <input
-              className={authSimpleFieldClass}
+              id="iss-currency"
+              className={fieldInputClass}
               value={form.currency}
               onChange={(e) =>
                 setForm({ ...form, currency: e.target.value.toUpperCase() })
               }
-              placeholder="XOF"
+              placeholder="Ex : XOF"
             />
           </Field>
-          <Field label="TVA par défaut (%)">
+          <Field
+            label="TVA par défaut"
+            htmlFor="iss-vat"
+            hint="En %. Laissez vide si vous ne facturez pas de TVA."
+          >
             <input
-              className={authSimpleFieldClass}
+              id="iss-vat"
+              className={fieldInputClass}
               type="number"
               min={0}
               step="0.1"
-              value={form.default_vat_rate}
+              value={form.default_vat_rate || ""}
               onChange={(e) =>
                 setForm({
                   ...form,
                   default_vat_rate: Number(e.target.value) || 0,
                 })
               }
+              placeholder="Ex : 18"
             />
           </Field>
         </div>
 
-        <Field label="Mentions légales / pied de page">
+        <Field
+          label="Mentions légales / pied de page"
+          htmlFor="iss-legal"
+          hint="Conditions de paiement, IBAN, mentions obligatoires… Imprimé en bas du document."
+        >
           <textarea
-            className={cn(authSimpleFieldClass, "min-h-[64px] resize-y")}
+            id="iss-legal"
+            className={cn(fieldInputClass, "min-h-16 resize-y")}
             value={form.legal_mentions}
             onChange={(e) =>
               setForm({ ...form, legal_mentions: e.target.value })
             }
-            placeholder="Conditions de paiement, IBAN, mentions obligatoires…"
+            placeholder="Ex : Paiement à 30 jours. IBAN : GA21 4002 …"
           />
         </Field>
 
@@ -251,22 +295,5 @@ export function IssuerProfileForm() {
         </div>
       </form>
     </div>
-  );
-}
-
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-xs font-medium text-neutral-500">
-        {label}
-      </span>
-      {children}
-    </label>
   );
 }

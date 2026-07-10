@@ -1,6 +1,6 @@
 "use client";
 
-import { authSimpleFieldClass } from "@/components/auth/auth-page-shell";
+import { Field, FormSection, fieldInputClass } from "@/components/pro/form-kit";
 import { ROUTES } from "@/lib/config/routes";
 import { listProClients } from "@/lib/features/pro/clients/api";
 import type { ProClient } from "@/lib/features/pro/clients/types";
@@ -35,7 +35,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 const EMPTY_LINE: ProDocumentLineInput = {
   description: "",
-  quantity: 1,
+  quantity: 0,
   unit: "",
   unit_price: 0,
 };
@@ -277,162 +277,221 @@ export function DocumentEditor({
       ) : null}
 
       {/* Client */}
-      <section className="mb-4 rounded-2xl border border-black/[0.06] bg-fs-card p-4">
-        <h2 className="mb-3 text-sm font-bold text-neutral-700">Client</h2>
+      <FormSection
+        title="À qui s'adresse ce document ?"
+        subtitle="Choisissez un client existant, ou saisissez ses coordonnées."
+        className="mb-4"
+      >
         {clients.length > 0 ? (
-          <select
-            className={cn(authSimpleFieldClass, "mb-2.5")}
-            value={form.client_id ?? ""}
-            onChange={(e) => pickClient(e.target.value)}
+          <Field
+            label="Client enregistré"
+            htmlFor="doc-client"
+            hint="Sélectionnez pour remplir automatiquement les coordonnées ci-dessous."
+            className="mb-3.5"
           >
-            <option value="">— Saisie manuelle —</option>
-            {clients.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+            <select
+              id="doc-client"
+              className={fieldInputClass}
+              value={form.client_id ?? ""}
+              onChange={(e) => pickClient(e.target.value)}
+            >
+              <option value="">Saisir un nouveau client…</option>
+              {clients.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </Field>
         ) : null}
-        <div className="grid gap-2.5 sm:grid-cols-2">
-          <input
-            className={authSimpleFieldClass}
-            placeholder="Nom du client *"
-            value={form.client_name}
-            onChange={(e) =>
-              setForm({ ...form, client_name: e.target.value, client_id: null })
-            }
-          />
-          <input
-            className={authSimpleFieldClass}
-            placeholder="Téléphone"
-            value={form.client_phone}
-            onChange={(e) =>
-              setForm({ ...form, client_phone: e.target.value })
-            }
-          />
-          <input
-            className={authSimpleFieldClass}
-            type="email"
-            placeholder="Email"
-            value={form.client_email}
-            onChange={(e) =>
-              setForm({ ...form, client_email: e.target.value })
-            }
-          />
-          <input
-            className={authSimpleFieldClass}
-            placeholder="N° fiscal"
-            value={form.client_tax_id}
-            onChange={(e) =>
-              setForm({ ...form, client_tax_id: e.target.value })
-            }
-          />
+        <div className="grid gap-3.5 sm:grid-cols-2">
+          <Field label="Nom du client" required htmlFor="doc-cname">
+            <input
+              id="doc-cname"
+              className={fieldInputClass}
+              placeholder="Ex : Société Mbolo SARL"
+              value={form.client_name}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  client_name: e.target.value,
+                  client_id: null,
+                })
+              }
+            />
+          </Field>
+          <Field label="Téléphone" htmlFor="doc-cphone">
+            <input
+              id="doc-cphone"
+              className={fieldInputClass}
+              type="tel"
+              placeholder="Ex : +241 01 23 45 67"
+              value={form.client_phone}
+              onChange={(e) =>
+                setForm({ ...form, client_phone: e.target.value })
+              }
+            />
+          </Field>
+          <Field label="Email" htmlFor="doc-cemail">
+            <input
+              id="doc-cemail"
+              className={fieldInputClass}
+              type="email"
+              placeholder="Ex : achats@mbolo.ga"
+              value={form.client_email}
+              onChange={(e) =>
+                setForm({ ...form, client_email: e.target.value })
+              }
+            />
+          </Field>
+          <Field label="N° fiscal du client" htmlFor="doc-ctax">
+            <input
+              id="doc-ctax"
+              className={fieldInputClass}
+              placeholder="Ex : NIF 7412589630"
+              value={form.client_tax_id}
+              onChange={(e) =>
+                setForm({ ...form, client_tax_id: e.target.value })
+              }
+            />
+          </Field>
         </div>
-        <textarea
-          className={cn(authSimpleFieldClass, "mt-2.5 min-h-[52px] resize-y")}
-          placeholder="Adresse"
-          value={form.client_address}
-          onChange={(e) =>
-            setForm({ ...form, client_address: e.target.value })
-          }
-        />
-      </section>
+        <Field label="Adresse du client" htmlFor="doc-caddr" className="mt-3.5">
+          <textarea
+            id="doc-caddr"
+            className={cn(fieldInputClass, "min-h-13 resize-y")}
+            placeholder="Ex : Boulevard Triomphal, Libreville, Gabon"
+            value={form.client_address}
+            onChange={(e) =>
+              setForm({ ...form, client_address: e.target.value })
+            }
+          />
+        </Field>
+      </FormSection>
 
       {/* Meta */}
-      <section className="mb-4 grid gap-2.5 rounded-2xl border border-black/[0.06] bg-fs-card p-4 sm:grid-cols-3">
-        <label className="block">
-          <span className="mb-1 block text-xs font-medium text-neutral-500">
-            Date d&apos;émission
-          </span>
-          <input
-            type="date"
-            className={authSimpleFieldClass}
-            value={form.issue_date}
-            onChange={(e) => setForm({ ...form, issue_date: e.target.value })}
-          />
-        </label>
-        <label className="block">
-          <span className="mb-1 block text-xs font-medium text-neutral-500">
-            {isDevisKind(kind) ? "Valable jusqu'au" : "Échéance"}
-          </span>
-          <input
-            type="date"
-            className={authSimpleFieldClass}
-            value={form.due_date}
-            onChange={(e) => setForm({ ...form, due_date: e.target.value })}
-          />
-        </label>
-        <label className="block">
-          <span className="mb-1 block text-xs font-medium text-neutral-500">
-            Statut
-          </span>
-          <select
-            className={authSimpleFieldClass}
-            value={form.status}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                status: e.target.value as ProDocumentStatus,
-              })
+      <FormSection title="Dates & statut" className="mb-4">
+        <div className="grid gap-3.5 sm:grid-cols-3">
+          <Field
+            label="Date d'émission"
+            required
+            htmlFor="doc-issue"
+            hint="Date figurant sur le document."
+          >
+            <input
+              id="doc-issue"
+              type="date"
+              className={fieldInputClass}
+              value={form.issue_date}
+              onChange={(e) => setForm({ ...form, issue_date: e.target.value })}
+            />
+          </Field>
+          <Field
+            label={isDevisKind(kind) ? "Valable jusqu'au" : "Date d'échéance"}
+            htmlFor="doc-due"
+            hint={
+              isDevisKind(kind)
+                ? "Fin de validité de l'offre."
+                : "Date limite de paiement."
             }
           >
-            {statusOptions.map((s) => (
-              <option key={s} value={s}>
-                {DOCUMENT_STATUS_LABELS[s]}
-              </option>
-            ))}
-          </select>
-        </label>
-      </section>
+            <input
+              id="doc-due"
+              type="date"
+              className={fieldInputClass}
+              value={form.due_date}
+              onChange={(e) => setForm({ ...form, due_date: e.target.value })}
+            />
+          </Field>
+          <Field
+            label="Statut"
+            htmlFor="doc-status"
+            hint="Où en est ce document ?"
+          >
+            <select
+              id="doc-status"
+              className={fieldInputClass}
+              value={form.status}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  status: e.target.value as ProDocumentStatus,
+                })
+              }
+            >
+              {statusOptions.map((s) => (
+                <option key={s} value={s}>
+                  {DOCUMENT_STATUS_LABELS[s]}
+                </option>
+              ))}
+            </select>
+          </Field>
+        </div>
+      </FormSection>
 
       {/* Lignes */}
-      <section className="mb-4 rounded-2xl border border-black/[0.06] bg-fs-card p-4">
-        <h2 className="mb-3 text-sm font-bold text-neutral-700">Lignes</h2>
+      <FormSection
+        title="Prestations / articles"
+        subtitle="Décrivez ce que vous facturez : une ligne par prestation ou article."
+        className="mb-4"
+      >
+        {/* En-têtes de colonnes (bureau) */}
+        <div className="mb-1.5 hidden grid-cols-12 gap-2 px-1 text-[11px] font-semibold uppercase tracking-wide text-neutral-400 sm:grid">
+          <span className="col-span-5">Désignation</span>
+          <span className="col-span-2 text-center">Quantité</span>
+          <span className="col-span-2 text-center">Unité</span>
+          <span className="col-span-2 text-right">Prix unitaire</span>
+          <span className="col-span-1" />
+        </div>
         <div className="flex flex-col gap-2">
           {form.lines.map((line, i) => (
             <div
               key={i}
-              className="grid grid-cols-12 gap-2 rounded-lg bg-fs-surface-container/50 p-2"
+              className="grid grid-cols-12 items-center gap-2 rounded-xl bg-fs-surface-container/40 p-2"
             >
               <input
-                className={cn(authSimpleFieldClass, "col-span-12 sm:col-span-5")}
-                placeholder="Désignation"
+                className={cn(fieldInputClass, "col-span-12 sm:col-span-5")}
+                placeholder="Ex : Conception du logo"
                 value={line.description}
                 onChange={(e) => setLine(i, { description: e.target.value })}
+                aria-label={`Désignation ligne ${i + 1}`}
               />
               <input
-                className={cn(authSimpleFieldClass, "col-span-4 sm:col-span-2")}
+                className={cn(fieldInputClass, "col-span-4 sm:col-span-2")}
                 type="number"
                 min={0}
                 step="any"
-                placeholder="Qté"
-                value={line.quantity}
+                placeholder="1"
+                value={line.quantity || ""}
                 onChange={(e) =>
                   setLine(i, { quantity: Number(e.target.value) || 0 })
                 }
+                aria-label={`Quantité ligne ${i + 1}`}
               />
               <input
-                className={cn(authSimpleFieldClass, "col-span-3 sm:col-span-2")}
-                placeholder="Unité"
+                className={cn(fieldInputClass, "col-span-3 sm:col-span-2")}
+                placeholder="pièce"
                 value={line.unit}
                 onChange={(e) => setLine(i, { unit: e.target.value })}
+                aria-label={`Unité ligne ${i + 1}`}
               />
               <input
-                className={cn(authSimpleFieldClass, "col-span-4 sm:col-span-2")}
+                className={cn(fieldInputClass, "col-span-4 sm:col-span-2")}
                 type="number"
                 min={0}
                 step="any"
-                placeholder="Prix unit."
-                value={line.unit_price}
+                placeholder="0"
+                value={line.unit_price || ""}
                 onChange={(e) =>
                   setLine(i, { unit_price: Number(e.target.value) || 0 })
                 }
+                aria-label={`Prix unitaire ligne ${i + 1}`}
               />
               <button
                 type="button"
                 onClick={() => removeLine(i)}
-                className="col-span-1 flex items-center justify-center rounded-lg text-neutral-400 hover:bg-red-50 hover:text-red-600"
-                aria-label="Retirer la ligne"
+                className="col-span-1 flex items-center justify-center rounded-lg py-2 text-neutral-400 hover:bg-red-50 hover:text-red-600"
+                aria-label={`Retirer la ligne ${i + 1}`}
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -447,88 +506,105 @@ export function DocumentEditor({
           <Plus className="h-4 w-4" aria-hidden />
           Ajouter une ligne
         </button>
-      </section>
+      </FormSection>
 
       {/* Totaux & réglages */}
-      <section className="mb-4 grid gap-4 rounded-2xl border border-black/[0.06] bg-fs-card p-4 sm:grid-cols-2">
-        <div className="flex flex-col gap-2.5">
-          <label className="block">
-            <span className="mb-1 block text-xs font-medium text-neutral-500">
-              Remise ({form.currency})
-            </span>
-            <input
-              type="number"
-              min={0}
-              step="any"
-              className={authSimpleFieldClass}
-              value={form.discount}
-              onChange={(e) =>
-                setForm({ ...form, discount: Number(e.target.value) || 0 })
-              }
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs font-medium text-neutral-500">
-              TVA (%)
-            </span>
-            <input
-              type="number"
-              min={0}
-              step="0.1"
-              className={authSimpleFieldClass}
-              value={form.vat_rate}
-              onChange={(e) =>
-                setForm({ ...form, vat_rate: Number(e.target.value) || 0 })
-              }
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs font-medium text-neutral-500">
-              Devise
-            </span>
-            <input
-              className={authSimpleFieldClass}
-              value={form.currency}
-              onChange={(e) =>
-                setForm({ ...form, currency: e.target.value.toUpperCase() })
-              }
-            />
-          </label>
-        </div>
-        <div className="flex flex-col justify-end gap-1.5 text-sm">
-          <Row label="Sous-total" value={formatMoney(totals.subtotal, form.currency)} />
-          {totals.discount > 0 ? (
+      <FormSection title="Remise, TVA & total" className="mb-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-3.5">
+            <Field
+              label={`Remise (${form.currency || "montant"})`}
+              htmlFor="doc-discount"
+              hint="Réduction sur le sous-total. Laissez vide s'il n'y en a pas."
+            >
+              <input
+                id="doc-discount"
+                type="number"
+                min={0}
+                step="any"
+                className={fieldInputClass}
+                placeholder="0"
+                value={form.discount || ""}
+                onChange={(e) =>
+                  setForm({ ...form, discount: Number(e.target.value) || 0 })
+                }
+              />
+            </Field>
+            <Field
+              label="TVA (%)"
+              htmlFor="doc-vat"
+              hint="Taux de TVA appliqué. Laissez vide si non applicable."
+            >
+              <input
+                id="doc-vat"
+                type="number"
+                min={0}
+                step="0.1"
+                className={fieldInputClass}
+                placeholder="Ex : 18"
+                value={form.vat_rate || ""}
+                onChange={(e) =>
+                  setForm({ ...form, vat_rate: Number(e.target.value) || 0 })
+                }
+              />
+            </Field>
+            <Field
+              label="Devise"
+              required
+              htmlFor="doc-currency"
+              hint="Reprise de votre profil ; modifiable pour ce document."
+            >
+              <input
+                id="doc-currency"
+                className={fieldInputClass}
+                value={form.currency}
+                onChange={(e) =>
+                  setForm({ ...form, currency: e.target.value.toUpperCase() })
+                }
+                placeholder="Ex : XOF"
+              />
+            </Field>
+          </div>
+          <div className="flex flex-col justify-end gap-1.5 text-sm">
             <Row
-              label="Remise"
-              value={`− ${formatMoney(totals.discount, form.currency)}`}
+              label="Sous-total"
+              value={formatMoney(totals.subtotal, form.currency)}
             />
-          ) : null}
-          {form.vat_rate > 0 ? (
-            <Row
-              label={`TVA (${form.vat_rate} %)`}
-              value={formatMoney(totals.vatAmount, form.currency)}
-            />
-          ) : null}
-          <div className="mt-1 flex items-center justify-between rounded-lg bg-fs-accent px-3 py-2.5 font-bold text-white">
-            <span>{form.vat_rate > 0 ? "Total TTC" : "Total"}</span>
-            <span>{formatMoney(totals.total, form.currency)}</span>
+            {totals.discount > 0 ? (
+              <Row
+                label="Remise"
+                value={`− ${formatMoney(totals.discount, form.currency)}`}
+              />
+            ) : null}
+            {form.vat_rate > 0 ? (
+              <Row
+                label={`TVA (${form.vat_rate} %)`}
+                value={formatMoney(totals.vatAmount, form.currency)}
+              />
+            ) : null}
+            <div className="mt-1 flex items-center justify-between rounded-lg bg-fs-accent px-3 py-2.5 font-bold text-white">
+              <span>{form.vat_rate > 0 ? "Total TTC" : "Total"}</span>
+              <span>{formatMoney(totals.total, form.currency)}</span>
+            </div>
           </div>
         </div>
-      </section>
+      </FormSection>
 
-      <section className="mb-4 rounded-2xl border border-black/[0.06] bg-fs-card p-4">
-        <label className="block">
-          <span className="mb-1 block text-xs font-medium text-neutral-500">
-            Notes (visibles sur le document)
-          </span>
+      <FormSection title="Notes" className="mb-4">
+        <Field
+          label="Message affiché sur le document"
+          htmlFor="doc-notes"
+          hint="Conditions, délais, remerciements… Visible par le client."
+        >
           <textarea
-            className={cn(authSimpleFieldClass, "min-h-[64px] resize-y")}
+            id="doc-notes"
+            className={cn(fieldInputClass, "min-h-16 resize-y")}
             value={form.notes}
             onChange={(e) => setForm({ ...form, notes: e.target.value })}
-            placeholder="Conditions, délais, remerciements…"
+            placeholder="Ex : Acompte de 40 % à la commande. Merci de votre confiance."
           />
-        </label>
-      </section>
+        </Field>
+      </FormSection>
 
       <div className="sticky bottom-16 z-10 flex flex-wrap justify-end gap-2 sm:bottom-0">
         <Link

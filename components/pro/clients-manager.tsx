@@ -11,7 +11,7 @@ import type {
   ProClientFormInput,
   ProClientType,
 } from "@/lib/features/pro/clients/types";
-import { authSimpleFieldClass } from "@/components/auth/auth-page-shell";
+import { Field, fieldInputClass } from "@/components/pro/form-kit";
 import { cn } from "@/lib/utils/cn";
 import { AlertCircle, Pencil, Plus, Trash2, Users, X } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
@@ -199,59 +199,104 @@ export function ClientsManager() {
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <form onSubmit={onSubmit} className="flex flex-col gap-2.5">
-              <input
-                className={authSimpleFieldClass}
-                placeholder="Nom / raison sociale *"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+            <form onSubmit={onSubmit} className="flex flex-col gap-3.5">
+              <Field
+                label="Type de client"
+                hint="Un particulier (personne) ou une entreprise."
+              >
+                <div className="flex gap-2">
+                  {(["individual", "company"] as ProClientType[]).map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setForm({ ...form, type: t })}
+                      className={cn(
+                        "flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
+                        form.type === t
+                          ? "border-fs-accent bg-fs-accent/10 text-fs-accent"
+                          : "border-neutral-200 text-neutral-600 hover:border-fs-accent/30",
+                      )}
+                    >
+                      {t === "individual" ? "Particulier" : "Entreprise"}
+                    </button>
+                  ))}
+                </div>
+              </Field>
+
+              <Field
+                label={form.type === "company" ? "Raison sociale" : "Nom complet"}
                 required
-                autoFocus
-              />
-              <div className="flex gap-2">
-                {(["individual", "company"] as ProClientType[]).map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setForm({ ...form, type: t })}
-                    className={cn(
-                      "flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
-                      form.type === t
-                        ? "border-fs-accent bg-fs-accent/10 text-fs-accent"
-                        : "border-neutral-200 text-neutral-600",
-                    )}
-                  >
-                    {t === "individual" ? "Particulier" : "Entreprise"}
-                  </button>
-                ))}
-              </div>
-              <div className="grid gap-2.5 sm:grid-cols-2">
+                htmlFor="cl-name"
+                hint="Le nom tel qu'il apparaîtra sur les devis et factures."
+              >
                 <input
-                  className={authSimpleFieldClass}
-                  placeholder="Téléphone"
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  id="cl-name"
+                  className={fieldInputClass}
+                  placeholder={
+                    form.type === "company"
+                      ? "Ex : Société Mbolo SARL"
+                      : "Ex : Awa Diallo"
+                  }
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                  autoFocus
                 />
-                <input
-                  className={authSimpleFieldClass}
-                  type="email"
-                  placeholder="Email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                />
+              </Field>
+
+              <div className="grid gap-3.5 sm:grid-cols-2">
+                <Field label="Téléphone" htmlFor="cl-phone">
+                  <input
+                    id="cl-phone"
+                    className={fieldInputClass}
+                    type="tel"
+                    placeholder="Ex : +241 06 12 34 56"
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  />
+                </Field>
+                <Field
+                  label="Email"
+                  htmlFor="cl-email"
+                  hint="Sert à pré-remplir l'envoi par email."
+                >
+                  <input
+                    id="cl-email"
+                    className={fieldInputClass}
+                    type="email"
+                    placeholder="Ex : contact@mbolo.ga"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  />
+                </Field>
               </div>
-              <textarea
-                className={cn(authSimpleFieldClass, "min-h-[64px] resize-y")}
-                placeholder="Adresse"
-                value={form.address}
-                onChange={(e) => setForm({ ...form, address: e.target.value })}
-              />
-              <input
-                className={authSimpleFieldClass}
-                placeholder="N° fiscal / RCCM (entreprise)"
-                value={form.tax_id}
-                onChange={(e) => setForm({ ...form, tax_id: e.target.value })}
-              />
+
+              <Field label="Adresse" htmlFor="cl-address">
+                <textarea
+                  id="cl-address"
+                  className={cn(fieldInputClass, "min-h-16 resize-y")}
+                  placeholder="Ex : Boulevard Triomphal, Libreville, Gabon"
+                  value={form.address}
+                  onChange={(e) =>
+                    setForm({ ...form, address: e.target.value })
+                  }
+                />
+              </Field>
+
+              <Field
+                label="N° fiscal / RCCM"
+                htmlFor="cl-tax"
+                hint="Identifiant fiscal du client (surtout pour les entreprises)."
+              >
+                <input
+                  id="cl-tax"
+                  className={fieldInputClass}
+                  placeholder="Ex : NIF 7412589630"
+                  value={form.tax_id}
+                  onChange={(e) => setForm({ ...form, tax_id: e.target.value })}
+                />
+              </Field>
+
               <div className="mt-2 flex justify-end gap-2">
                 <button
                   type="button"
