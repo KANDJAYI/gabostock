@@ -7,8 +7,18 @@ export const ROUTES = {
   register: "/register",
   /** Choix du type d’activité avant inscription (`?businessType=` sur `/register`). */
   registerSelectActivity: "/register/select-activity",
+  /** Inscription d’un compte « solo » — espace Facturation Pro autonome. */
+  registerPro: "/register-pro",
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
+
+  /** Espace Facturation Pro (comptes solo) — devis & factures indépendants. */
+  facturation: "/facturation",
+  facturationDevis: "/facturation/devis",
+  facturationFactures: "/facturation/factures",
+  facturationClients: "/facturation/clients",
+  facturationProfil: "/facturation/profil",
+  facturationApercu: "/facturation/apercu",
   dashboard: "/dashboard",
   products: "/products",
   barcodes: "/barcodes",

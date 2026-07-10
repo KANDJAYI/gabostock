@@ -278,6 +278,15 @@ export function LoginForm() {
               Créer un compte
             </Link>
           </div>
+
+          <div className="mt-4 border-t border-neutral-200 pt-3 text-center">
+            <Link
+              href={ROUTES.registerPro}
+              className="fs-touch-target inline-block py-1 text-sm font-semibold text-fs-accent underline-offset-4 hover:underline"
+            >
+              Juste besoin de devis &amp; factures ? Créer un espace facturation
+            </Link>
+          </div>
         </div>
       </div>
     </div>

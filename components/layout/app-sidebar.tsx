@@ -30,6 +30,8 @@ type AppSidebarProps = {
   variant?: "default" | "mobileDrawer";
   /** Appelé après navigation (ex. fermer le drawer). */
   onNavigate?: () => void;
+  /** Destination du logo/marque (défaut `/dashboard`). */
+  brandHref?: string;
 };
 
 export function AppSidebar({
@@ -41,6 +43,7 @@ export function AppSidebar({
   companyLogoUrl,
   variant = "default",
   onNavigate,
+  brandHref = "/dashboard",
 }: AppSidebarProps) {
   const [brandLogoErr, setBrandLogoErr] = useState(false);
   const isDrawer = variant === "mobileDrawer";
@@ -77,13 +80,13 @@ export function AppSidebar({
         )}
       >
         <Link
-          href="/dashboard"
+          href={brandHref}
           className={cn(
             "flex min-w-0 items-center rounded-2xl outline-none transition-[transform,box-shadow] duration-200",
             "focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--fs-sidebar-surface)]",
             effectiveCollapsed ? "justify-center p-1.5" : "gap-3 p-1 pr-2",
           )}
-          title={effectiveCollapsed ? "Gabostock — Tableau de bord" : undefined}
+          title={effectiveCollapsed ? "Gabostock" : undefined}
           onClick={() => onNavigate?.()}
         >
           <span

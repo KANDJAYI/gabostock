@@ -1,4 +1,5 @@
 import { LoginForm } from "@/components/auth/login-form";
+import { resolveLandingForUser } from "@/lib/auth/resolve-landing";
 import { hasSupabaseConfig } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -25,7 +26,7 @@ export default async function LoginPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (user) redirect("/dashboard");
+  if (user) redirect(await resolveLandingForUser(supabase, user.id));
 
   return (
     <Suspense fallback={<LoginFormFallback />}>
